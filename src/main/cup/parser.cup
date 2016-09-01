@@ -1,0 +1,248 @@
+import java_cup.runtime.*;
+
+parser code
+{:
+
+    public void syntax_error(Symbol s){ 
+		System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
+	}
+
+	public void unrecovered_syntax_error(Symbol s){
+		System.out.println("There was an unrecovered error at line "+(s.left+1)+" column " + s.right+" with symbol "+(String)s.value);
+	}
+
+:}
+
+/*Terminals*/
+
+terminal 	TBOOL, TINTEGER, TFLOAT, TVOID; 
+terminal    BREAK, CLASS, CONTINUE, ELSE, FOR, IF, RETURN, WHILE, EXTERN, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal 	SEMICOLON, COMMA, EQ, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, PLUSEQ, MINUSEQ, DOT;
+terminal    DIV, MULT;
+terminal    INT_LITERAL;
+terminal    FLOAT_LITERAL;
+terminal    BOOL_LITERAL;
+terminal    String ID;
+
+/*Non-Terminals*/
+non terminal program; 
+non terminal class_decl, body_class;
+non terminal class_list;
+
+non terminal method_decl;
+non terminal method_list;
+
+non terminal id_field_decl;
+non terminal list_id_field_decl;
+
+non terminal param; 
+non terminal param_list;
+
+non terminal body;
+
+non terminal assign_op;
+
+non terminal method_call;
+
+non terminal block;
+
+non terminal type;
+
+non terminal expr;
+non terminal list_expr;
+
+non terminal location;
+
+non terminal list_invoc;
+non terminal invoc;
+
+non terminal bin_op, arith_op, eq_op, cond_op, rel_op;
+non terminal literal;
+
+non terminal field_decl;
+non terminal field_list;
+
+non terminal statement, if_stmt, return_stmt;
+non terminal list_statement;
+
+/*Precedences*/
+precedence left  ANDAND;
+precedence left  OROR;
+precedence nonassoc  LT, LTEQ, GTEQ, GT, EQEQ, NOTEQ;
+precedence left  PLUS, MINUS;
+precedence left  MULT, DIV, MOD;
+precedence right NOT;
+
+
+start with program;
+
+
+program ::= class_list {:System.out.println("No errors founded. Successful compilation!");:}
+	  	  ;
+
+class_list ::= class_decl
+	     	 |class_list class_decl
+	         ;
+
+class_decl ::= CLASS ID body_class
+	         ;
+
+body_class ::= LBRACE RBRACE
+	     	 |LBRACE field_list RBRACE
+	         |LBRACE method_list RBRACE
+	         |LBRACE field_list method_list RBRACE
+	         ;
+/****************************************************Field**************************************************************/
+
+/*Field Declaration*/
+
+
+/**List Field Decl*/
+
+field_list ::= field_decl
+	         |field_list field_decl
+	         ;
+
+/*Field Decl*/
+field_decl ::= type list_id_field_decl SEMICOLON
+	     	 ;
+/*String*/
+id_field_decl ::= ID
+			    | ID LBRACK INT_LITERAL RBRACK
+			    ;
+/*List String*/
+list_id_field_decl ::= list_id_field_decl COMMA id_field_decl
+					 | id_field_decl
+					 ;
+/****************************************************EndField**************************************************************/
+
+/*Method Declaration*/
+method_list ::= method_decl
+	          |method_list method_decl
+	          ;
+
+method_decl ::= type ID LPAREN RPAREN body
+			  |type ID LPAREN param_list RPAREN body
+	          ;
+
+/*************************************Parameter****************************************************************/
+param_list ::= param
+			 | param_list COMMA param
+			 ;
+
+param ::= type ID
+ 		;
+/*************************************EndParameter***********************************************************/
+
+body ::= block
+	   | EXTERN SEMICOLON
+	   ;
+
+block ::= LBRACE RBRACE
+		| LBRACE field_list list_statement RBRACE   
+		| LBRACE field_list RBRACE					
+		| LBRACE list_statement RBRACE	
+		;
+
+type ::= TINTEGER
+	   | TBOOL
+	   | TFLOAT
+	   | TVOID
+	   ;
+	   
+/********************************************Statement*************************************************************/
+statement ::= location assign_op expr SEMICOLON
+			| method_call SEMICOLON
+			| if_stmt
+			| FOR ID EQ expr COMMA expr block
+			| WHILE expr block
+			| return_stmt
+			| BREAK SEMICOLON
+			| CONTINUE SEMICOLON
+			| SEMICOLON
+			| block
+			;
+
+if_stmt ::= IF LPAREN expr RPAREN block
+		  | IF LPAREN expr RPAREN block ELSE block
+		  ; 
+
+return_stmt ::= RETURN SEMICOLON
+			  | RETURN expr SEMICOLON
+			  ;			
+
+list_statement ::= statement list_statement
+				 | statement
+				 ;
+/*******************************************EndStatement*********************************************************/
+
+assign_op ::= EQ
+			| PLUSEQ
+			| MINUSEQ
+			;
+
+method_call ::= ID LPAREN RPAREN
+		 	  | ID LPAREN list_expr RPAREN
+			  | ID list_invoc LPAREN list_expr RPAREN
+			  | ID list_invoc LPAREN RPAREN
+			  ;
+/***************************************Expression************************************************/
+expr ::= location
+	   |method_call
+	   |literal
+	   |expr bin_op expr
+	   |MINUS expr
+	   |NOT expr
+	   |LPAREN expr RPAREN
+	   ;
+
+
+list_expr ::= expr
+			| list_expr COMMA expr
+			;
+/***************************************EndExpression***********************************************/
+
+list_invoc ::= invoc
+			 |list_invoc invoc
+			 ;
+
+invoc ::= DOT ID
+		; 
+
+location ::= ID
+		   |ID list_invoc
+		   |ID LBRACK expr RBRACK
+		   |ID list_invoc LBRACK expr RBRACK
+		   ;
+
+bin_op ::= arith_op
+		 | rel_op
+		 | eq_op
+		 | cond_op
+		 ;
+
+arith_op ::= PLUS
+		   |MINUS
+		   |MULT
+		   |DIV
+		   |MOD
+		   ;
+
+rel_op ::= LT
+		 | GT
+		 | LTEQ
+		 | GTEQ
+		 ;
+
+eq_op ::= EQEQ
+		| NOTEQ
+		;
+
+cond_op ::= ANDAND
+		  |OROR
+		  ;
+
+literal ::= INT_LITERAL
+		  |FLOAT_LITERAL
+		  |BOOL_LITERAL
+		  ;
