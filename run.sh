@@ -1,0 +1,15 @@
+#!/bin/bash
+
+java -jar lib/jflex-1.6.1.jar -d src/main/java/ src/main/jflex/lexer.flex
+java -jar lib/java-cup-11b.jar -destdir src/main/java/ -parser Parser -symbols Sym src/main/cup/parser.cup
+
+# echo "*******************  COLLECTING DEPENDENCIES  *********************************"
+# mvn dependency:copy-dependencies
+export CLASSPATH=""
+for file in `ls lib`; do export CLASSPATH=$CLASSPATH:lib/$file; done
+export CLASSPATH=$CLASSPATH:target/classes
+# echo "*******************  EXECUTING PROGRAM******************************************"
+
+javac -Xlint -d target/classes/ src/main/java/*.java src/main/*.java -classpath $CLASSPATH
+
+java -cp $CLASSPATH Main src/test/file.txt 
