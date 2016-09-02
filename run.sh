@@ -1,5 +1,13 @@
 #!/bin/bash
+JAVA_FOLDER=src/main/java
+if [ ! -d $JAVA_FOLDER ]; then
+	mkdir src/main/java
+fi
 
+if [ ! -d target/classes ]; then
+	mkdir target
+	mkdir target/classes
+fi
 java -jar lib/jflex-1.6.1.jar -d src/main/java/ src/main/jflex/lexer.flex
 java -jar lib/java-cup-11b.jar -destdir src/main/java/ -parser Parser -symbols Sym src/main/cup/parser.cup
 
