@@ -18,6 +18,8 @@ for file in `ls lib`; do export CLASSPATH=$CLASSPATH:lib/$file; done
 export CLASSPATH=$CLASSPATH:target/classes
 # echo "*******************  EXECUTING PROGRAM******************************************"
 
-javac -Xlint -d target/classes/ src/main/java/*.java src/main/*.java -classpath $CLASSPATH
+javac -d target/classes/ src/main/java/*.java src/main/*.java -classpath $CLASSPATH
 
-java -cp $CLASSPATH Main src/test/file.txt 
+echo " *** EXECUTING *** "
+java -cp $CLASSPATH Main src/test/file.txt
+ 

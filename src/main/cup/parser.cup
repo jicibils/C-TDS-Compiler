@@ -77,7 +77,7 @@ precedence right NOT;
 start with program;
 
 
-program ::= class_list {:System.out.println("No errors founded. Successful compilation!");:}
+program ::= class_list {:System.out.println("No error found. Successful compilation!");:}
 	  	  ;
 
 class_list ::= class_decl
