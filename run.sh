@@ -21,5 +21,5 @@ export CLASSPATH=$CLASSPATH:target/classes
 javac -d target/classes/ src/main/java/*.java src/main/*.java -classpath $CLASSPATH
 
 echo " *** EXECUTING *** "
-java -cp $CLASSPATH Main src/test/file.txt
- 
+java -cp $CLASSPATH Main src/test/ejemplo_pdf.ctds
+
