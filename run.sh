@@ -16,10 +16,8 @@ java -jar lib/java-cup-11b.jar -destdir src/main/java/ -parser Parser -symbols S
 export CLASSPATH=""
 for file in `ls lib`; do export CLASSPATH=$CLASSPATH:lib/$file; done
 export CLASSPATH=$CLASSPATH:target/classes
-# echo "*******************  EXECUTING PROGRAM******************************************"
+echo "*******************  COMPILING PROGRAM******************************************"
 
 javac -d target/classes/ src/main/java/*.java src/main/*.java -classpath $CLASSPATH
 
-echo " *** EXECUTING *** "
-java -cp $CLASSPATH Main src/test/ejemplo_pdf.ctds
 
