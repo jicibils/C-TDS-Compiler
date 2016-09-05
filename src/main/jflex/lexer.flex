@@ -27,7 +27,7 @@ EndOfLineComment = "//".*
 Identifier = [a-zA-Z][a-zA-Z0-9_]* 
 
 IntegerLiteral = [0-9]+	
-FloatLiteral = ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+)
+FloatLiteral = ([0-9]+"."[0-9]+)
 
 
 	
@@ -58,6 +58,7 @@ FloatLiteral = ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+)
 	"]"				{return new Symbol(Sym.RBRACK, yyline, yycolumn, yytext());}
 	";"				{return new Symbol(Sym.SEMICOLON, yyline, yycolumn, yytext());}
 	","				{return new Symbol(Sym.COMMA, yyline, yycolumn, yytext());}
+	"."				{return new Symbol(Sym.DOT, yyline, yycolumn, yytext());}
 
 	"="             {return new Symbol(Sym.EQ, yyline, yycolumn, yytext());}
   	">"             {return new Symbol(Sym.GT, yyline, yycolumn, yytext());}
@@ -84,5 +85,5 @@ FloatLiteral = ([0-9]+"."[0-9]*)|([0-9]*"."[0-9]+)
 	{Comment}					{}
 	{LineTerminator}			{}
 	{WhiteSpace}				{} 
-
+	. { System.out.println("Invalid symbol " + yytext()+"Line: "+yyline+"Column: "+yycolumn);}
 }
