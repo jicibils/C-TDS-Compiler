@@ -1,0 +1,19 @@
+/* Keywords */
+class A
+if (x)
+if(y){} else {}
+int x;
+float f;
+bool b;
+break;
+continue;
+extern
+return x;
+
+
+/* Incorrect keywords */
+classA
+whiletrue
+if(x)
+intx;
+breakcontinue;

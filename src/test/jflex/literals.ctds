@@ -1,0 +1,24 @@
+/* Integer literals */
+5
+10
+123456789
+
+/* Non Int literals */
+dominguez10
+/*10*/
+
+/* Float literals */
+0.10
+10.10
+
+/* Non Float literals*/
+.10
+10...
+
+/* Boolean literals */
+true
+false
+
+/* Non Boolean literals*/
+atrue
+false10
