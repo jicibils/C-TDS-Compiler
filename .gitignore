@@ -1,0 +1,7 @@
+*.class
+.~lock*
+.gitignore~
+*.properties
+
+/**/target
+/*.class
