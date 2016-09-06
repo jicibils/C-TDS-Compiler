@@ -481,7 +481,7 @@ class CUP$Parser$actions {
           case 1: // program ::= class_list 
             {
               Object RESULT =null;
-		System.out.println("No error found. Successful compilation!");
+		System.out.println("No error found. test OK");
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
