@@ -56,7 +56,6 @@ non terminal location;
 non terminal list_invoc;
 non terminal invoc;
 
-non terminal bin_op, arith_op, eq_op, cond_op, rel_op;
 non terminal literal;
 
 non terminal field_decl;
@@ -190,7 +189,19 @@ method_call ::= ID LPAREN RPAREN
 expr ::= location
 	   |method_call
 	   |literal
-	   |expr bin_op expr
+	   |expr PLUS expr
+	   |expr MINUS expr
+	   |expr MULT expr
+	   |expr DIV expr
+	   |expr MOD expr
+	   |expr LT expr
+	   |expr GT expr
+	   |expr LTEQ expr
+	   |expt GTEQ expr
+	   |expr EQEQ expr
+	   |expr NOTEQ expr
+	   |expr ANDAND expr
+	   |expr OROR expr
 	   |MINUS expr
 	   |NOT expr
 	   |LPAREN expr RPAREN
@@ -214,33 +225,6 @@ location ::= ID
 		   |ID LBRACK expr RBRACK
 		   |ID list_invoc LBRACK expr RBRACK
 		   ;
-
-bin_op ::= arith_op
-		 | rel_op
-		 | eq_op
-		 | cond_op
-		 ;
-
-arith_op ::= PLUS
-		   |MINUS
-		   |MULT
-		   |DIV
-		   |MOD
-		   ;
-
-rel_op ::= LT
-		 | GT
-		 | LTEQ
-		 | GTEQ
-		 ;
-
-eq_op ::= EQEQ
-		| NOTEQ
-		;
-
-cond_op ::= ANDAND
-		  |OROR
-		  ;
 
 literal ::= INT_LITERAL
 		  |FLOAT_LITERAL
