@@ -197,7 +197,7 @@ expr ::= location
 	   |expr LT expr
 	   |expr GT expr
 	   |expr LTEQ expr
-	   |expt GTEQ expr
+	   |expr GTEQ expr
 	   |expr EQEQ expr
 	   |expr NOTEQ expr
 	   |expr ANDAND expr
