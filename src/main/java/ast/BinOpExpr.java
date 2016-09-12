@@ -1,6 +1,6 @@
-package ir.ast;
+package main.java.ast;
 
-import ir.ASTVisitor;
+import main.java.visitor.ASTVisitor;
 
 public class BinOpExpr extends Expression {
 	private BinOpType operator; //operator in the expr = expr operator expr
@@ -13,11 +13,11 @@ public class BinOpExpr extends Expression {
 		rOperand = r;
 	}
 	
-	public BinOpExpr(Expression e, TempExpression t) {
-		lOperand = e;
-		operator = t.getOperator();
-		rOperand = t.getRightOperand();
-	}
+//	public BinOpExpr(Expression e, TempExpression t) {
+//		lOperand = e;
+//		operator = t.getOperator();
+//		rOperand = t.getRightOperand();
+//	}
 	
 	public BinOpType getOperator() {
 		return operator;

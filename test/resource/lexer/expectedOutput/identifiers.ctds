@@ -1,0 +1,15 @@
+[1,0] COMMENT
+[2,0] ID dominguez
+[3,0] ID Dominguez10
+[4,0] ID choriDominguez
+[5,0] ID chori_dominguez
+[6,0] ID chori10dominguez
+[8,0] COMMENT
+[9,0] INTEGER 23
+[9,2] ID ponzio
+Invalid Symbol _ Line: 9 Column: 0
+[10,1] ID Ponzio
+[11,0] LBRACE
+[11,1] ID LeoPonzio
+Invalid Symbol @ Line: 11 Column: 0
+[12,1] ID QueVivaElFutbolPisculichi

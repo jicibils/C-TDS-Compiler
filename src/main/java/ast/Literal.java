@@ -1,4 +1,4 @@
-package ir.ast;
+package main.java.ast;
 
 public abstract class Literal extends Expression {
 	/*

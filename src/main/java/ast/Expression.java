@@ -1,4 +1,4 @@
-package ir.ast;
+package main.java.ast;
 
 public abstract class Expression extends AST {
 	protected Expression expr;

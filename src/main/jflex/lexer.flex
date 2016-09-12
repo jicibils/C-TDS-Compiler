@@ -1,4 +1,7 @@
+package main.java.lexer;
+
 import java_cup.runtime.*;
+import main.java.parser.*;
 
 /*User Code*/
 
