@@ -1,22 +1,34 @@
 package main.java.ast;
 
 public enum Type {
-	INT,
+	TINTEGER,
+	TFLOAT,
+	TBOOL,
+	TVOID,
+	UNDEFINED,
 	INTARRAY,
-	VOID,
-	UNDEFINED;
-	
+	FLOATARRAY,
+	BOOLEANARRAY;
+
 	@Override
 	public String toString() {
 		switch(this) {
-			case INT:
-				return "int";
-			case VOID:
+			case TINTEGER:
+				return "integer";
+			case TFLOAT:
+				return "float";
+			case TBOOL:
+				return "bool";
+			case TVOID:
 				return "void";
 			case UNDEFINED:
 				return "undefined";
 			case INTARRAY:
-				return "int[]";
+				return "integer[]";
+			case FLOATARRAY:
+				return "float[]";
+			case BOOLEANARRAY:
+				return "bool[]";
 		}
 		
 		return null;
@@ -26,7 +38,14 @@ public enum Type {
 		if (this == Type.INTARRAY) {
 			return true;
 		}
+		if (this == Type.FLOATARRAY) {
+			return true;		
+		}
+		if (this == Type.BOOLEANARRAY) {
+			return true;
+		}
 		
 		return false;
 	}
 }
+

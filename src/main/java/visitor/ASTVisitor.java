@@ -14,12 +14,11 @@ public interface ASTVisitor<T> {
 
 // visit expressions
     T visit(BinOpExpr expr);
-
-    ;
 	
 // visit literals	
     T visit(IntLiteral lit);
-
+    T visit(FloatLiteral lit);
+    
 // visit locations	
     T visit(VarLocation loc);
 

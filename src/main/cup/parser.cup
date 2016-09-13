@@ -47,7 +47,7 @@ non terminal method_call;
 
 non terminal block;
 
-non terminal type;
+non terminal Type type;
 
 non terminal expr;
 non terminal list_expr;
@@ -144,10 +144,10 @@ block ::= LBRACE RBRACE
 		| LBRACE list_statement RBRACE	
 		;
 
-type ::= TINTEGER
-	   | TBOOL
-	   | TFLOAT
-	   | TVOID
+type ::= TINTEGER      {:RESULT = Type.TINTEGER;:}
+	   | TBOOL	 	   {:RESULT = Type.TBOOL;}
+	   | TFLOAT		   {:RESULT = Type.TFLOAT;:}
+	   | TVOID		   {:RESULT = Type.TVOID;:}
 	   ;
 	   
 /********************************************Statement*************************************************************/
@@ -214,11 +214,11 @@ list_expr ::= expr
 			;
 /***************************************EndExpression***********************************************/
 
-list_invoc ::= invoc
-			 |list_invoc invoc
+list_invoc ::= invoc:i 						{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;}
+			 |list_invoc:li invoc:i 		{:li.add(i); RESULT = li;:}
 			 ;
 
-invoc ::= DOT ID
+invoc ::= DOT:d ID:i 						{:;:}
 		; 
 
 location ::= ID
@@ -227,7 +227,7 @@ location ::= ID
 		   |ID list_invoc LBRACK expr RBRACK
 		   ;
 
-literal ::= INT_LITERAL
-		  |FLOAT_LITERAL
-		  |BOOL_LITERAL
+literal ::= INT_LITERAL:l 		{:RESULT = new IntLiteral((String)l);:}
+		  |FLOAT_LITERAL:l		{:RESULT = new FloatLiteral((String)l);:}
+		  |BOOL_LITERAL:l		{:;:}
 		  ;
