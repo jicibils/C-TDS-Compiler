@@ -1,7 +1,9 @@
 *.class
 .~lock*
 .gitignore~
+*.java~
 *.properties
+!project.properties
 
 /**/target
 /*.class
