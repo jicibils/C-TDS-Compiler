@@ -145,7 +145,7 @@ block ::= LBRACE RBRACE
 		;
 
 type ::= TINTEGER      {:RESULT = Type.TINTEGER;:}
-	   | TBOOL	 	   {:RESULT = Type.TBOOL;}
+	   | TBOOL	 	   {:RESULT = Type.TBOOL;:}
 	   | TFLOAT		   {:RESULT = Type.TFLOAT;:}
 	   | TVOID		   {:RESULT = Type.TVOID;:}
 	   ;
