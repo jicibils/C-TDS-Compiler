@@ -8,37 +8,38 @@ import java.util.List;
 parser code
 {:
 
-    public void syntax_error(Symbol s){ 
-		System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
-	}
+public void syntax_error(Symbol s){ 
+            System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
+    }
 
-	public void unrecovered_syntax_error(Symbol s){
-		System.out.println("There was an unrecovered error at line "+(s.left+1)+" column " + s.right+" with symbol "+(String)s.value);
-	}
+public void unrecovered_syntax_error(Symbol s){
+        System.out.println("There was an unrecovered error at line "+(s.left+1)+" column " + s.right+" with symbol "+(String)s.value);
+}
 
 :}
 
 /*Terminals*/
 
-terminal 	TBOOL, TINTEGER, TFLOAT, TVOID; 
+terminal    TBOOL, TINTEGER, TFLOAT, TVOID; 
 terminal    BREAK, CLASS, CONTINUE, ELSE, FOR, IF, RETURN, WHILE, EXTERN, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
-terminal 	SEMICOLON, COMMA, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, ASSIGN, INC, DEC, DOT;
+terminal    SEMICOLON, COMMA, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, ASSIGN, INC, DEC, DOT;
 terminal    DIV, MULT;
-terminal    INT_LITERAL;
+terminal    IntLiteral INT_LITERAL;
 terminal    FLOAT_LITERAL;
 terminal    BOOL_LITERAL;
 terminal    String ID;
 
 /*Non-Terminals*/
-non terminal program; 
-non terminal class_decl, body_class;
-non terminal class_list;
+non terminal Program program; 
+non terminal ClassDecl class_decl;
+non terminal BodyClass body_class;
+non terminal LinkedList<ClassDecl> class_list;
 
-non terminal method_decl;
-non terminal method_list;
+non terminal MethodDecl method_decl;
+non terminal LinkedList<MethodDecl> method_list;
 
-non terminal id_field_decl;
-non terminal list_id_field_decl;
+non terminal IdFieldDecl id_field_decl;
+non terminal LinkedList<IdFieldDecl> list_id_field_decl;
 
 non terminal param; 
 non terminal param_list;
@@ -53,7 +54,7 @@ non terminal block;
 
 non terminal Type type;
 
-non terminal expr;
+non terminal Expression expr;
 non terminal list_expr;
 
 non terminal location;
@@ -63,8 +64,8 @@ non terminal String invoc;
 
 non terminal literal;
 
-non terminal field_decl;
-non terminal field_list;
+non terminal FieldDecl field_decl;
+non terminal LinkedList<FieldDecl> field_list;
 
 non terminal statement, if_stmt, return_stmt;
 non terminal list_statement;
@@ -81,21 +82,21 @@ precedence right NOT;
 start with program;
 
 
-program ::= class_list {:System.out.println("No error found. test OK");:}
-	  	  ;
+program				::= class_list:cl										{: RESULT = new Program(cl); System.out.println("No error found. test OK"); :}
+					;
 
-class_list ::= class_decl
-	     	 |class_list class_decl
-	         ;
+class_list			::=  class_decl:cd										{: RESULT = new LinkedList<ClassDecl>(); RESULT.add(cd); :}
+					|class_list:cl class_decl:cd							{: cl.add(cd); RESULT = cl; :}
+					;
 
-class_decl ::= CLASS ID body_class
-	         ;
+class_decl			::=  CLASS ID:id body_class:bc							{: RESULT = new ClassDecl(id, bc); :}
+					;
 
-body_class ::= LBRACE RBRACE
-	     	 |LBRACE field_list RBRACE
-	         |LBRACE method_list RBRACE
-	         |LBRACE field_list method_list RBRACE
-	         ;
+body_class			::= LBRACE RBRACE								
+					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, null); :}
+					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(null, ml); :}
+					|LBRACE field_list:fl method_list:ml RBRACE				{: RESULT = new BodyClass(fl, ml); :}
+					;
 /****************************************************Field**************************************************************/
 
 /*Field Declaration*/
@@ -103,135 +104,135 @@ body_class ::= LBRACE RBRACE
 
 /**List Field Decl*/
 
-field_list ::= field_decl
-	         |field_list field_decl
-	         ;
+field_list			::= field_decl:fd										{: RESULT = new LinkedList<FieldDecl>(); RESULT.add(fd); :}
+					|field_list:fl field_decl:fd							{: fl.add(fd); RESULT = fl; :}
+					;
 
 /*Field Decl*/
-field_decl ::= type list_id_field_decl SEMICOLON
-	     	 ;
+field_decl			::= type:t list_id_field_decl:lifd SEMICOLON			{: RESULT = new FieldDecl(t, lifd); :}
+					;
 /*String*/
-id_field_decl ::= ID
-			    | ID LBRACK INT_LITERAL RBRACK
-			    ;
+id_field_decl		::= ID:id												{: RESULT = new IdFieldDecl(id, null); :}
+					| ID:id LBRACK INT_LITERAL:il RBRACK					{: RESULT = new IdFieldDecl(id, il); :}
+					;
 /*List String*/
-list_id_field_decl ::= list_id_field_decl COMMA id_field_decl
-					 | id_field_decl
-					 ;
+list_id_field_decl	::= list_id_field_decl:lifd COMMA id_field_decl:ifd		{: lifd.add(ifd); RESULT = lifd; :}
+					| id_field_decl:ifd										{: RESULT = new LinkedList<IdFieldDecl>(); RESULT.add(ifd); :}
+					;
 /****************************************************EndField**************************************************************/
 
 /*Method Declaration*/
-method_list ::= method_decl
-	          |method_list method_decl
-	          ;
+method_list			::= method_decl
+					|method_list method_decl
+					;
 
-method_decl ::= type ID LPAREN RPAREN body
-			  |type ID LPAREN param_list RPAREN body
-	          ;
+method_decl			::= type ID LPAREN RPAREN body
+					|type ID LPAREN param_list RPAREN body
+					;
 
 /*************************************Parameter****************************************************************/
-param_list ::= param
-			 | param_list COMMA param
-			 ;
+param_list			::= param
+					| param_list COMMA param
+					;
 
-param ::= type ID
- 		;
+param				::= type ID
+					;
 /*************************************EndParameter***********************************************************/
 
-body ::= block
-	   | EXTERN SEMICOLON
-	   ;
+body				::= block
+					| EXTERN SEMICOLON
+					;
 
-block ::= LBRACE RBRACE
-		| LBRACE field_list list_statement RBRACE   
-		| LBRACE field_list RBRACE					
-		| LBRACE list_statement RBRACE	
-		;
+block				::= LBRACE RBRACE
+					| LBRACE field_list list_statement RBRACE   
+					| LBRACE field_list RBRACE					
+					| LBRACE list_statement RBRACE	
+					;
 
-type ::= TINTEGER      {:RESULT = Type.TINTEGER;:}
-	   | TBOOL	 	   {:RESULT = Type.TBOOL;:}
-	   | TFLOAT		   {:RESULT = Type.TFLOAT;:}
-	   | TVOID		   {:RESULT = Type.TVOID;:}
-	   ;
+type				::= TINTEGER      {:RESULT = Type.TINTEGER;:}
+					| TBOOL	 	   {:RESULT = Type.TBOOL;:}
+					| TFLOAT		   {:RESULT = Type.TFLOAT;:}
+					| TVOID		   {:RESULT = Type.TVOID;:}
+					;
 	   
 /********************************************Statement*************************************************************/
-statement ::= location assign_op expr SEMICOLON
-			| method_call SEMICOLON
-			| if_stmt
-			| FOR ID ASSIGN expr COMMA expr block
-			| WHILE expr block
-			| return_stmt
-			| BREAK SEMICOLON
-			| CONTINUE SEMICOLON
-			| SEMICOLON
-			| block
-			;
+statement			::= location assign_op expr SEMICOLON
+					| method_call SEMICOLON
+					| if_stmt
+					| FOR ID ASSIGN expr COMMA expr block
+					| WHILE expr block
+					| return_stmt
+					| BREAK SEMICOLON
+					| CONTINUE SEMICOLON
+					| SEMICOLON
+					| block
+					;
 
-if_stmt ::= IF LPAREN expr RPAREN block
-		  | IF LPAREN expr RPAREN block ELSE block
-		  ; 
+if_stmt				::= IF LPAREN expr RPAREN block
+					| IF LPAREN expr RPAREN block ELSE block
+					; 
 
-return_stmt ::= RETURN SEMICOLON
-			  | RETURN expr SEMICOLON
-			  ;			
+return_stmt			::= RETURN SEMICOLON
+					| RETURN expr SEMICOLON
+					;			
 
-list_statement ::= statement list_statement
-				 | statement
-				 ;
+list_statement		::= statement list_statement
+					| statement
+					;
 /*******************************************EndStatement*********************************************************/
 
-assign_op ::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
-			| INC 			{:RESULT = AssignOpType.INC;:}
-			| DEC
-			;
+assign_op			::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
+					| INC 			{:RESULT = AssignOpType.INC;:}
+					| DEC
+					;
 
-method_call ::= ID LPAREN RPAREN
-		 	  | ID LPAREN list_expr RPAREN
-			  | ID list_invoc LPAREN list_expr RPAREN
-			  | ID list_invoc LPAREN RPAREN
-			  ;
+method_call			::= ID LPAREN RPAREN
+					| ID LPAREN list_expr RPAREN
+					| ID list_invoc LPAREN list_expr RPAREN
+					| ID list_invoc LPAREN RPAREN
+					;
 /***************************************Expression************************************************/
-expr ::= location
-	   |method_call
-	   |literal
-	   |expr PLUS expr
-	   |expr MINUS expr
-	   |expr MULT expr
-	   |expr DIV expr
-	   |expr MOD expr
-	   |expr LT expr
-	   |expr GT expr
-	   |expr LTEQ expr
-	   |expr GTEQ expr
-	   |expr EQEQ expr
-	   |expr NOTEQ expr
-	   |expr ANDAND expr
-	   |expr OROR expr
-	   |MINUS expr
-	   |NOT expr
-	   |LPAREN expr RPAREN
-	   ;
+expr				::= location
+					|method_call
+					|literal
+					|expr:e1 PLUS expr:e2									{: RESULT = new BinOpExpr(e1, BinOpType.PLUS, e2); :}
+					|expr MINUS expr
+					|expr:e1 MULT expr:e2									{: RESULT = new BinOpExpr(e1, BinOpType.MULT, e2); :}
+					|expr DIV expr
+					|expr MOD expr
+					|expr LT expr
+					|expr GT expr
+					|expr LTEQ expr
+					|expr GTEQ expr
+					|expr EQEQ expr
+					|expr NOTEQ expr
+					|expr ANDAND expr
+					|expr OROR expr
+					|MINUS expr
+					|NOT expr
+					|LPAREN expr RPAREN
+					;
 
 
-list_expr ::= expr
-			| list_expr COMMA expr
-			;
+list_expr			::= expr
+					| list_expr COMMA expr
+					;
 /***************************************EndExpression***********************************************/
 
-list_invoc ::= invoc:i 						{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;:}
-			 |list_invoc:li invoc:i 		{:li.add(i); RESULT = li;:}
-			 ;
+list_invoc			::= invoc:i												{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;:}
+					|list_invoc:li invoc:i									{:li.add(i); RESULT = li;:}
+					;
 
-invoc ::= DOT:d ID:i 						{:RESULT = (String)d+(String)i;:}
-		; 
+invoc				::= DOT:d ID:i											{:RESULT = (String)d+(String)i;:}
+					; 
 
-location ::= ID
-		   |ID list_invoc
-		   |ID LBRACK expr RBRACK
-		   |ID list_invoc LBRACK expr RBRACK
-		   ;
+location			::= ID
+					|ID list_invoc
+					|ID LBRACK expr RBRACK
+					|ID list_invoc LBRACK expr RBRACK
+					;
 
-literal ::= INT_LITERAL:l 		{:RESULT = new IntLiteral((String)l);:}
-		  |FLOAT_LITERAL:l		{:RESULT = new FloatLiteral((String)l);:}
-		  |BOOL_LITERAL:l		{:;:}
-		  ;
+literal				::= INT_LITERAL:l										{:RESULT = l;:}
+					|FLOAT_LITERAL:l										{:RESULT = new FloatLiteral((String)l);:}
+					|BOOL_LITERAL:l											{:;:}
+					;

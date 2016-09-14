@@ -31,8 +31,8 @@ javac -classpath $CLASSPATH -d build/classes/ 	\
 		src/main/java/lexer/*.java 				\
 		src/main/java/ast/*.java 				\
 		src/main/java/visitor/*.java 			\
-		src/main/*.java 						\
-		test/main/java/*.java
+		src/main/*.java 						
+		# test/main/java/*.java
 echo "Done!"
 
 echo "*******************  TESTING PROGRAM  ******************************************"
