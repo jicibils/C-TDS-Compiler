@@ -15,10 +15,48 @@ parser code
 
 /*Terminals*/
 
-terminal 	TBOOL, TINTEGER, TFLOAT, TVOID; 
-terminal    BREAK, CLASS, CONTINUE, ELSE, FOR, IF, RETURN, WHILE, EXTERN, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
-terminal 	SEMICOLON, COMMA, EQ, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, PLUSEQ, MINUSEQ, DOT;
-terminal    DIV, MULT;
+terminal 	TBOOL;
+terminal    TINTEGER;
+terminal 	TFLOAT;
+terminal 	TVOID;
+
+terminal    BREAK;
+terminal 	CLASS;
+terminal 	CONTINUE;
+terminal 	ELSE;
+terminal 	FOR;
+terminal 	IF;
+terminal 	RETURN;
+terminal 	WHILE;
+terminal 	EXTERN;
+terminal 	LPAREN;
+terminal 	RPAREN;
+terminal 	LBRACE;
+terminal 	RBRACE;
+terminal 	LBRACK;
+terminal 	RBRACK;
+
+terminal 	SEMICOLON;
+terminal 	COMMA;
+terminal 	EQ;
+terminal 	GT;
+Terminal 	LT;
+terminal 	NOT;
+terminal 	EQEQ;
+terminal 	LTEQ;
+terminal 	GTEQ;
+terminal 	NOTEQ;
+terminal 	ANDAND;
+terminal 	OROR;
+terminal 	PLUS;
+terminal 	MINUS;
+terminal 	MOD;
+terminal 	PLUSEQ;
+terminal 	MINUSEQ;
+terminal 	DOT;
+
+terminal    DIV;
+terminal 	MULT;
 terminal    INT_LITERAL;
 terminal    FLOAT_LITERAL;
 terminal    BOOL_LITERAL;
@@ -26,7 +64,8 @@ terminal    String ID;
 
 /*Non-Terminals*/
 non terminal program; 
-non terminal class_decl, body_class;
+non terminal class_decl;
+non terminal body_class;
 non terminal class_list;
 
 non terminal method_decl;
@@ -61,7 +100,9 @@ non terminal literal;
 non terminal field_decl;
 non terminal field_list;
 
-non terminal statement, if_stmt, return_stmt;
+non terminal statement;
+non terminal if_stmt;
+non terminal return_stmt;
 non terminal list_statement;
 
 /*Precedences*/
@@ -175,7 +216,7 @@ list_statement ::= statement list_statement
 				 ;
 /*******************************************EndStatement*********************************************************/
 
-assign_op ::= EQ
+assign_op ::= EQ 	{: RESULT = new AssignOpType(e1,BinOpType.PLUS,e2); :}
 			| PLUSEQ
 			| MINUSEQ
 			;
@@ -186,31 +227,51 @@ method_call ::= ID LPAREN RPAREN
 			  | ID list_invoc LPAREN RPAREN
 			  ;
 /***************************************Expression************************************************/
-expr ::= location
-	   |method_call
-	   |literal
-	   |expr PLUS expr
-	   |expr MINUS expr
-	   |expr MULT expr
-	   |expr DIV expr
-	   |expr MOD expr
-	   |expr LT expr
-	   |expr GT expr
-	   |expr LTEQ expr
-	   |expr GTEQ expr
-	   |expr EQEQ expr
-	   |expr NOTEQ expr
-	   |expr ANDAND expr
-	   |expr OROR expr
-	   |MINUS expr
-	   |NOT expr
-	   |LPAREN expr RPAREN
+expr ::= location:loc {: RESULT = loc; :}
+	   |method_call:c {: RESULT = c; :}
+	   |literal:lit {: RESULT = lit; :}
+
+	   |expr:e1 PLUS:plu expr:e2  {: RESULT = new BinOpExpr(e1,BinOpType.PLUS,e2,plu.left+1,plu.right+1); :}
+
+	   |expr:e1 MINUS:min expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MINUS,e2,min.left+1,min.right+1); :}
+
+	   |expr:e1 MULT:mul expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MULTIPLY,e2,mul.left+1,mul.right+1); :}
+
+	   |expr:e1 DIV:di expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.DIVIDE,e2,di.left+1,di.right+1); :}
+
+	   |expr:e1 MOD:mo expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MOD,e2,mo.left+1,mo.right+1); :}
+
+	   |expr:e1 LT:lt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LE,e2,lt.left+1,lt.right+1); :}
+
+	   |expr:e1 GT:gt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GE,e2,gt.left+1,gt.right+1); :}
+
+	   |expr:e1 LTEQ:lteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LEQ,e2,lteq.left+1,lteq.right+1); :}
+
+	   |expr:e1 GTEQ:gteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GEQ,e2,gteq.left+1,gteq.right+1); :}
+
+	   |expr:e1 EQEQ:eqeq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.CEQ,e2,eqeq.left+1,eqeq.right+1); :}
+
+	   |expr:e1 NOTEQ:noteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.NEQ,e2,noteq.left+1,noteq.right+1); :}
+
+	   |expr:e1 ANDAND:andand expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.AND,e2,andand.left+1,andand.right+1); :}
+
+	   |expr:e1 OROR:oror expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.OR,e2,oror.left+1,oror.right+1); :}
+
+	   |MINUS:minU expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.MINUS,e1,minU.left+1,minU.right+1); :}
+
+	   |NOT:not expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.NOT,e1,not.left+1,not.right+1); :}
+
+	   |LPAREN expr:e1 RPAREN {: RESULT = e1; :}
 	   ;
 
 
-list_expr ::= expr
-			| list_expr COMMA expr
+
+list_expr ::= expr:e1 {: RESULT = new LinkedList<Expression>(Arrays.asList(e1)); :}
+			| expr:e1 COMMA expr_list:l {: l.add(0,e1); RESULT = (List<Expression>)l;:}
 			;
+
+
+
 /***************************************EndExpression***********************************************/
 
 list_invoc ::= invoc
@@ -226,7 +287,7 @@ location ::= ID
 		   |ID list_invoc LBRACK expr RBRACK
 		   ;
 
-literal ::= INT_LITERAL
-		  |FLOAT_LITERAL
-		  |BOOL_LITERAL
+literal ::= INT_LITERAL:in 			{: RESULT = in;:}
+		  |FLOAT_LITERAL:flo 		{: RESULT = flo;:}
+		  |BOOL_LITERAL:bo 			{: RESULT = bo;:}
 		  ;

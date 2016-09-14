@@ -18,6 +18,15 @@ public class BinOpExpr extends Expression {
 		operator = t.getOperator();
 		rOperand = t.getRightOperand();
 	}
+
+	public BinOpExpr(Expression l, BinOpType op, Expression r, int line, int column){
+		operator = op;
+		lOperand = l;
+		rOperand = r;
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
+	}
+
 	
 	public BinOpType getOperator() {
 		return operator;
