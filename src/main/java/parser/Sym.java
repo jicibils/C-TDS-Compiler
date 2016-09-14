@@ -8,38 +8,37 @@ package main.java.parser;
 /** CUP generated class containing symbol constants. */
 public class Sym {
   /* terminals */
-  public static final int GTEQ = 29;
+  public static final int GTEQ = 28;
   public static final int MULT = 40;
-  public static final int LTEQ = 28;
+  public static final int LTEQ = 27;
   public static final int TFLOAT = 4;
   public static final int LPAREN = 15;
   public static final int CONTINUE = 8;
   public static final int FOR = 10;
-  public static final int MINUS = 34;
+  public static final int MINUS = 33;
   public static final int RPAREN = 16;
-  public static final int OROR = 32;
-  public static final int NOT = 26;
+  public static final int OROR = 31;
+  public static final int NOT = 25;
   public static final int SEMICOLON = 21;
-  public static final int LT = 25;
+  public static final int LT = 24;
   public static final int COMMA = 22;
   public static final int TBOOL = 2;
   public static final int CLASS = 7;
+  public static final int INC = 36;
   public static final int DIV = 39;
-  public static final int ANDAND = 31;
-  public static final int PLUSEQ = 36;
-  public static final int MINUSEQ = 37;
+  public static final int ANDAND = 30;
   public static final int EXTERN = 14;
-  public static final int PLUS = 33;
+  public static final int PLUS = 32;
+  public static final int ASSIGN = 35;
   public static final int IF = 11;
   public static final int ID = 44;
   public static final int DOT = 38;
   public static final int EOF = 0;
   public static final int RETURN = 12;
   public static final int error = 1;
-  public static final int EQEQ = 27;
-  public static final int MOD = 35;
+  public static final int EQEQ = 26;
+  public static final int MOD = 34;
   public static final int BREAK = 6;
-  public static final int EQ = 23;
   public static final int TVOID = 5;
   public static final int LBRACK = 19;
   public static final int LBRACE = 17;
@@ -48,11 +47,12 @@ public class Sym {
   public static final int RBRACK = 20;
   public static final int WHILE = 13;
   public static final int RBRACE = 18;
+  public static final int DEC = 37;
   public static final int FLOAT_LITERAL = 42;
-  public static final int GT = 24;
+  public static final int GT = 23;
   public static final int BOOL_LITERAL = 43;
   public static final int INT_LITERAL = 41;
-  public static final int NOTEQ = 30;
+  public static final int NOTEQ = 29;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -77,7 +77,6 @@ public class Sym {
   "RBRACK",
   "SEMICOLON",
   "COMMA",
-  "EQ",
   "GT",
   "LT",
   "NOT",
@@ -90,8 +89,9 @@ public class Sym {
   "PLUS",
   "MINUS",
   "MOD",
-  "PLUSEQ",
-  "MINUSEQ",
+  "ASSIGN",
+  "INC",
+  "DEC",
   "DOT",
   "DIV",
   "MULT",

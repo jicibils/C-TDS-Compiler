@@ -773,7 +773,7 @@ public class Lexer implements java_cup.runtime.Scanner {
             }
           case 65: break;
           case 21: 
-            { return new Symbol(Sym.EQ, yyline, yycolumn, yytext());
+            { return new Symbol(Sym.ASSIGN, yyline, yycolumn, yytext());
             }
           case 66: break;
           case 22: 
@@ -789,11 +789,11 @@ public class Lexer implements java_cup.runtime.Scanner {
             }
           case 69: break;
           case 25: 
-            { return new Symbol(Sym.PLUSEQ, yyline, yycolumn, yytext());
+            { return new Symbol(Sym.INC, yyline, yycolumn, yytext());
             }
           case 70: break;
           case 26: 
-            { return new Symbol(Sym.MINUSEQ, yyline, yycolumn, yytext());
+            { return new Symbol(Sym.DEC, yyline, yycolumn, yytext());
             }
           case 71: break;
           case 27: 

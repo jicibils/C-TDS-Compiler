@@ -2,7 +2,7 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-public class IntLiteral extends Literal {
+public class FloatLiteral extends Literal {
 	private String rawValue;
 	private Float value;
 	
@@ -14,7 +14,7 @@ public class IntLiteral extends Literal {
 		value = null;
 	}
 
-	public FLoatLiteral(Float n){
+	public FloatLiteral(Float n){
 		rawValue = n.toString();
 		value = n;
 	}

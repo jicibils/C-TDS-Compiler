@@ -1,5 +1,9 @@
 package main.java.parser;
+
 import java_cup.runtime.*;
+import main.java.ast.*;
+import java.util.LinkedList;
+import java.util.List;
 
 parser code
 {:
@@ -18,7 +22,7 @@ parser code
 
 terminal 	TBOOL, TINTEGER, TFLOAT, TVOID; 
 terminal    BREAK, CLASS, CONTINUE, ELSE, FOR, IF, RETURN, WHILE, EXTERN, LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
-terminal 	SEMICOLON, COMMA, EQ, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, PLUSEQ, MINUSEQ, DOT;
+terminal 	SEMICOLON, COMMA, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, ASSIGN, INC, DEC, DOT;
 terminal    DIV, MULT;
 terminal    INT_LITERAL;
 terminal    FLOAT_LITERAL;
@@ -54,8 +58,8 @@ non terminal list_expr;
 
 non terminal location;
 
-non terminal list_invoc;
-non terminal invoc;
+non terminal List<String> list_invoc;
+non terminal String invoc;
 
 non terminal literal;
 
@@ -145,7 +149,7 @@ block ::= LBRACE RBRACE
 		;
 
 type ::= TINTEGER      {:RESULT = Type.TINTEGER;:}
-	   | TBOOL	 	   {:RESULT = Type.TBOOL;}
+	   | TBOOL	 	   {:RESULT = Type.TBOOL;:}
 	   | TFLOAT		   {:RESULT = Type.TFLOAT;:}
 	   | TVOID		   {:RESULT = Type.TVOID;:}
 	   ;
@@ -154,7 +158,7 @@ type ::= TINTEGER      {:RESULT = Type.TINTEGER;:}
 statement ::= location assign_op expr SEMICOLON
 			| method_call SEMICOLON
 			| if_stmt
-			| FOR ID EQ expr COMMA expr block
+			| FOR ID ASSIGN expr COMMA expr block
 			| WHILE expr block
 			| return_stmt
 			| BREAK SEMICOLON
@@ -176,9 +180,9 @@ list_statement ::= statement list_statement
 				 ;
 /*******************************************EndStatement*********************************************************/
 
-assign_op ::= EQ
-			| PLUSEQ
-			| MINUSEQ
+assign_op ::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
+			| INC 			{:RESULT = AssignOpType.INC;:}
+			| DEC
 			;
 
 method_call ::= ID LPAREN RPAREN
@@ -214,11 +218,11 @@ list_expr ::= expr
 			;
 /***************************************EndExpression***********************************************/
 
-list_invoc ::= invoc:i 						{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;}
+list_invoc ::= invoc:i 						{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;:}
 			 |list_invoc:li invoc:i 		{:li.add(i); RESULT = li;:}
 			 ;
 
-invoc ::= DOT:d ID:i 						{:;:}
+invoc ::= DOT:d ID:i 						{:RESULT = (String)d+(String)i;:}
 		; 
 
 location ::= ID
