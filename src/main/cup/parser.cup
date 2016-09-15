@@ -1,109 +1,106 @@
+package main.java.parser;
+
 import java_cup.runtime.*;
+import main.java.ast.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.io.*;
+import java.util.*;
 
 parser code
 {:
 
-    public void syntax_error(Symbol s){ 
-		System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
-	}
+public void syntax_error(Symbol s){ 
+            System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
+    }
 
-	public void unrecovered_syntax_error(Symbol s){
-		System.out.println("There was an unrecovered error at line "+(s.left+1)+" column " + s.right+" with symbol "+(String)s.value);
-	}
+public void unrecovered_syntax_error(Symbol s){
+        System.out.println("There was an unrecovered error at line "+(s.left+1)+" column " + s.right+" with symbol "+(String)s.value);
+}
 
 :}
 
 /*Terminals*/
 
-terminal 	TBOOL;
-terminal    TINTEGER;
-terminal 	TFLOAT;
-terminal 	TVOID;
+terminal TBOOL;
+terminal TINTEGER;
+terminal TFLOAT;
+terminal TVOID;
 
-terminal    BREAK;
-terminal 	CLASS;
-terminal 	CONTINUE;
-terminal 	ELSE;
-terminal 	FOR;
-terminal 	IF;
-terminal 	RETURN;
-terminal 	WHILE;
-terminal 	EXTERN;
-terminal 	LPAREN;
-terminal 	RPAREN;
-terminal 	LBRACE;
-terminal 	RBRACE;
-terminal 	LBRACK;
-terminal 	RBRACK;
+terminal BREAK;
+terminal CLASS;
+terminal CONTINUE;
+terminal ELSE;
+terminal FOR;
+terminal IF;
+terminal RETURN;
+terminal WHILE;
+terminal EXTERN;
+terminal LPAREN;
+terminal RPAREN;
+terminal LBRACE;
+terminal RBRACE;
+terminal LBRACK;
+terminal RBRACK;
 
-terminal 	SEMICOLON;
-terminal 	COMMA;
-terminal 	EQ;
-terminal 	GT;
-Terminal 	LT;
-terminal 	NOT;
-terminal 	EQEQ;
-terminal 	LTEQ;
-terminal 	GTEQ;
-terminal 	NOTEQ;
-terminal 	ANDAND;
-terminal 	OROR;
-terminal 	PLUS;
-terminal 	MINUS;
-terminal 	MOD;
-terminal 	PLUSEQ;
-terminal 	MINUSEQ;
-terminal 	DOT;
+terminal SEMICOLON;
+terminal COMMA;
+terminal GT;
+terminal LT;
+terminal NOT;
+terminal EQEQ;
+terminal LTEQ;
+terminal GTEQ;
+terminal NOTEQ;
+terminal ANDAND;
+terminal OROR;
+terminal PLUS;
+terminal MINUS;
+terminal MOD;
+terminal ASSIGN;
+terminal INC;
+terminal DEC;
+terminal DOT;
 
-terminal    DIV;
-terminal 	MULT;
-terminal    INT_LITERAL;
+terminal DIV;
+terminal MULT;
+
+terminal    IntLiteral INT_LITERAL;
 terminal    FLOAT_LITERAL;
 terminal    BOOL_LITERAL;
 terminal    String ID;
 
 /*Non-Terminals*/
-non terminal program; 
-non terminal class_decl;
-non terminal body_class;
-non terminal class_list;
 
-non terminal method_decl;
-non terminal method_list;
-
-non terminal id_field_decl;
-non terminal list_id_field_decl;
-
+non terminal Program program; 
+non terminal ClassDecl class_decl;
+non terminal BodyClass body_class;
+non terminal LinkedList<ClassDecl> class_list;
+non terminal MethodDecl method_decl;
+non terminal LinkedList<MethodDecl> method_list;
+non terminal IdFieldDecl id_field_decl;
+non terminal LinkedList<IdFieldDecl> list_id_field_decl;
 non terminal param; 
 non terminal param_list;
-
 non terminal body;
-
 non terminal assign_op;
-
-non terminal method_call;
-
-non terminal block;
-
-non terminal type;
-
-non terminal expr;
-non terminal list_expr;
-
-non terminal location;
-
-non terminal list_invoc;
-non terminal invoc;
-
-non terminal literal;
-
-non terminal field_decl;
-non terminal field_list;
-
-non terminal statement;
+non terminal MethodCall method_call;
+non terminal Block block;
+non terminal Type type;
+non terminal Expression expr;
+non terminal List<Expression> list_expr;
+non terminal Location location;
+non terminal List<String> list_invoc;
+non terminal String invoc;
+non terminal Literal literal;
+non terminal FieldDecl field_decl;
+non terminal LinkedList<FieldDecl> field_list;
+non terminal Statement statement;
 non terminal if_stmt;
 non terminal return_stmt;
-non terminal list_statement;
+non terminal List<Statement> list_statement;
+
+
 
 /*Precedences*/
 precedence left  ANDAND;
@@ -117,21 +114,21 @@ precedence right NOT;
 start with program;
 
 
-program ::= class_list {:System.out.println("No error found. test OK");:}
-	  	  ;
+program				::= class_list:cl										{: RESULT = new Program(cl); System.out.println("No error found. test OK"); :}
+					;
 
-class_list ::= class_decl
-	     	 |class_list class_decl
-	         ;
+class_list			::=  class_decl:cd										{: RESULT = new LinkedList<ClassDecl>(); RESULT.add(cd); :}
+					|class_list:cl class_decl:cd							{: cl.add(cd); RESULT = cl; :}
+					;
 
-class_decl ::= CLASS ID body_class
-	         ;
+class_decl			::=  CLASS ID:id body_class:bc							{: RESULT = new ClassDecl(id, bc); :}
+					;
 
-body_class ::= LBRACE RBRACE
-	     	 |LBRACE field_list RBRACE
-	         |LBRACE method_list RBRACE
-	         |LBRACE field_list method_list RBRACE
-	         ;
+body_class			::= LBRACE RBRACE								
+					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, null); :}
+					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(null, ml); :}
+					|LBRACE field_list:fl method_list:ml RBRACE				{: RESULT = new BodyClass(fl, ml); :}
+					;
 /****************************************************Field**************************************************************/
 
 /*Field Declaration*/
@@ -139,127 +136,128 @@ body_class ::= LBRACE RBRACE
 
 /**List Field Decl*/
 
-field_list ::= field_decl
-	         |field_list field_decl
-	         ;
+field_list			::= field_decl:fd										{: RESULT = new LinkedList<FieldDecl>(); RESULT.add(fd); :}
+					|field_list:fl field_decl:fd							{: fl.add(fd); RESULT = fl; :}
+					;
 
 /*Field Decl*/
-field_decl ::= type list_id_field_decl SEMICOLON
-	     	 ;
+field_decl			::= type:t list_id_field_decl:lifd SEMICOLON			{: RESULT = new FieldDecl(t, lifd); :}
+					;
 /*String*/
-id_field_decl ::= ID
-			    | ID LBRACK INT_LITERAL RBRACK
-			    ;
+id_field_decl		::= ID:id												{: RESULT = new IdFieldDecl(id, null); :}
+					| ID:id LBRACK INT_LITERAL:il RBRACK					{: RESULT = new IdFieldDecl(id, il); :}
+					;
 /*List String*/
-list_id_field_decl ::= list_id_field_decl COMMA id_field_decl
-					 | id_field_decl
-					 ;
+list_id_field_decl	::= list_id_field_decl:lifd COMMA id_field_decl:ifd		{: lifd.add(ifd); RESULT = lifd; :}
+					| id_field_decl:ifd										{: RESULT = new LinkedList<IdFieldDecl>(); RESULT.add(ifd); :}
+					;
 /****************************************************EndField**************************************************************/
 
 /*Method Declaration*/
-method_list ::= method_decl
-	          |method_list method_decl
-	          ;
+method_list			::= method_decl
+					|method_list method_decl
+					;
 
-method_decl ::= type ID LPAREN RPAREN body
-			  |type ID LPAREN param_list RPAREN body
-	          ;
+method_decl			::= type ID LPAREN RPAREN body
+					|type ID LPAREN param_list RPAREN body
+					;
 
 /*************************************Parameter****************************************************************/
-param_list ::= param
-			 | param_list COMMA param
-			 ;
+param_list			::= param
+					| param_list COMMA param
+					;
 
-param ::= type ID
- 		;
+param				::= type ID
+					;
 /*************************************EndParameter***********************************************************/
 
-body ::= block
-	   | EXTERN SEMICOLON
-	   ;
+body				::= block
+					| EXTERN SEMICOLON
+					;
 
-block ::= LBRACE RBRACE
-		| LBRACE field_list list_statement RBRACE   
-		| LBRACE field_list RBRACE					
-		| LBRACE list_statement RBRACE	
-		;
+block				::= LBRACE RBRACE
+					| LBRACE field_list list_statement RBRACE   
+					| LBRACE field_list RBRACE					
+					| LBRACE list_statement RBRACE	
+					;
 
-type ::= TINTEGER
-	   | TBOOL
-	   | TFLOAT
-	   | TVOID
-	   ;
+type				::= TINTEGER      {:RESULT = Type.TINTEGER;:}
+					| TBOOL	 	   {:RESULT = Type.TBOOL;:}
+					| TFLOAT		   {:RESULT = Type.TFLOAT;:}
+					| TVOID		   {:RESULT = Type.TVOID;:}
+					;
 	   
 /********************************************Statement*************************************************************/
-statement ::= location assign_op expr SEMICOLON
-			| method_call SEMICOLON
-			| if_stmt
-			| FOR ID EQ expr COMMA expr block
-			| WHILE expr block
-			| return_stmt
-			| BREAK SEMICOLON
-			| CONTINUE SEMICOLON
-			| SEMICOLON
-			| block
-			;
+statement			::= location assign_op expr SEMICOLON
+					| method_call SEMICOLON
+					| if_stmt
+					| FOR ID ASSIGN expr COMMA expr block
+					| WHILE expr block
+					| return_stmt
+					| BREAK SEMICOLON
+					| CONTINUE SEMICOLON
+					| SEMICOLON
+					| block
+					;
 
-if_stmt ::= IF LPAREN expr RPAREN block
-		  | IF LPAREN expr RPAREN block ELSE block
-		  ; 
+if_stmt				::= IF LPAREN expr RPAREN block
+					| IF LPAREN expr RPAREN block ELSE block
+					; 
 
-return_stmt ::= RETURN SEMICOLON
-			  | RETURN expr SEMICOLON
-			  ;			
+return_stmt			::= RETURN SEMICOLON
+					| RETURN expr SEMICOLON
+					;			
 
-list_statement ::= statement list_statement
-				 | statement
-				 ;
+list_statement		::= statement list_statement
+					| statement
+					;
 /*******************************************EndStatement*********************************************************/
 
-assign_op ::= EQ 	{: RESULT = new AssignOpType(e1,BinOpType.PLUS,e2); :}
-			| PLUSEQ
-			| MINUSEQ
-			;
+assign_op			::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
+					| INC 			{:RESULT = AssignOpType.INC;:}
+					| DEC 			{:RESULT = AssignOpType.DEC;:}
+					;
 
-method_call ::= ID LPAREN RPAREN
-		 	  | ID LPAREN list_expr RPAREN
-			  | ID list_invoc LPAREN list_expr RPAREN
-			  | ID list_invoc LPAREN RPAREN
-			  ;
+method_call			::= ID:id LPAREN RPAREN {: RESULT = new MethodCall(id,idleft+1,idright+1); :}
+					| ID:id LPAREN list_expr:ex RPAREN {: RESULT = new MethodCall(id,new LinkedList<String>(),ex,idleft+1,idright+1); :}
+					| ID:id list_invoc:l LPAREN list_expr:lex RPAREN {: RESULT = new MethodCall(id,l,lex,idleft+1,idright+1); :}
+					| ID:id list_invoc:l LPAREN RPAREN {: RESULT = new MethodCall(id,l,idleft+1,idright+1); :}
+					;
+
 /***************************************Expression************************************************/
 expr ::= location:loc {: RESULT = loc; :}
 	   |method_call:c {: RESULT = c; :}
 	   |literal:lit {: RESULT = lit; :}
 
-	   |expr:e1 PLUS:plu expr:e2  {: RESULT = new BinOpExpr(e1,BinOpType.PLUS,e2,plu.left+1,plu.right+1); :}
+	   |expr:e1 PLUS:plu expr:e2  {: RESULT = new BinOpExpr(e1,BinOpType.PLUS,e2,pluleft+1,pluright+1); :}
 
-	   |expr:e1 MINUS:min expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MINUS,e2,min.left+1,min.right+1); :}
+	   |expr:e1 MINUS:min expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MINUS,e2,minleft+1,minright+1); :}
 
-	   |expr:e1 MULT:mul expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MULTIPLY,e2,mul.left+1,mul.right+1); :}
+	   |expr:e1 MULT:mul expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MULT,e2,mulleft+1,mulright+1); :}
 
-	   |expr:e1 DIV:di expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.DIVIDE,e2,di.left+1,di.right+1); :}
+	   |expr:e1 DIV:di expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.DIV,e2,dileft+1,diright+1); :}
 
-	   |expr:e1 MOD:mo expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MOD,e2,mo.left+1,mo.right+1); :}
+	   |expr:e1 MOD:mo expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.MOD,e2,moleft+1,moright+1); :}
 
-	   |expr:e1 LT:lt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LE,e2,lt.left+1,lt.right+1); :}
+	   |expr:e1 LT:lt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LT,e2,ltleft+1,ltright+1); :}
 
-	   |expr:e1 GT:gt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GE,e2,gt.left+1,gt.right+1); :}
+	   |expr:e1 GT:gt expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GT,e2,gtleft+1,gtright+1); :}
 
-	   |expr:e1 LTEQ:lteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LEQ,e2,lteq.left+1,lteq.right+1); :}
+	   |expr:e1 LTEQ:lteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.LTEQ,e2,lteqleft+1,lteqright+1); :}
 
-	   |expr:e1 GTEQ:gteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GEQ,e2,gteq.left+1,gteq.right+1); :}
+	   |expr:e1 GTEQ:gteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.GTEQ,e2,gteqleft+1,gteqright+1); :}
 
-	   |expr:e1 EQEQ:eqeq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.CEQ,e2,eqeq.left+1,eqeq.right+1); :}
+	   |expr:e1 EQEQ:eqeq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.EQEQ,e2,eqeqleft+1,eqeqright+1); :}
 
-	   |expr:e1 NOTEQ:noteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.NEQ,e2,noteq.left+1,noteq.right+1); :}
+	   |expr:e1 NOTEQ:noteq expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.NOTEQ,e2,noteqleft+1,noteqright+1); :}
 
-	   |expr:e1 ANDAND:andand expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.AND,e2,andand.left+1,andand.right+1); :}
+	   |expr:e1 ANDAND:andand expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.ANDAND,e2,andandleft+1,andandright+1); :}
 
-	   |expr:e1 OROR:oror expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.OR,e2,oror.left+1,oror.right+1); :}
+	   |expr:e1 OROR:oror expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.OROR,e2,ororleft+1,ororright+1); :}
 
-	   |MINUS:minU expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.MINUS,e1,minU.left+1,minU.right+1); :}
+	   |MINUS:minU expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.MINUS,e1,minUleft+1,minUright+1); :}
 
-	   |NOT:not expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.NOT,e1,not.left+1,not.right+1); :}
+	   |NOT:not expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.NOT,e1,notleft+1,notright+1); :}
 
 	   |LPAREN expr:e1 RPAREN {: RESULT = e1; :}
 	   ;
@@ -267,27 +265,30 @@ expr ::= location:loc {: RESULT = loc; :}
 
 
 list_expr ::= expr:e1 {: RESULT = new LinkedList<Expression>(Arrays.asList(e1)); :}
-			| expr:e1 COMMA expr_list:l {: l.add(0,e1); RESULT = (List<Expression>)l;:}
+			| expr:e1 COMMA list_expr:l {: l.add(0,e1); RESULT = (List<Expression>)l;:}
 			;
-
-
-
 /***************************************EndExpression***********************************************/
 
-list_invoc ::= invoc
-			 |list_invoc invoc
-			 ;
+list_invoc			::= invoc:i												{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;:}
+					|list_invoc:li invoc:i									{:li.add(i); RESULT = li;:}
+					;
 
-invoc ::= DOT ID
-		; 
+invoc				::= DOT:d ID:i											{:RESULT = (String)d+(String)i;:}
+					; 
 
-location ::= ID
-		   |ID list_invoc
-		   |ID LBRACK expr RBRACK
-		   |ID list_invoc LBRACK expr RBRACK
-		   ;
+location			::= ID
+					|ID list_invoc
+					|ID LBRACK expr RBRACK
+					|ID list_invoc LBRACK expr RBRACK
+					;
 
-literal ::= INT_LITERAL:in 			{: RESULT = in;:}
-		  |FLOAT_LITERAL:flo 		{: RESULT = flo;:}
-		  |BOOL_LITERAL:bo 			{: RESULT = bo;:}
-		  ;
+
+literal				::= INT_LITERAL:l										{:RESULT = l;:}
+					|FLOAT_LITERAL:l										{:RESULT = new FloatLiteral((String)l);:}
+					|BOOL_LITERAL:l											{:;:}
+					;
+
+
+
+
+

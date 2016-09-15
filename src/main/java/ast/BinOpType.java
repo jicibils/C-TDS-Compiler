@@ -1,19 +1,19 @@
-package ir.ast;
+package main.java.ast;
 
 public enum BinOpType {
 	PLUS, // Arithmetic
 	MINUS,
-	MULTIPLY,
-	DIVIDE,
+	MULT,
+	DIV,
 	MOD,
-	LE, // Relational
-	LEQ,
-	GE,
-	GEQ,
-	NEQ, // Equal
-	CEQ, 
-	AND, // Conditional
-	OR;
+	LT, // Relational
+	LTEQ,
+	GT,
+	GTEQ,
+	NOTEQ, // Equal
+	EQEQ, 
+	ANDAND, // Conditional
+	OROR;
 	
 	@Override
 	public String toString() {
@@ -22,27 +22,27 @@ public enum BinOpType {
 				return "+";
 			case MINUS:
 				return "-";
-			case MULTIPLY:
+			case MULT:
 				return "*";
-			case DIVIDE:
+			case DIV:
 				return "/";
 			case MOD:
 				return "%";
-			case LE:
+			case LT:
 				return "<";
-			case LEQ:
+			case LTEQ:
 				return "<=";
-			case GE:
+			case GT:
 				return ">";
-			case GEQ:
+			case GTEQ:
 				return ">=";
-			case CEQ:
+			case EQEQ:
 				return "==";
-			case NEQ:
+			case NOTEQ:
 				return "!=";
-			case AND:
+			case ANDAND:
 				return "&&";
-			case OR:
+			case OROR:
 				return "||";
 		}
 		

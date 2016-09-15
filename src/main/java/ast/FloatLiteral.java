@@ -2,29 +2,29 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-public class IntLiteral extends Literal {
+public class FloatLiteral extends Literal {
 	private String rawValue;
-	private Integer value;
+	private Float value;
 	
 	/*
-	 * Constructor for int literal that takes a string as an input
-	 * @param: String integer
+	 * Constructor for float literal that takes a string as an input
 	 */
-	public IntLiteral(String val){
+	public FloatLiteral(String val){
 		rawValue = val; // Will convert to int value in semantic check
 		value = null;
 	}
 
-	public IntLiteral(Integer n){
+	public FloatLiteral(Float n){
 		rawValue = n.toString();
 		value = n;
 	}
 
 	@Override
 	public Type getType() {
-		return Type.TINTEGER;
+		return Type.TFLOAT;
 	}
 
+	/////////////////////////////////////////////
 	public String getStringValue() {
 		return rawValue;
 	}
@@ -33,19 +33,21 @@ public class IntLiteral extends Literal {
 		this.rawValue = stringValue;
 	}
 
+	////////////////////////////////////////////
+
 	/*
-	* Get Integer value
+	* Get Float value
 	*/
 
-	public Integer getValue() {
+	public Float getValue() {
 		return value;
 	}
 
 	/*
-	* Set Integer value
+	* Set Float value
 	*/
 
-	public void setValue(Integer value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 	

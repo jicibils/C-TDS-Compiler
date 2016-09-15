@@ -1,16 +1,16 @@
-package ir.ast;
+package main.java.ast;
 
 public enum AssignOpType {
-	INCREMENT,
-	DECREMENT,
+	INC,
+	DEC,
 	ASSIGN;
 	
 	@Override
 	public String toString() {
 		switch(this) {
-			case INCREMENT:
+			case INC:
 				return "+=";
-			case DECREMENT:
+			case DEC:
 				return "-=";
 			case ASSIGN:
 				return "=";

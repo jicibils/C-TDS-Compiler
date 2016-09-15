@@ -1,4 +1,7 @@
+package main.java.lexer;
+
 import java_cup.runtime.*;
+import main.java.parser.*;
 
 /*User Code*/
 
@@ -85,9 +88,9 @@ FloatLiteral = ([0-9]+"."[0-9]+)
   	"||"            {return new Symbol(Sym.OROR, yyline, yycolumn, yytext());}
   	"!"             {return new Symbol(Sym.NOT, yyline, yycolumn, yytext());}
 
-	"="             {return new Symbol(Sym.EQ, yyline, yycolumn, yytext());}
-  	"+="            {return new Symbol(Sym.PLUSEQ, yyline, yycolumn, yytext());}
-  	"-="            {return new Symbol(Sym.MINUSEQ, yyline, yycolumn, yytext());}
+	"="             {return new Symbol(Sym.ASSIGN, yyline, yycolumn, yytext());}
+  	"+="            {return new Symbol(Sym.INC, yyline, yycolumn, yytext());}
+  	"-="            {return new Symbol(Sym.DEC, yyline, yycolumn, yytext());}
 
 		/*Literals*/
 

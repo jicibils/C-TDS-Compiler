@@ -1,8 +1,8 @@
-package ir.ast;
+package main.java.ast;
 
 import java.util.ArrayList;
 import java.util.List;
-import ir.ASTVisitor;
+import main.java.visitor.ASTVisitor;
 
 public class Block extends Statement {
 	private List<Statement> statements;
