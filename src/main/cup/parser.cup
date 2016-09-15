@@ -25,8 +25,8 @@ terminal    BREAK, CLASS, CONTINUE, ELSE, FOR, IF, RETURN, WHILE, EXTERN, LPAREN
 terminal    SEMICOLON, COMMA, GT, LT, NOT, EQEQ, LTEQ, GTEQ, NOTEQ, ANDAND, OROR, PLUS, MINUS, MOD, ASSIGN, INC, DEC, DOT;
 terminal    DIV, MULT;
 terminal    IntLiteral INT_LITERAL;
-terminal    FLOAT_LITERAL;
-terminal    BOOL_LITERAL;
+terminal    FloatLiteral FLOAT_LITERAL;
+terminal    BoolLiteral BOOL_LITERAL;
 terminal    String ID;
 
 /*Non-Terminals*/
@@ -48,7 +48,7 @@ non terminal body;
 
 non terminal assign_op;
 
-non terminal method_call;
+non terminal MethodCall method_call;
 
 non terminal block;
 
@@ -67,7 +67,9 @@ non terminal literal;
 non terminal FieldDecl field_decl;
 non terminal LinkedList<FieldDecl> field_list;
 
-non terminal statement, if_stmt, return_stmt;
+non terminal statement;
+non terminal if_stmt;
+non terminal return_stmt;
 non terminal list_statement;
 
 /*Precedences*/
@@ -149,10 +151,10 @@ block				::= LBRACE RBRACE
 					| LBRACE list_statement RBRACE	
 					;
 
-type				::= TINTEGER      {:RESULT = Type.TINTEGER;:}
-					| TBOOL	 	   {:RESULT = Type.TBOOL;:}
-					| TFLOAT		   {:RESULT = Type.TFLOAT;:}
-					| TVOID		   {:RESULT = Type.TVOID;:}
+type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
+					| TBOOL	 	   		{:RESULT = Type.TBOOL;:}
+					| TFLOAT		   	{:RESULT = Type.TFLOAT;:}
+					| TVOID		   		{:RESULT = Type.TVOID;:}
 					;
 	   
 /********************************************Statement*************************************************************/
@@ -183,13 +185,13 @@ list_statement		::= statement list_statement
 
 assign_op			::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
 					| INC 			{:RESULT = AssignOpType.INC;:}
-					| DEC
+					| DEC 			{:RESULT = AssignOpType.DEC;:}
 					;
 
-method_call			::= ID LPAREN RPAREN
-					| ID LPAREN list_expr RPAREN
-					| ID list_invoc LPAREN list_expr RPAREN
-					| ID list_invoc LPAREN RPAREN
+method_call			::= ID:id LPAREN RPAREN 							{:RESULT = new MethodCall(id);:}
+					| ID:id LPAREN list_expr:le RPAREN					{:RESULT = new MethodCall(id,new LinkedList<String>(),(List)le);:}
+					| ID:id list_invoc:li LPAREN list_expr:le RPAREN 	{:RESULT = new MethodCall(id,li,(List)le);:}
+					| ID:id list_invoc:li LPAREN RPAREN 				{:RESULT = new MethodCall(id,li);:}
 					;
 /***************************************Expression************************************************/
 expr				::= location
@@ -223,7 +225,7 @@ list_invoc			::= invoc:i												{:LinkedList res = new LinkedList(); res.add
 					|list_invoc:li invoc:i									{:li.add(i); RESULT = li;:}
 					;
 
-invoc				::= DOT:d ID:i											{:RESULT = (String)d+(String)i;:}
+invoc				::= DOT ID:id											{:RESULT = id;:}
 					; 
 
 location			::= ID
@@ -233,6 +235,6 @@ location			::= ID
 					;
 
 literal				::= INT_LITERAL:l										{:RESULT = l;:}
-					|FLOAT_LITERAL:l										{:RESULT = new FloatLiteral((String)l);:}
-					|BOOL_LITERAL:l											{:;:}
+					|FLOAT_LITERAL:l										{:RESULT = l;:}
+					|BOOL_LITERAL:l											{:RESULT = l;:}
 					;
