@@ -16,30 +16,36 @@ public class MethodCall extends Expression{
 	/*
 	* Constructor 1: id()
 	*/
-	public MethodCall(String id){
+	public MethodCall(String id,int line,int column) {
 		this.id = id;
 		idList = new LinkedList<String>();
 		argList = new LinkedList<Expression>();         
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
 
 	}
 
 	/*
 	* Constructor 2: id.ext.()
 	*/
-	public MethodCall(String id, List<String> li){
+	public MethodCall(String id, List<String> li,int line,int column) {
 		this.id = id;
 		idList = li;
 		argList = new LinkedList<Expression>();
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
 	}
 
 	/*
 	* Constructor 3: id.ext1.ext2...extN(arg1, arg2,...,argN)
 	*/
 
-	public MethodCall(String id, List<String> li, List<Expression> le){
+	public MethodCall(String id, List<String> li, List<Expression> le,int line,int column) {
 		this.id = id;
 		idList = li;
 		argList = le;
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
 	}
 
 	public String getId(){

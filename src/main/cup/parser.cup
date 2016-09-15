@@ -218,11 +218,13 @@ assign_op			::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}
 					| DEC 			{:RESULT = AssignOpType.DEC;:}
 					;
 
-method_call			::= ID:id LPAREN RPAREN 							{:RESULT = new MethodCall(id);:}
-					| ID:id LPAREN list_expr:le RPAREN					{:RESULT = new MethodCall(id,new LinkedList<String>(),(List)le);:}
-					| ID:id list_invoc:li LPAREN list_expr:le RPAREN 	{:RESULT = new MethodCall(id,li,(List)le);:}
-					| ID:id list_invoc:li LPAREN RPAREN 				{:RESULT = new MethodCall(id,li);:}
+method_call			::= ID:id LPAREN RPAREN 							{:RESULT = new MethodCall(id,idleft+1,idright+1);:}
+					| ID:id LPAREN list_expr:le RPAREN					{:RESULT = new MethodCall(id,new LinkedList<String>(),(List)le,idleft+1,idright+1);:}
+					| ID:id list_invoc:li LPAREN list_expr:le RPAREN 	{:RESULT = new MethodCall(id,li,(List)le,idleft+1,idright+1);:}
+					| ID:id list_invoc:li LPAREN RPAREN 				{:RESULT = new MethodCall(id,li,idleft+1,idright+1);:}
 					;
+
+
 
 /***************************************Expression************************************************/
 expr ::= location:loc {: RESULT = loc; :}
