@@ -96,7 +96,7 @@ non terminal Literal literal;
 non terminal FieldDecl field_decl;
 non terminal LinkedList<FieldDecl> field_list;
 non terminal Statement statement;
-non terminal if_stmt;
+non terminal IfStatement if_stmt;
 non terminal return_stmt;
 non terminal List<Statement> list_statement;
 
@@ -189,8 +189,8 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 	   
 /********************************************Statement*************************************************************/
 statement			::= location assign_op expr SEMICOLON
-					| method_call SEMICOLON
-					| if_stmt
+					| method_call SEMICOLON 							
+					| if_stmt:ifs 										{:RESULT = ifs;:}						
 					| FOR ID ASSIGN expr COMMA expr block
 					| WHILE expr block
 					| return_stmt
@@ -200,16 +200,16 @@ statement			::= location assign_op expr SEMICOLON
 					| block
 					;
 
-if_stmt				::= IF LPAREN expr RPAREN block
-					| IF LPAREN expr RPAREN block ELSE block
+if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b);:}
+					| IF LPAREN expr:e RPAREN block:b1 ELSE block:b2 			{:RESULT = new IfStatement(e,b1,b2);:}
 					; 
 
-return_stmt			::= RETURN SEMICOLON
-					| RETURN expr SEMICOLON
+return_stmt			::= RETURN SEMICOLON 										{:RESULT = new ReturnStmt();:}
+					| RETURN expr:e SEMICOLON 									{:RESULT = new ReturnStmt(e);:} 				
 					;			
 
-list_statement		::= statement list_statement
-					| statement
+list_statement		::= statement:s list_statement:sl 					{:sl.add(s); RESULT = sl;:}
+					| statement:s 										{:LinkedList l = new LinkedList<Statement>(); l.add(s); RESULT = l;:}
 					;
 /*******************************************EndStatement*********************************************************/
 
@@ -227,6 +227,7 @@ method_call			::= ID:id LPAREN RPAREN 							{:RESULT = new MethodCall(id,idleft
 
 
 /***************************************Expression************************************************/
+
 expr ::= location:loc {: RESULT = loc; :}
 	   |method_call:c {: RESULT = c; :}
 	   |literal:lit {: RESULT = lit; :}
@@ -269,6 +270,7 @@ expr ::= location:loc {: RESULT = loc; :}
 list_expr ::= expr:e1 {: RESULT = new LinkedList<Expression>(Arrays.asList(e1)); :}
 			| expr:e1 COMMA list_expr:l {: l.add(0,e1); RESULT = (List<Expression>)l;:}
 			;
+
 /***************************************EndExpression***********************************************/
 
 list_invoc			::= invoc:i												{:LinkedList res = new LinkedList(); res.add(i); RESULT = res;:}

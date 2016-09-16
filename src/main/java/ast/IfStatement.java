@@ -2,18 +2,18 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-public class IfStmt extends Statement {
+public class IfStatement extends Statement {
 	private Expression condition;
 	private Block ifBlock;
 	private Block elseBlock;
 	
-	public IfStmt(Expression cond, Block ifBl) {
+	public IfStatement(Expression cond, Block ifBl) {
 		this.condition = cond;
 		this.ifBlock = ifBl;
 		this.elseBlock = null;
 	}
 	
-	public IfStmt(Expression cond, Block ifBl, Block elseBl) {
+	public IfStatement(Expression cond, Block ifBl, Block elseBl) {
 		this.condition = cond;
 		this.ifBlock = ifBl;
 		this.elseBlock = elseBl;

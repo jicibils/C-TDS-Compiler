@@ -10,7 +10,7 @@ public interface ASTVisitor<T> {
 
     T visit(ReturnStmt stmt);
 
-    T visit(IfStmt stmt);
+    T visit(IfStatement stmt);
 
 // visit expressions
 	T visit(BinOpExpr expr);;
