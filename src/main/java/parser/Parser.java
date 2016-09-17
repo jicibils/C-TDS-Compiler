@@ -878,7 +878,7 @@ class CUP$Parser$actions {
               Statement RESULT =null;
 		int ifsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int ifsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		IfStatement ifs = (IfStatement)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Statement ifs = (Statement)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		RESULT = ifs;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -906,7 +906,10 @@ class CUP$Parser$actions {
           case 38: // statement ::= return_stmt 
             {
               Statement RESULT =null;
-
+		int rtsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int rtsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Statement rts = (Statement)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		RESULT = rts;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -924,7 +927,7 @@ class CUP$Parser$actions {
           case 40: // statement ::= CONTINUE SEMICOLON 
             {
               Statement RESULT =null;
-
+		RESULT = new ContinueStmt();
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -950,7 +953,7 @@ class CUP$Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 43: // if_stmt ::= IF LPAREN expr RPAREN block 
             {
-              IfStatement RESULT =null;
+              Statement RESULT =null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
@@ -965,7 +968,7 @@ class CUP$Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 44: // if_stmt ::= IF LPAREN expr RPAREN block ELSE block 
             {
-              IfStatement RESULT =null;
+              Statement RESULT =null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
@@ -983,7 +986,7 @@ class CUP$Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 45: // return_stmt ::= RETURN SEMICOLON 
             {
-              Object RESULT =null;
+              Statement RESULT =null;
 		RESULT = new ReturnStmt();
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("return_stmt",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -992,7 +995,7 @@ class CUP$Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 46: // return_stmt ::= RETURN expr SEMICOLON 
             {
-              Object RESULT =null;
+              Statement RESULT =null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;

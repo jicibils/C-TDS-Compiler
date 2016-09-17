@@ -12,7 +12,9 @@ public interface ASTVisitor<T> {
 
     T visit(IfStatement stmt);
 
-// visit expressions
+    T visit(ContinueStmt stmt);
+
+	// visit expressions
 	T visit(BinOpExpr expr);;
 	T visit(UnaryOpExpr expr);
 	

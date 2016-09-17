@@ -95,9 +95,7 @@ non terminal String invoc;
 non terminal Literal literal;
 non terminal FieldDecl field_decl;
 non terminal LinkedList<FieldDecl> field_list;
-non terminal Statement statement;
-non terminal IfStatement if_stmt;
-non terminal return_stmt;
+non terminal Statement statement, if_stmt, return_stmt;
 non terminal List<Statement> list_statement;
 
 
@@ -193,9 +191,9 @@ statement			::= location assign_op expr SEMICOLON
 					| if_stmt:ifs 										{:RESULT = ifs;:}						
 					| FOR ID ASSIGN expr COMMA expr block
 					| WHILE expr block
-					| return_stmt
+					| return_stmt:rts 									{:RESULT = rts;:}
 					| BREAK SEMICOLON
-					| CONTINUE SEMICOLON
+					| CONTINUE SEMICOLON 								{:RESULT = new ContinueStmt();:}
 					| SEMICOLON
 					| block
 					;
