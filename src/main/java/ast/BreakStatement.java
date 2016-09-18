@@ -2,20 +2,16 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Arangue-Cibils-Tissera Team
- */
-public class ContinueStmt extends Statement{
+public class BreakStatement extends Statement{
 
-	public ContinueStmt(int line, int column){
+	public BreakStatement(int line, int column){
         this.setLineNumber(line);
         this.setColumnNumber(column);
 	}
-    
-    @Override
+
+	@Override
 	public String toString(){
-		return "continue";
+		return "break;";
 	}
 
 	@Override

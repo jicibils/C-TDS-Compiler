@@ -6,20 +6,20 @@ import main.java.visitor.ASTVisitor;
  *
  * @author Arangue-Cibils-Tissera Team
  */
-public class ContinueStmt extends Statement{
 
-	public ContinueStmt(int line, int column){
+public class SemicolonStmt extends Statement{
+    
+    public SemicolonStmt(int line, int column){
         this.setLineNumber(line);
         this.setColumnNumber(column);
-	}
-    
-    @Override
+    }
+	@Override
 	public String toString(){
-		return "continue";
+		return ";\n";
 	}
 
 	@Override
-	public <T> T accept(ASTVisitor<T> v) {
+	public <T> T accept(ASTVisitor<T> v){
 		return v.visit(this);
 	}
 }

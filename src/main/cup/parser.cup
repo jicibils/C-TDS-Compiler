@@ -152,7 +152,7 @@ list_id_field_decl	::= list_id_field_decl:lifd COMMA id_field_decl:ifd		{: lifd.
 /****************************************************EndField**************************************************************/
 
 /*Method Declaration*/
-method_list			::= method_decl
+method_list			::= method_decl 							{:;:}
 					|method_list method_decl
 					;
 
@@ -190,11 +190,11 @@ statement			::= location assign_op expr SEMICOLON
 					| method_call SEMICOLON 							
 					| if_stmt:ifs 										{:RESULT = ifs;:}						
 					| FOR ID ASSIGN expr COMMA expr block
-					| WHILE expr block
+					| WHILE expr:e block:bl 							{:RESULT = new WhileStatement(e,bl, eleft+1, eright+1);:}
 					| return_stmt:rts 									{:RESULT = rts;:}
-					| BREAK SEMICOLON
-					| CONTINUE SEMICOLON 								{:RESULT = new ContinueStmt();:}
-					| SEMICOLON
+					| BREAK:b SEMICOLON 								{:RESULT = new BreakStatement(bleft+1,bright+1);:}
+					| CONTINUE:c SEMICOLON 								{:RESULT = new ContinueStmt(cleft+1,cright+1);:}
+					| SEMICOLON:s 										{:RESULT = new SemicolonStmt(sleft+1,sright+1);:}
 					| block
 					;
 
