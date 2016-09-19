@@ -1,13 +1,16 @@
 package main;
 
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.java.ast.Program;
 import main.java.lexer.Lexer;
 import main.java.parser.Parser;
+import main.java.visitor.*;
 
 /**
  *
@@ -46,8 +49,10 @@ public class Main {
             BufferedReader input = new BufferedReader(new FileReader(args[0]));
             Lexer lexer = new Lexer(input);
             Parser parser = new Parser(lexer);
-//            Object result = parser.parse().value;
-//            System.out.println();
+			Object result = parser.parse().value;
+			PrettyPrintVisitor printerVisitor = new PrettyPrintVisitor();
+			System.out.println(printerVisitor.visit((Program)result));
+			
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {

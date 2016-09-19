@@ -9,25 +9,28 @@ import main.java.visitor.ASTVisitor;
 
 /**
  *
- * @author Adrian Tissera
+ * @author Arangue-Cibils-Tissera Team
  */
-public class IdFieldDecl extends AST{
-	private final String id;
-	private final IntLiteral il;
-	
-	public IdFieldDecl(String id, IntLiteral il){
-		this.id = id;
-		this.il = il;
-	}
+public class Param extends AST{
 
+	private Type t;
+	private String id;
+			
+	public Param(Type t, String id, int ln, int cn) {
+		this.t = t;
+		this.id = id;
+		this.setLineNumber(ln);
+		this.setColumnNumber(cn);
+	}
+	
 	@Override
 	public String toString() {
-		String result = id;
-		return result;
+		return this.t.toString() + " " +this.id;
 	}
 	
 	@Override
 	public <T> T accept(ASTVisitor<T> v) {
 		return v.visit(this);
 	}
+	
 }

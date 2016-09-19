@@ -12,16 +12,26 @@ import main.java.visitor.ASTVisitor;
  * @author Adrian Tissera
  */
 public class ClassDecl extends AST {
-	private String id;
-	private BodyClass bc;
+	private final String id;
+	private final BodyClass bc;
 	
-	public ClassDecl(String id, BodyClass bc) {
+	public ClassDecl(String id, BodyClass bc, int lineNumber, int colNumber) {
 		this.id = id;
 		this.bc = bc;
+		this.setLineNumber(lineNumber);
+		this.setColumnNumber(colNumber);
 	}
 
 	@Override
+	public String toString(){
+		String result = "Class "+ id + " {\n";
+		result += bc.toString();
+		result += "}\n";
+		return result;
+	}
+	
+	@Override
 	public <T> T accept(ASTVisitor<T> v) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return v.visit(this);
 	}
 }

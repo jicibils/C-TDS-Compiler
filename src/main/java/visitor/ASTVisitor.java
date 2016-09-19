@@ -4,8 +4,7 @@ import main.java.ast.*;
 
 // Abstract visitor
 public interface ASTVisitor<T> {
-	// visit statements
-
+	// visit statements	
     T visit(AssignStmt stmt);
 
     T visit(ReturnStmt stmt);
@@ -35,5 +34,20 @@ public interface ASTVisitor<T> {
 
     // visit method calls
     T visit(MethodCall call);
+
+	public <T> T visit(Program aThis);
+
+	public <T> T visit(ClassDecl aThis);
+
+	public <T> T visit(BodyClass aThis);
+
+	public <T> T visit(FieldDecl aThis);
+
+	public <T> T visit(IdFieldDecl aThis);
+
+	public <T> T visit(Param aThis);
+
+	public <T> T visit(MethodDecl aThis);
+
 
 }

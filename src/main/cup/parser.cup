@@ -80,9 +80,9 @@ non terminal MethodDecl method_decl;
 non terminal LinkedList<MethodDecl> method_list;
 non terminal IdFieldDecl id_field_decl;
 non terminal LinkedList<IdFieldDecl> list_id_field_decl;
-non terminal param; 
-non terminal param_list;
-non terminal body;
+non terminal Param param; 
+non terminal LinkedList<Param> param_list;
+non terminal Block body;
 non terminal assign_op;
 non terminal MethodCall method_call;
 non terminal Block block;
@@ -112,20 +112,20 @@ precedence right NOT;
 start with program;
 
 
-program				::= class_list:cl										{: RESULT = new Program(cl); System.out.println("No error found. test OK"); :}
+program				::= class_list:cl										{: RESULT = new Program(cl, clleft+1, clright+1); System.out.println("No error found. test OK"); :}
 					;
 
 class_list			::=  class_decl:cd										{: RESULT = new LinkedList<ClassDecl>(); RESULT.add(cd); :}
 					|class_list:cl class_decl:cd							{: cl.add(cd); RESULT = cl; :}
 					;
 
-class_decl			::=  CLASS ID:id body_class:bc							{: RESULT = new ClassDecl(id, bc); :}
+class_decl			::=  CLASS ID:id body_class:bc							{: RESULT = new ClassDecl(id, bc, idleft+1, idright+1); :}
 					;
 
 body_class			::= LBRACE RBRACE								
-					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, null); :}
-					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(null, ml); :}
-					|LBRACE field_list:fl method_list:ml RBRACE				{: RESULT = new BodyClass(fl, ml); :}
+					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, null, flleft+1, flright+1); :}
+					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(null, ml, mlleft+1, mlright+1); :}
+					|LBRACE field_list:fl method_list:ml RBRACE				{: RESULT = new BodyClass(fl, ml, flleft+1, flright+1); :}
 					;
 /****************************************************Field**************************************************************/
 
@@ -152,25 +152,25 @@ list_id_field_decl	::= list_id_field_decl:lifd COMMA id_field_decl:ifd		{: lifd.
 /****************************************************EndField**************************************************************/
 
 /*Method Declaration*/
-method_list			::= method_decl 							{:;:}
-					|method_list method_decl
+method_list			::= method_decl:md										{: RESULT = new LinkedList<MethodDecl>(); RESULT.add(md); :}
+					|method_list:ml method_decl:md							{: ml.add(md); RESULT = ml; :}
 					;
 
-method_decl			::= type ID LPAREN RPAREN body
-					|type ID LPAREN param_list RPAREN body
+method_decl			::= type:t ID:id LPAREN RPAREN body:b					{: RESULT = new MethodDecl(t, id, null, b, idleft+1, idright+1); :}
+					|type:t ID:id LPAREN param_list:pl RPAREN body:b		{: RESULT = new MethodDecl(t, id, pl, b, idleft+1, idright+1); :}
 					;
 
 /*************************************Parameter****************************************************************/
-param_list			::= param
-					| param_list COMMA param
+param_list			::= param:p												{: RESULT = new LinkedList<Param>(); RESULT.add(p); :}
+					| param_list:pl COMMA param:p							{: pl.add(p); RESULT = pl; :}
 					;
 
-param				::= type ID
+param				::= type:t ID:id										{: RESULT = new Param(t, id, idleft+1, idright+1); :}
 					;
 /*************************************EndParameter***********************************************************/
 
-body				::= block
-					| EXTERN SEMICOLON
+body				::= block:b												{: RESULT = b; :}
+					| EXTERN SEMICOLON										{: RESULT = null; :}
 					;
 
 block				::= LBRACE RBRACE

@@ -13,15 +13,35 @@ import main.java.visitor.ASTVisitor;
  * @author Adrian Tissera
  */
 public class Program extends AST{
-	private final List<ClassDecl> class_list;
+	private final List<ClassDecl> classList;
 	
-	public Program (List<ClassDecl> class_list) {
-		this.class_list = class_list;
+	public Program (List<ClassDecl> classList, int ln, int cn) {
+		this.classList = classList;
+		this.setLineNumber(ln);
+		this.setColumnNumber(cn);
+		
+	}
+
+	public List<ClassDecl> getClassList() {
+		return classList;
+	}
+	
+	public void addClassDecl (ClassDecl classDecl) {
+		this.classList.add(classDecl);
+	}
+	
+	@Override
+	public String toString(){
+		String result = new String();
+		for (ClassDecl cd : this.classList) {
+			result += cd.toString() + "\n";
+		}
+		return result;
 	}
 	
 	@Override
 	public <T> T accept(ASTVisitor<T> v) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return v.visit(this);
 	}
 	
 }
