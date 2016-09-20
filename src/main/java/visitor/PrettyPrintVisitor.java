@@ -15,6 +15,7 @@ import main.java.ast.ClassDecl;
 import main.java.ast.ContinueStmt;
 import main.java.ast.FieldDecl;
 import main.java.ast.FloatLiteral;
+import main.java.ast.ForStatement;
 import main.java.ast.IdFieldDecl;
 import main.java.ast.IfStatement;
 import main.java.ast.IntLiteral;
@@ -155,5 +156,10 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
         public String visit(MethodCallStmt stmt) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
+    @Override
+    public <T> T visit(ForStatement aThis) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 	
 }

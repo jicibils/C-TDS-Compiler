@@ -190,7 +190,7 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 statement			::= location:l assign_op expr:e SEMICOLON 			{: RESULT = new AssignStmt(l,AssignOpType.ASSIGN,e,lleft+1,lright+1);:}
 					| method_call:mc SEMICOLON 							{: RESULT = new MethodCallStmt(mc,mcleft+1,mcright+1);:}
 					| if_stmt:ifs 										{: RESULT = ifs; :}						
-					| FOR ID ASSIGN expr COMMA expr block 				{:  ;:}
+					| FOR ID:id ASSIGN expr:value COMMA expr:e block:b 	{: RESULT = new ForStatement(id,value,e,b,idleft+1,idright+1) ;:}
 					| WHILE expr:e block:bl 							{: RESULT = new WhileStatement(e,bl, eleft+1, eright+1); :}
 					| return_stmt:rts 									{: RESULT = rts; :}
 					| BREAK:b SEMICOLON 								{: RESULT = new BreakStatement(bleft+1,bright+1); :}
