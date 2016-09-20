@@ -27,6 +27,7 @@ import main.java.ast.ReturnStmt;
 import main.java.ast.SemicolonStmt;
 import main.java.ast.UnaryOpExpr;
 import main.java.ast.VarLocation;
+import main.java.ast.VarListLocation;
 import main.java.ast.WhileStatement;
 
 /**
@@ -102,6 +103,11 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 
 	@Override
 	public String visit(VarLocation loc) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public String visit(VarListLocation loc) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

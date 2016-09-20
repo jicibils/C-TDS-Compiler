@@ -31,6 +31,7 @@ public interface ASTVisitor<T> {
     
 	// visit locations	
     T visit(VarLocation loc);
+	T visit(VarListLocation loc);
 
     T visit(Block aThis);
 

@@ -277,10 +277,10 @@ list_invoc			::= invoc:i												{:LinkedList res = new LinkedList(); res.add
 invoc				::= DOT ID:id											{:RESULT = id;:}
 					; 
 
-location			::= ID
-					|ID list_invoc
-					|ID LBRACK expr RBRACK
-					|ID list_invoc LBRACK expr RBRACK
+location			::= ID:id {: RESULT = new VarLocation(id,idleft+1,idright+1); :}
+					|ID:id list_invoc:l {: RESULT = new VarLocation(id,l,idleft+1,idright+1); :}
+					|ID:id LBRACK expr:e RBRACK {: RESULT = new VarListLocation(id,e,idleft+1,idright+1); :}
+					|ID:id list_invoc:l LBRACK expr:e RBRACK {: RESULT = new VarListLocation(id,e,l,idleft+1,idright+1); :}
 					;
 
 
