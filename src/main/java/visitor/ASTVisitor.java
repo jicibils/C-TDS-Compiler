@@ -52,5 +52,7 @@ public interface ASTVisitor<T> {
 
 	public <T> T visit(MethodDecl aThis);
 
+    public <T> T visit(ForStatement aThis);
+
 
 }
