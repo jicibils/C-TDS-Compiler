@@ -35,7 +35,10 @@ javac -classpath $CLASSPATH -d build/classes/ 	\
 		# test/main/java/*.java
 echo "Done!"
 
-#echo "*******************  TESTING PROGRAM  ******************************************"
+ # java -classpath $CLASSPATH -d build/classes/ Main test/resource/parser/file1.ctds
+
+
+# echo "*******************  TESTING PROGRAM  ******************************************"
 # cd build/test/classes/main/java/
 # pwd
 # export CLASSPATH=""
