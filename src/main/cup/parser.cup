@@ -173,10 +173,10 @@ body				::= block:b												{: RESULT = b; :}
 					| EXTERN SEMICOLON										{: RESULT = null; :}
 					;
 
-block				::= LBRACE RBRACE
-					| LBRACE field_list list_statement RBRACE   
-					| LBRACE field_list RBRACE					
-					| LBRACE list_statement RBRACE	
+block				::= LBRACE RBRACE 										{: RESULT = new Block(); :}
+					| LBRACE field_list:fl list_statement:ls RBRACE         {: RESULT = new Block(fl,ls); :}
+					| LBRACE field_list:fl RBRACE							{: RESULT = new Block(fl,null); :}
+					| LBRACE list_statement:ls RBRACE						{: RESULT = new Block(null,ls); :}
 					;
 
 type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
@@ -187,15 +187,15 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 	   
 /********************************************Statement*************************************************************/
 statement			::= location assign_op expr SEMICOLON
-					| method_call:mc SEMICOLON 							{: RESULT =  new MethodCallStmt(mc,mcleft+1,mcright+1);:}
+					| method_call:mc SEMICOLON 							{: RESULT = new MethodCallStmt(mc,mcleft+1,mcright+1);:}
 					| if_stmt:ifs 										{: RESULT = ifs; :}						
-					| FOR ID ASSIGN expr COMMA expr block
+					| FOR ID ASSIGN expr COMMA expr block 				{:  ;:}
 					| WHILE expr:e block:bl 							{: RESULT = new WhileStatement(e,bl, eleft+1, eright+1); :}
 					| return_stmt:rts 									{: RESULT = rts; :}
 					| BREAK:b SEMICOLON 								{: RESULT = new BreakStatement(bleft+1,bright+1); :}
 					| CONTINUE:c SEMICOLON 								{: RESULT = new ContinueStmt(cleft+1,cright+1); :}
 					| SEMICOLON:s 										{: RESULT = new SemicolonStmt(sleft+1,sright+1); :}
-					| block
+					| block:b 											{: RESULT = b; :}
 					;
 
 if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b,eleft+1,eright+1);:}

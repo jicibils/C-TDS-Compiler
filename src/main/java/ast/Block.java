@@ -5,17 +5,20 @@ import java.util.List;
 import main.java.visitor.ASTVisitor;
 
 public class Block extends Statement {
+    private List<FieldDecl> fieldDecl;
 	private List<Statement> statements;
 	private int blockId;
 	
-	public Block(int bId) {
+	public Block() {
 		statements = new ArrayList<Statement>();
-		blockId = bId;
+        fieldDecl  = new ArrayList<FieldDecl>();
+		blockId    = -1;
 	}
 	
-	public Block(int bId, List<Statement> s) {
-		blockId = bId;
+	public Block(List<FieldDecl> f, List<Statement> s) {
+		blockId = -1;
 		statements = s;
+        fieldDecl = f;
 	}
 	
 	public void addStatement(Statement s) {
@@ -24,7 +27,15 @@ public class Block extends Statement {
 		
 	public List<Statement> getStatements() {
 		return this.statements;
-	} 
+	}
+        
+    public void addFieldDecl(FieldDecl fd){
+        this.fieldDecl.add(fd);
+    }
+        
+    public List<FieldDecl> getFieldDecl(){
+        return this.fieldDecl;
+    }
 		
 	public int getBlockId() {
 		return blockId;
@@ -36,15 +47,18 @@ public class Block extends Statement {
 
 	@Override
 	public String toString() {
-		String rtn = "";
+        String result = "{\n";
+
+        for(FieldDecl f : fieldDecl){
+        	result += " " + f.toString() + "\n";
+        }
 		
 	    for (Statement s: statements) {
-			rtn += s.toString() + '\n';
+			result += " " + s.toString() + '\n';
 		}
 		
-		if (rtn.length() > 0) return rtn.substring(0, rtn.length() - 1); // remove last new line char
-		
-		return rtn; 
+		result += "}"; 
+		return result; 
 	}
 
 	@Override

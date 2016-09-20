@@ -7,7 +7,7 @@ import main.java.visitor.ASTVisitor;
 
 /**
  *
- * @author acer
+ * @author Arangue-Cibils-Tissera Team
  */
 public class MethodCallStmt extends Statement{
     
