@@ -5,12 +5,16 @@ import main.java.visitor.ASTVisitor;
 public class ReturnStmt extends Statement {
 	private Expression expression; // the return expression
 	
-	public ReturnStmt(Expression e) {
+	public ReturnStmt(Expression e, int line, int column) {
 		this.expression = e;
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
 	}
 	
-	public ReturnStmt() {
+	public ReturnStmt(int line, int column) {
 		this.expression = null;
+		this.setLineNumber(line);
+		this.setColumnNumber(column);
 	}
 
 	public Expression getExpression() {

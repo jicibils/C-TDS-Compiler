@@ -187,28 +187,27 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 	   
 /********************************************Statement*************************************************************/
 statement			::= location assign_op expr SEMICOLON
-					| method_call SEMICOLON 							
-					| if_stmt:ifs 										{:RESULT = ifs;:}						
+					| method_call:mc SEMICOLON 							{: RESULT =  new MethodCallStmt(mc,mcleft+1,mcright+1);:}
+					| if_stmt:ifs 										{: RESULT = ifs; :}						
 					| FOR ID ASSIGN expr COMMA expr block
-					| WHILE expr:e block:bl 							{:RESULT = new WhileStatement(e,bl, eleft+1, eright+1);:}
-					| return_stmt:rts 									{:RESULT = rts;:}
-					| BREAK:b SEMICOLON 								{:RESULT = new BreakStatement(bleft+1,bright+1);:}
-					| CONTINUE:c SEMICOLON 								{:RESULT = new ContinueStmt(cleft+1,cright+1);:}
-					| SEMICOLON:s 										{:RESULT = new SemicolonStmt(sleft+1,sright+1);:}
+					| WHILE expr:e block:bl 							{: RESULT = new WhileStatement(e,bl, eleft+1, eright+1); :}
+					| return_stmt:rts 									{: RESULT = rts; :}
+					| BREAK:b SEMICOLON 								{: RESULT = new BreakStatement(bleft+1,bright+1); :}
+					| CONTINUE:c SEMICOLON 								{: RESULT = new ContinueStmt(cleft+1,cright+1); :}
+					| SEMICOLON:s 										{: RESULT = new SemicolonStmt(sleft+1,sright+1); :}
 					| block
 					;
 
-if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b);:}
-					| IF LPAREN expr:e RPAREN block:b1 ELSE block:b2 			{:RESULT = new IfStatement(e,b1,b2);:}
+if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b,eleft+1,eright+1);:}
+					| IF LPAREN expr:e RPAREN block:b1 ELSE block:b2 			{:RESULT = new IfStatement(e,b1,b2,eleft+1,eright+1);:}
 					; 
 
-return_stmt			::= RETURN SEMICOLON 										{:RESULT = new ReturnStmt();:}
-					| RETURN expr:e SEMICOLON 									{:RESULT = new ReturnStmt(e);:} 				
+return_stmt			::= RETURN:r SEMICOLON 										{: RESULT = new ReturnStmt(rleft+1,rright+1); :}
+					| RETURN:r expr:e SEMICOLON 								{: RESULT = new ReturnStmt(e,rleft+1,rright+1); :}
 					;			
 
 list_statement		::= statement:s list_statement:sl 					{:sl.add(s); RESULT = sl;:}
-					| statement:s 										{:LinkedList l = new LinkedList<Statement>(); l.add(s); RESULT = l;:}
-					;
+					| statement:s 										{:LinkedList l = new LinkedList<Statement>(); l.add(s); RESULT = l;:}					;
 /*******************************************EndStatement*********************************************************/
 
 assign_op			::= ASSIGN 		{:RESULT = AssignOpType.ASSIGN;:}

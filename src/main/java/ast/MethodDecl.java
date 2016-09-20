@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main.java.ast;
 
 import java.util.List;
@@ -13,16 +8,22 @@ import main.java.visitor.ASTVisitor;
  * @author Adrian Tissera
  */
 public class MethodDecl extends Declaration{
-	private final Type t;
-	private final String id;
-	private final List<Param> pl;
-	private final Block b;	
+	private Type t;
+	private String id;
+	private List<Param> pl;
+	private Block b;	
+	private Boolean isExtern;
 	
 	public MethodDecl(Type t, String id, List<Param> pl, Block b, int ln, int cl) {
 		this.t = t;
 		this.id = id;
 		this.pl = pl;
-		this.b = b;
+		if(b==null)
+			isExtern = true;
+		else{
+			isExtern = false;
+			this.b = b;
+		}
 		this.setLineNumber(ln);
 		this.setColumnNumber(cl);
 	}

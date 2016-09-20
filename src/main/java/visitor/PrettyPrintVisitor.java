@@ -19,6 +19,7 @@ import main.java.ast.IdFieldDecl;
 import main.java.ast.IfStatement;
 import main.java.ast.IntLiteral;
 import main.java.ast.MethodCall;
+import main.java.ast.MethodCallStmt;
 import main.java.ast.MethodDecl;
 import main.java.ast.Param;
 import main.java.ast.Program;
@@ -144,8 +145,9 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
-	
-	
-	
+        @Override
+        public String visit(MethodCallStmt stmt) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
 	
 }
