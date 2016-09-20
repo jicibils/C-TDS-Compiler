@@ -14,6 +14,12 @@ public class AssignStmt extends Statement {
 		setLineNumber(line);
 		setColumnNumber(column);
 	}
+
+	public AssignStmt(Location loc, AssignOpType op, Expression e) {
+		location = loc;
+		expr = e;
+		operator = op;
+	}
 	
 	public void setLocation(Location loc) {
 		this.location = loc;
