@@ -187,7 +187,7 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 	   
 /********************************************Statement*************************************************************/
 
-statement			::= location:l assign_op expr:e SEMICOLON 			{: RESULT = new AssignStmt(l,AssignOpType.ASSIGN,e,lleft+1,lright+1);:}
+statement			::= location:l assign_op:op expr:e SEMICOLON 		{: RESULT = new AssignStmt(l,(AssignOpType)op,e,lleft+1,lright+1);:}
 					| method_call:mc SEMICOLON 							{: RESULT = new MethodCallStmt(mc,mcleft+1,mcright+1);:}
 					| if_stmt:ifs 										{: RESULT = ifs; :}						
 					| FOR ID:id ASSIGN expr:value COMMA expr:e block:b 	{: RESULT = new ForStatement(id,value,e,b,idleft+1,idright+1) ;:}
