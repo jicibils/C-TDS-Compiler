@@ -38,6 +38,7 @@ public interface ASTVisitor<T> {
     // visit method calls
     T visit(MethodCall call);
 
+
 	public <T> T visit(Program aThis);
 
 	public <T> T visit(ClassDecl aThis);

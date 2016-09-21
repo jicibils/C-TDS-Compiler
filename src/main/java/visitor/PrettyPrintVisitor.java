@@ -47,6 +47,7 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
+
 	@Override
 	public String visit(ReturnStmt stmt) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -116,6 +117,7 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 	public String visit(Block aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
+
 
 	@Override
 	public String visit(MethodCall call) {
