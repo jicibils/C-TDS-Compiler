@@ -1,5 +1,5 @@
 #!/bin/bash
-
+path=$(cd $(dirname "$1") && pwd -P)/$(basename "$1")
 cd build/classes
 export CLASSPATH="."
 for file in `ls ../../lib/`; do export CLASSPATH=$CLASSPATH:../../lib/$file; done
@@ -9,4 +9,4 @@ for file in `ls main/java/parser/`; do export CLASSPATH=$CLASSPATH:main/java/par
 for file in `ls main/java/visitor/`; do export CLASSPATH=$CLASSPATH:main/java/visitor/$file; done
 
 echo "*******************  EXECUTING PROGRAM  ******************************************"
-java -classpath $CLASSPATH main.Main $1
+java -classpath $CLASSPATH main.Main $path
