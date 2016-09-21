@@ -49,14 +49,17 @@ public class Block extends Statement {
 	public String toString() {
         String result = "{\n";
 
-        for(FieldDecl f : fieldDecl){
-        	result += " " + f.toString() + "\n";
-        }
-		
-	    for (Statement s: statements) {
-			result += " " + s.toString() + '\n';
+		if (fieldDecl != null) {
+			for(FieldDecl f : fieldDecl){
+				result += " " + f.toString() + "\n";
+			}	
 		}
-		
+        
+		if (statements != null) {
+			for (Statement s: statements) {
+				result += " " + s.toString() + "\n";
+			}	
+		}
 		result += "}"; 
 		return result; 
 	}

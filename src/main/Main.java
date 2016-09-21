@@ -17,34 +17,10 @@ import main.java.visitor.*;
  * @author adrian
  */
 public class Main {
-
-    public static void generateLexer() {
-        //File lexer = new File("src/main/jflex/Lexer.flex");
-        String[] args1 = {"-d", "src/main/java/lexer", "src/main/jflex/lexer.flex"};
-        jflex.Main.main(args1);
-        String[] args2 = {"-d", "src/main/java/lexer", "src/main/jflex/lexerStandalone.flex"};
-        jflex.Main.main(args2);
-    }
-
-    public static void generateParser() {
-        //File lexer = new File("src/main/jflex/Lexer.flex");
-        String[] args = {"-destdir", "src/main/java/parser", "-parser", "Parser", "-symbols", "Sym", "src/main/cup/parser.cup"};
-        try {
-            java_cup.Main.main(args);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-		generateLexer();
-		generateParser();
-        
+    public static void main(String[] args) {        
         try {
             BufferedReader input = new BufferedReader(new FileReader(args[0]));
             Lexer lexer = new Lexer(input);
@@ -54,10 +30,13 @@ public class Main {
 			System.out.println(printerVisitor.visit((Program)result));
 			
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("File not found: " + args[0]);
+			
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println("Fatal error: no input file\nUse: ./ctds.sh <filename>");
         } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+		}
     }
 
 }

@@ -70,4 +70,10 @@
     nbproject/build-impl.xml file. 
 
     -->
+	
+	<target name="-pre-compile">
+		<exec 
+			executable="./scripts/createClasses.sh">
+		</exec>
+	</target>
 </project>
