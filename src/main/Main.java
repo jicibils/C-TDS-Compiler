@@ -12,10 +12,7 @@ import main.java.lexer.Lexer;
 import main.java.parser.Parser;
 import main.java.visitor.*;
 
-/**
- *
- * @author adrian
- */
+
 public class Main {
     /**
      * @param args the command line arguments
@@ -25,7 +22,8 @@ public class Main {
             BufferedReader input = new BufferedReader(new FileReader(args[0]));
             Lexer lexer = new Lexer(input);
             Parser parser = new Parser(lexer);
-			Object result = parser.parse().value;
+			Program result = (Program)parser.parse().value;
+            mainCheckVisitor(result);
 			PrettyPrintVisitor printerVisitor = new PrettyPrintVisitor();
 			System.out.println(printerVisitor.visit((Program)result));
 			
@@ -38,5 +36,14 @@ public class Main {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
     }
+
+    public static void mainCheckVisitor(Program p) {
+        MainCheckVisitor mainVisitor = new MainCheckVisitor();
+        Integer mains = mainVisitor.visit(p);
+        if (mains != 1) {
+            System.out.println("Error: There is more than one main method");
+        }
+    }
+
 
 }

@@ -23,6 +23,16 @@ public class BodyClass extends AST{
 		this.setColumnNumber(cn);
 	}
 
+	public List<MethodDecl> getMethodDeclaration() {
+		return ml;
+	}
+
+
+	public List<FieldDecl> getFieldDeclaration() {
+		return fl;
+	}
+
+
 	@Override
 	public String toString() {
 		String result = new String();

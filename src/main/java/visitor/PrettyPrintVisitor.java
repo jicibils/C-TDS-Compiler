@@ -125,42 +125,42 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 	}
 
 	@Override
-	public <T> T visit(ClassDecl aThis) {
+	public String visit(ClassDecl aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public <T> T visit(BodyClass aThis) {
+	public String visit(BodyClass aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public <T> T visit(FieldDecl aThis) {
+	public String visit(FieldDecl aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public <T> T visit(IdFieldDecl aThis) {
+	public String visit(IdFieldDecl aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public <T> T visit(Param aThis) {
+	public String visit(Param aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public <T> T visit(MethodDecl aThis) {
+	public String visit(MethodDecl aThis) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-
-        @Override
-        public String visit(MethodCallStmt stmt) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
 
     @Override
-    public <T> T visit(ForStatement aThis) {
+    public String visit(MethodCallStmt stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String visit(ForStatement stmt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 	

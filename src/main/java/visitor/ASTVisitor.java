@@ -4,6 +4,7 @@ import main.java.ast.*;
 
 // Abstract visitor
 public interface ASTVisitor<T> {
+
 	// visit statements	
     T visit(AssignStmt stmt);
 
@@ -19,8 +20,10 @@ public interface ASTVisitor<T> {
 
     T visit(SemicolonStmt stmt);
 
+    T visit(ForStatement stmt);
+
 	// visit expressions
-	T visit(BinOpExpr expr);;
+	T visit(BinOpExpr expr);
 	T visit(UnaryOpExpr expr);
 	T visit(MethodCallStmt stmt);
 
@@ -38,22 +41,24 @@ public interface ASTVisitor<T> {
     // visit method calls
     T visit(MethodCall call);
 
+    //visit program
+	T visit(Program aThis);
 
-	public <T> T visit(Program aThis);
+	//visit declarations 
+	T visit(ClassDecl aThis);
+	T visit(FieldDecl aThis);
+	T visit(MethodDecl aThis);
+	T visit(IdFieldDecl aThis);
+	T visit(Param aThis);
 
-	public <T> T visit(ClassDecl aThis);
+	T visit(BodyClass aThis);
 
-	public <T> T visit(BodyClass aThis);
 
-	public <T> T visit(FieldDecl aThis);
 
-	public <T> T visit(IdFieldDecl aThis);
 
-	public <T> T visit(Param aThis);
 
-	public <T> T visit(MethodDecl aThis);
 
-    public <T> T visit(ForStatement aThis);
+
 
 
 }

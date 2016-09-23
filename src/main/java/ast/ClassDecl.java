@@ -6,11 +6,9 @@
 package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
+import java.util.List;
+import java.util.LinkedList;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class ClassDecl extends AST {
 	private final String id;
 	private final BodyClass bc;
@@ -21,6 +19,16 @@ public class ClassDecl extends AST {
 		this.setLineNumber(lineNumber);
 		this.setColumnNumber(colNumber);
 	}
+
+	public List<MethodDecl> getMethodDecl() {
+		return bc.getMethodDeclaration();
+	}
+
+
+	public List<FieldDecl> getFieldDecl() {
+		return bc.getFieldDeclaration();
+	}
+
 
 	@Override
 	public String toString(){

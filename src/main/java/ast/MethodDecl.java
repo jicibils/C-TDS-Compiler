@@ -3,16 +3,14 @@ package main.java.ast;
 import java.util.List;
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Adrian Tissera
- */
+
 public class MethodDecl extends Declaration{
 	private Type t;
 	private String id;
 	private List<Param> pl;
 	private Block b;	
 	private Boolean isExtern;
+
 	
 	public MethodDecl(Type t, String id, List<Param> pl, Block b, int ln, int cl) {
 		this.t = t;
@@ -28,6 +26,27 @@ public class MethodDecl extends Declaration{
 		this.setColumnNumber(cl);
 	}
 	
+	public Type getType() {
+		return t;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public List<Param> getParam() {
+		return pl;
+	}
+
+	public Block getBlock() {
+		return b;
+	}
+
+	public boolean isExtern() {
+		return isExtern;
+	}
+
+
 	@Override
 	public String toString() {
 		String result = this.t + " " + this.id + " (";
