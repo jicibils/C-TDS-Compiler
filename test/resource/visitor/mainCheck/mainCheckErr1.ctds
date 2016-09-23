@@ -1,0 +1,12 @@
+//mainCheck ERROR duplicated class!
+class main {
+	integer inc(integer x) {
+		return x + 1;
+	}
+	void main() {
+		integer y;
+	}
+	void main() {
+		integer x;
+	}
+}

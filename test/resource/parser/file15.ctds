@@ -1,7 +1,7 @@
 // loop OK!
 class A {
 	
-	int methodTest(int x) {
+	integer methodTest(integer x) {
 
 		i = 0;
 		while ( i < 23) {

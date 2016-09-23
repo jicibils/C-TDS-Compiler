@@ -1,10 +1,10 @@
 // Field declaration OK!
 class A {
 	
-	int barovero;
-	int piscu,ponzio,alario;
+	integer barovero;
+	integer piscu,ponzio,alario;
 
-	int Chori[10];
+	integer Chori[10];
 
 	
 }

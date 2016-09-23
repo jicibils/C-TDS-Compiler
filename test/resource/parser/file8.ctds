@@ -1,9 +1,9 @@
 // declaration in body method Error!
 class A {
 
-	int methodTest(int x) {
+	integer methodTest(integer x) {
 
-		int y, int x, int a;
+		integer y, integer x, integer a;
 		
 	}
 

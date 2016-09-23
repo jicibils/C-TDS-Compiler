@@ -1,7 +1,7 @@
 // assignment Error!
 class A {
 	
-		int methodTest(int x) {
+		integer methodTest(integer x) {
 
 		ponzio  = 23;
 		23 = ponzio;

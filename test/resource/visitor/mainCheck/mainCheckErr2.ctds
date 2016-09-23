@@ -1,0 +1,9 @@
+//mainCheck ERROR method with params
+class main {
+	integer inc(integer x) {
+		return x + 1;
+	}
+	void main(integer x) {
+		integer y;
+	}
+}

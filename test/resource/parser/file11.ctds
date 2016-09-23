@@ -1,9 +1,9 @@
 // declaration in body method OK!
 class A {
 	
-	int methodTest(int x) {
-		int y;
-		int Ponzio[23];
+	integer methodTest(integer x) {
+		integer y;
+		integer Ponzio[23];
 		
 	}
 

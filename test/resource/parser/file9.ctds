@@ -1,7 +1,7 @@
 //Method with statements declarations  and call statements OK
 class A {
 	
-	int methodInt(int x) {
+	integer methodInt(integer x) {
 
 		A.callMethod(x);
 		A.callMethod1.callMethod(x,y,z);

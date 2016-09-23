@@ -1,10 +1,10 @@
 // Field declaration Error!
 class A {
 	
-	int barovero;
-	Int piscu,ponzio,alario;
+	integer barovero;
+	int piscu,ponzio,alario;
 
-	int Chori[10];
+	integer Chori[10];
 
 	
 }

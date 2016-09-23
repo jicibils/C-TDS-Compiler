@@ -1,12 +1,12 @@
 // method declaration OK!
 class A {
 	
-	int methodTest() {
+	integer methodTest() {
 
 	}
 
-	int methodTest(int x) extern;
+	integer methodTest(integer x) extern;
 
-	void methodVoid(int x,int y) extern;
+	void methodVoid(integer x,integer y) extern;
 
 }
