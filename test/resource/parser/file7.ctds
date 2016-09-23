@@ -1,0 +1,11 @@
+// Field declaration Error!
+class A {
+	
+	int barovero;
+	Int piscu,ponzio,alario;
+
+	int Chori[10];
+
+	
+}
+

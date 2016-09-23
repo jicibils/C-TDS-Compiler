@@ -1,0 +1,10 @@
+// declaration in body method OK!
+class A {
+	
+	int methodTest(int x) {
+		int y;
+		int Ponzio[23];
+		
+	}
+
+}

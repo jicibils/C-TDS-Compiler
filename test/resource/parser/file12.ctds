@@ -1,0 +1,12 @@
+// method declaration OK!
+class A {
+	
+	int methodTest() {
+
+	}
+
+	int methodTest(int x) extern;
+
+	void methodVoid(int x,int y) extern;
+
+}

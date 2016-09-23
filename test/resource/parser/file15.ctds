@@ -1,0 +1,11 @@
+// loop OK!
+class A {
+	
+	int methodTest(int x) {
+
+		i = 0;
+		while ( i < 23) {
+			i = i+1;
+		}
+	}
+}
