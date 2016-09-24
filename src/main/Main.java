@@ -4,7 +4,6 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.java.ast.Program;
@@ -23,7 +22,6 @@ public class Main {
             Lexer lexer = new Lexer(input);
             Parser parser = new Parser(lexer);
 			Program result = (Program)parser.parse().value;
-            mainCheckVisitor(result);
 			PrettyPrintVisitor printerVisitor = new PrettyPrintVisitor();
 			System.out.println(printerVisitor.visit((Program)result));
 			
@@ -36,14 +34,5 @@ public class Main {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 		}
     }
-
-    public static void mainCheckVisitor(Program p) {
-        MainCheckVisitor mainVisitor = new MainCheckVisitor();
-        Integer mains = mainVisitor.visit(p);
-        if (mains != 1) {
-            System.out.println("Error: There is more than one main method");
-        }
-    }
-
 
 }

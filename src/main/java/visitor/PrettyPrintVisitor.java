@@ -6,6 +6,7 @@
 package main.java.visitor;
 
 import main.java.ast.AssignStmt;
+import main.java.ast.Attribute;
 import main.java.ast.BinOpExpr;
 import main.java.ast.Block;
 import main.java.ast.BodyClass;
@@ -161,6 +162,11 @@ public class PrettyPrintVisitor implements ASTVisitor<String> {
 
     @Override
     public String visit(ForStatement stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String visit(Attribute a) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 	

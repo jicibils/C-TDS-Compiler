@@ -5,6 +5,7 @@ import main.java.visitor.ASTVisitor;
 public abstract class AST {
 	private int lineNumber;
 	private int colNumber;
+        //private String id;
 	
 	public int getLineNumber() {
 		return lineNumber;
@@ -21,6 +22,10 @@ public abstract class AST {
 	public void setColumnNumber(int cn) {
 		colNumber = cn;
 	}
-	
+	/*
+        public String getId(){
+            return id;
+        }
+        */
 	public abstract <T> T accept(ASTVisitor<T> v);
 }

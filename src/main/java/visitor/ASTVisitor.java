@@ -53,12 +53,7 @@ public interface ASTVisitor<T> {
 
 	T visit(BodyClass aThis);
 
-
-
-
-
-
-
-
+        // visit attribute
+        T visit(Attribute a);
 
 }
