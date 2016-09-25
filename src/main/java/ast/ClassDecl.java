@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.LinkedList;
 
 public class ClassDecl extends AST {
-	private final String id;
-	private final BodyClass bc;
+	private String id;
+	private BodyClass bc;
 	
 	public ClassDecl(String id, BodyClass bc, int lineNumber, int colNumber) {
 		this.id = id;
@@ -28,8 +28,23 @@ public class ClassDecl extends AST {
 	public List<FieldDecl> getFieldDecl() {
 		return bc.getFieldDeclaration();
 	}
-
-
+        
+        public String getId(){
+            return id;
+        }
+        
+        public void setId(String s){
+            this.id = s;
+        }
+        
+        public BodyClass getBody(){
+            return bc;
+        }
+        
+        public void setBodyClass(BodyClass bc){
+            this.bc = bc;
+        }
+        
 	@Override
 	public String toString(){
 		String result = "Class "+ id + " {\n";
