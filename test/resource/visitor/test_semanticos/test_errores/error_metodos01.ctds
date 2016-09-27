@@ -1,0 +1,19 @@
+class main{
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void alo2(integer x){
+      alo(x);
+      x=  alo(x) + 1; // alo no se puede usar en una expresion porq retorna void.
+      return;
+   }
+ 
+   integer main(){
+        return 1;
+   }
+
+}

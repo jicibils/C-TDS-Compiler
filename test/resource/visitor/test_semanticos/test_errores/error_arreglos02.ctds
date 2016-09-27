@@ -1,0 +1,22 @@
+class main{
+
+integer A[5] ;
+float B [56];
+bool C[10];
+
+integer pruArreglos(integer b, integer c ){
+        A[0] = true; // Error A es de tipo int
+	return A[5]; //Error acceso fuera de rango, A tiene 5 lugares, indexados del 0 al 4.
+}
+
+void printI(integer i)extern;
+
+integer main(){
+
+    printI(pruArreglos(4,8 ));
+    
+    return 1;
+    
+}
+
+}

@@ -5,10 +5,6 @@
  */
 package main.java.ast;
 
-/**
- *
- * @author Arangue-Cibils-Tissera Team
- */
 abstract class Declaration extends AST{
 	
 }

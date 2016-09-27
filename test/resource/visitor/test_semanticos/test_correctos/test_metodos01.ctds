@@ -1,0 +1,27 @@
+class main{
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return ; 
+   }
+
+   integer alo2(integer x){
+      alo(x);
+      x=  x + 1; 
+      return x; 
+   }
+
+   void printI(integer i)extern;
+ 
+   void main(){
+        integer y;
+        y = 7;
+        c = 8.0;
+        alo(y);
+        y = alo2(y);
+        y = alo2((3)*y);
+        return;
+   }
+
+}

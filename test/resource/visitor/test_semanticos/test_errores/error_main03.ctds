@@ -1,0 +1,14 @@
+class main{
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void Main(){ //error el metodo main es todo con minúscula
+      alo();
+      return;
+   }
+
+}

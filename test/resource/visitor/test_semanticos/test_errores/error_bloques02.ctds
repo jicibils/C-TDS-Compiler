@@ -1,0 +1,56 @@
+class main{
+
+integer  breaks(float g){
+      integer   i;
+      bool j;
+      i = 0;
+      
+
+      while(i < 10){
+	{ //bloque 1
+          float j;
+          i = i + 1;
+        
+             { //bloque 2
+                  j = 2.3; //correcto
+	          if(g < 0){
+	                break;
+                   }
+	           else{
+
+                        { //bloque 3
+                          integer  j;
+                         
+                          { //bloque 4
+                              
+                              { //bloque 5
+                                   j = 2.0 * g; //ERROR j es int
+	                  
+                              } //fin bloque 5      
+	                        
+                           } //fin bloque 4      
+	                    j = 3; //correcto
+                        } //fin bloque 3                        
+	                continue;
+                   }
+             } //fin bloque 2
+        }//fin bloque 1
+   
+     } //fin while
+
+     j=true;//correcto
+
+	return i;
+
+}
+
+
+void printI(integer  i)extern;
+integer  main(){ 
+   printI(breaks( 1.4) );
+   return 1;
+}
+
+
+
+}

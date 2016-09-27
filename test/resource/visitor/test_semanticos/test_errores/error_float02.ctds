@@ -1,0 +1,61 @@
+class main{
+
+float potencia(float x, integer n){
+
+	integer i; 
+	bool neg;
+	float prod;
+        neg = false;
+        i = 1;
+        prod = 1.0;
+
+	if (n < 0){
+		n = -n;
+		neg = !neg;
+	}
+
+	while(i <= (n * 4.0)){ //ERROR en *, no tienen el mismo tipo
+		prod = prod * x;
+		i = i + 1;
+	}
+	if (!(!neg)){
+		return 1.0/prod;
+        }
+	else{
+		return prod;
+        }
+	return -100.1;
+}
+
+float sumatoria(float b){
+	float total;
+	float i;
+	float res;
+        total = 0.0;
+        i = b;
+        
+	while(i > 0  || i > 0 )   {
+		if(i > 0){
+			total = total + i;
+                }
+		i -= 1;
+	} /* fin while */
+	res = total;
+	return res;
+
+}
+
+void printF(float f)extern;
+
+void main(){
+     float f;
+     float a;
+     integer m;
+     a = 8.0;
+     f = potencia(a,2);
+     m = sumatoria(a); // Error sumatoria retorna un float
+     printF(f);
+     return;
+}
+
+}

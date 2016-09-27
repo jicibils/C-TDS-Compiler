@@ -1,0 +1,26 @@
+class main{
+
+integer  A[5] ;
+bool C[10];
+
+integer  pruArreglos(integer  a, integer  b ){
+         bool c ;
+         c =  false && C[2];
+         C[a + b] = ((a < b)) ; 
+         C[c] = c; //Error el indice de un arreglo tiene q ser entero. 
+
+	return A[1]; 
+
+}
+
+void printI(integer  i)extern;
+
+integer  main(){
+     
+     A[1.3 + 8.3] =(-6) ; //Error el indice de un arreglo tiene q ser entero. 
+     printI( pruArreglos(4, 8 ));     
+    return 1;
+    
+}
+
+}

@@ -1,0 +1,25 @@
+class main{
+
+integer A[-5] ;// error la declaracion de un arreglo debe tener un entero mayor a CERO
+bool  C[0];// error la declaracion de un arreglo debe tener un entero mayor a CERO
+
+integer pruArreglos(integer a, integer b ){
+         bool  c ;
+         c =  false && C[0];
+         C[a + b] = ((a < b)) ; 
+         C[0] = c; 
+	return A[1]; 
+
+}
+
+integer printI(integer i ) extern;
+
+integer main(){
+     
+     A[0] =(-6) ; 
+     printI( pruArreglos(4, 8 ));     
+    return 1;
+    
+}
+
+}

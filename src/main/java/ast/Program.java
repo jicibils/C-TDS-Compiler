@@ -8,10 +8,6 @@ package main.java.ast;
 import java.util.List;
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class Program extends AST{
 	private final List<ClassDecl> classList;
 	

@@ -21,18 +21,37 @@ public class Main {
             BufferedReader input = new BufferedReader(new FileReader(args[0]));
             Lexer lexer = new Lexer(input);
             Parser parser = new Parser(lexer);
-			Program result = (Program)parser.parse().value;
-			PrettyPrintVisitor printerVisitor = new PrettyPrintVisitor();
-			System.out.println(printerVisitor.visit((Program)result));
-			
+            Program result = (Program)parser.parse().value;
+            mainCheck(result);
+            PrettyPrintVisitor printerVisitor = new PrettyPrintVisitor();
+            System.out.println(printerVisitor.visit((Program)result));
+            
         } catch (FileNotFoundException ex) {
             System.out.println("File not found: " + args[0]);
-			
+            
         } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("Fatal error: no input file\nUse: ./ctds.sh <filename>");
         } catch (Exception ex) {
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-		}
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    public static void mainCheck(Program program){
+        int result;
+        CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
+        result = mainVisitor.visit(program);
+        if (result == 0){
+            System.out.println("Fatal error: There isn't method 'Main'");            
+        }
+        else{
+            if(result == -1){
+                System.out.println("Fatal error: Method Main contain arguments");
+            }
+            else{
+                if(result > 1){
+                    System.out.println("Fatal error: there is more than one method 'Main'");
+                }
+            }
+        }
+    }
 }

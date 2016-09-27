@@ -4,10 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Arangue-Cibils-Tissera Team
- */
 public class MethodCall extends Expression{
 	private String id;
 	private List<String> idList;

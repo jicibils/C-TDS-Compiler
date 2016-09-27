@@ -7,10 +7,6 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class IdFieldDecl extends AST{
 	private final String id;
 	private final IntLiteral il;

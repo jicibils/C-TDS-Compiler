@@ -8,10 +8,6 @@ package main.java.ast;
 import java.util.List;
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class BodyClass extends AST{
 	private final List<FieldDecl> fl;
 	private final List<MethodDecl> ml;

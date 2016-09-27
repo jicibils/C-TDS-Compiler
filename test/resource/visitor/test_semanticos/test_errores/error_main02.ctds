@@ -1,0 +1,14 @@
+class main{
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void main(integer x){ //error no deberia tener parametros el main
+      alo();
+      return;
+   }
+
+}

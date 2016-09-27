@@ -2,10 +2,6 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Arangue-Cibils-Tissera Team
- */
 public class ContinueStmt extends Statement{
 
 	public ContinueStmt(int line, int column){

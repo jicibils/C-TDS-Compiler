@@ -1,0 +1,25 @@
+class main{
+
+integer factorial(integer n){
+
+        
+	integer _i;         
+        bool 9while; //no puede comenzar con nro
+        integer total;
+        i = 4;
+	while(i > 0){
+
+		total += Total * i; //Error total no declarada 
+		i = i - 1;
+
+	}
+	return total;
+
+} 
+
+void  main (){
+  return;
+
+}
+
+} // end class 

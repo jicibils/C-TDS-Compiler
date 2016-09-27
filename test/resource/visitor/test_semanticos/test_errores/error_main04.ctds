@@ -1,0 +1,14 @@
+class mainDDDDD{ //error el metodo main tine q ester en una clase llamada main
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void main(){ 
+      alo();
+      return;
+   }
+
+}

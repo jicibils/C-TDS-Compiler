@@ -1,0 +1,30 @@
+class main{
+
+integer breaks(integer g){
+      integer  i;
+      i = 0;
+
+      while(i < 10){
+	i = i + 1;
+	if(g < 0){
+	     break;
+        }
+	else{
+	   continue;
+        }
+      }
+
+	return i;
+
+
+
+
+}
+
+integer main(){ 
+   return 1;
+}
+
+
+
+}

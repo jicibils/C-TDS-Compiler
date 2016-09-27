@@ -6,9 +6,6 @@ public class WhileStatement extends Statement{
 	private Expression expr;
 	private Block block;
 
-	/*
-	* 
-	*/
 	public WhileStatement(Expression e, Block b, int line, int column){
 		this.expr = e;
 		this.block = b;

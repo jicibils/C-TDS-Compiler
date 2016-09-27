@@ -1,0 +1,65 @@
+class test_potencia{
+
+float w;
+float m;
+float res;
+integer value;
+
+
+/* funcion que calcula la x ^ n , x elevado a la n  */
+
+float potencia(float x, integer n){
+
+	integer i; 
+	bool neg;
+	float prod;
+        neg = false;
+        i = 1;
+        prod = 1.0;
+
+	if (n < 0){
+		n = -n;
+		neg = true;
+	}
+
+	while(i < n || i == n){
+		prod = prod * x * 2.0; 
+		i = i + 1;
+	}
+	if (true){ //neg true
+		return 1.0/prod;
+        }
+	else{
+		return prod;
+        }
+	return -100.1;
+}
+
+float  multRepeat(float b, float a){
+
+  
+  float  c;
+  c =  a * a * b * b * b * a;
+ 
+  return c;  
+  
+}
+
+void printF(float f)extern;
+
+void main(){
+     float f;
+     float a;
+     value = 4;
+     a = 80.0;
+     res = -15.0;
+     w = 4.3;
+     m= -7.6;
+     f = potencia(a, 2);
+     printF(multRepeat(res,f+2)); //Error la suma tiene q tener arg del mismo tipo
+
+     printF(multRepeat(potencia(potencia(potencia(4.8, value - value ), value + value ) , value / value ),f)); 
+     return;
+}
+
+}

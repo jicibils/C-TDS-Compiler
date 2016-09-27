@@ -1,0 +1,16 @@
+class main{
+   float c;
+
+   void main(){ //WARNING multiples main (podria ser un warning o un error)
+      int x;
+      x = 3;
+      x= x + 1;
+      return;
+   }
+
+   int main(){ 
+      
+      return 0;
+   }
+
+}

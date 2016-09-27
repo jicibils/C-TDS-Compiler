@@ -1,0 +1,30 @@
+class main{
+
+integer A[5] ;
+float B [56];
+bool C[10];
+
+integer pruArreglos(integer b, integer c ){
+        integer i;
+        A[0] = 2; 
+        
+        
+        for i = 5 , -10 { //semanticamente correcto aunq no termina ese ciclo
+               A[i] = i + 2;
+        }
+        return A[1];
+
+        
+}
+
+void printI(integer i) extern;
+
+integer main(){
+
+    printI( pruArreglos(4,8 ));
+    
+    return 1;
+    
+}
+
+}

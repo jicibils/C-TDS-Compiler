@@ -7,131 +7,130 @@ import main.java.ast.*;
 // Concrete visitor
 public class DeclarationCheckVisitor implements ASTVisitor<String> {
 
-	public DeclarationCheckVisitor(){
+    public DeclarationCheckVisitor(){
 
-	}
+    }
 
-	// visit statements	
+    // visit statements 
 
 
     public String visit(AssignStmt stmt){
-    	return "";
+        return "";
     }
 
     public String visit(ReturnStmt stmt){
-    	return "";
+        return "";
     }
 
     public String visit(IfStatement stmt){
-    	return "";
+        return "";
     }
 
     public String visit(ContinueStmt stmt){
-    	return "";
+        return "";
     }
 
     public String visit(WhileStatement stmt){
-    	return "";
+        return "";
     }
 
     public String visit(BreakStatement stmt){
-    	return "";
+        return "";
     }
 
     public String visit(SemicolonStmt stmt){
-    	return "";
+        return "";
     }
 
     public String visit(ForStatement stmt){
-    	return "";
+        return "";
     }
 
-	// visit expressions
+    // visit expressions
 
 
-	public String visit(BinOpExpr expr){
-		return "";
-	}
- 	public String visit(UnaryOpExpr expr){
- 		return "";
- 	}
-	public String visit(MethodCallStmt stmt){
-		return "";
-	}
+    public String visit(BinOpExpr expr){
+        return "";
+    }
+    public String visit(UnaryOpExpr expr){
+        return "";
+    }
+    public String visit(MethodCallStmt stmt){
+        return "";
+    }
 
-	// visit literals	
+    // visit literals   
 
 
     public String visit(IntLiteral lit){
-    	return "";
+        return "";
     }
     public String visit(FloatLiteral lit){
-    	return "";
+        return "";
     }
     public String visit(BoolLiteral lit){
-    	return "";
+        return "";
     }
     
-	// visit locations	
+    // visit locations  
 
 
     public String visit(VarLocation loc){
-    	return "";
+        return "";
     }
-	public String visit(VarListLocation loc){
-		return "";
-	}
+    public String visit(VarListLocation loc){
+        return "";
+    }
 
     public String visit(Block aThis){
-    	return "";
+        return "";
     }
 
     // visit method calls
 
 
     public String visit(MethodCall call){
-    	return "";
+        return "";
     }
 
     //visit program
 
 
-	public String visit(Program p) {
-    	return "";
-	}
+    public String visit(Program p) {
+        return "";
+    }
 
-	//visit declarations 
-
-
-	public String visit(ClassDecl cDecl){
-    	return "";
-	}
+    //visit declarations 
 
 
-	public String visit(FieldDecl aThis){
-		return "";
-	}
+    public String visit(ClassDecl cDecl){
+        return "";
+    }
 
 
-	public String visit(MethodDecl decl){
-    	return "";
-	}
+    public String visit(FieldDecl aThis){
+        return "";
+    }
 
 
-	public String visit(IdFieldDecl aThis){
-		return "";
-	}
-	public String visit(Param aThis){
-		return "";
-	}
+    public String visit(MethodDecl decl){
+        return "";
+    }
 
-	public String visit(BodyClass aThis){
-		return "";
-	}
 
-    @Override
+    public String visit(IdFieldDecl aThis){
+        return "";
+    }
+    public String visit(Param aThis){
+        return "";
+    }
+
+    public String visit(BodyClass aThis){
+        return "";
+    }
+
     public String visit(Attribute a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
 

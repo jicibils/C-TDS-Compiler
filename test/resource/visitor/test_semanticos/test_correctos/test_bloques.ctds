@@ -1,0 +1,36 @@
+class main{
+
+integer breaks(integer g){
+      integer  i;
+      i = 0;
+
+      while(i < 10){
+	{ //bloque 1
+          i = i + 1;
+        
+             { //bloque 2
+	          if(g < 0){
+	                break;
+                   }
+	           else{
+	                continue;
+                   }
+             } //fin bloque 2
+        }//fin bloque 1
+
+     } //fin while
+
+	return i;
+
+}
+
+void printI(integer i) extern;
+
+integer main(){ 
+   printI(breaks( 1) );
+   return 1;
+}
+
+
+
+}

@@ -1,0 +1,27 @@
+class main{
+
+integer pruif(integer b, integer c ){
+	
+        float res[8];
+        integer i;   
+
+	if(b > c) // Error o no depende de su gramatica, el if tiene q tener llaves
+		res[0] = 1 - c;   
+
+       if(b > c) {}// Error o no depende de su gramatica, el body no puede estar vacio
+		       
+ 
+
+	return res[b];
+		
+}
+
+void printI(integer i)extern;
+
+integer main(){
+
+    printI( pruif(4,8 ) + 5 );
+     //Error falta return;    
+}
+
+}

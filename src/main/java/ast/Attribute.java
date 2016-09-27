@@ -2,10 +2,6 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author
- */
 public class Attribute extends AST{
     String id;
     Type type;

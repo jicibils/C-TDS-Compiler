@@ -1,0 +1,24 @@
+class main{
+   float c;
+
+   void alo(integer x){
+      x= x + 1;
+      return x; // Error alo no puede retornar nada porq retorna void.
+   }
+
+   integer alo2(integer x){
+      alo(x);
+      x=  x + 1; 
+      return; // error alo2 debe retornar un entero
+   }
+ 
+   void main(){
+        integer y;
+        y = 7;
+        c = y *8;
+        alo2(y);
+        alo2(c);
+        return;
+   }
+
+}

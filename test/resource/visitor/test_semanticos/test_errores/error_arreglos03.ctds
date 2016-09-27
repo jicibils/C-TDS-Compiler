@@ -1,0 +1,31 @@
+class main{
+
+integer A[5] ;
+bool C[10];
+bool y;
+
+integer pruArreglos(integer a, integer b ){
+         bool c ;
+         c =  false && C[2];
+         c[0] = ((a < b)) ; //Error: c no es un arreglo, es una vble
+
+	return A[1]; 
+
+}
+
+
+void printI(integer i)extern;
+
+integer main(){
+     
+     A[1] = 58 - (-6) ; 
+     C[2] = !((4 < 6)) ;
+     C[3] = ( 5 >= A[ 7 -(3+3) ]) || true ;
+     y= C; // Error C es un arreglo 
+     printI(pruArreglos(B, 8 )); // ERROR: B no esta declarada
+    
+    return 1;
+    
+}
+
+}

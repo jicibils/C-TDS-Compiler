@@ -1,0 +1,43 @@
+class main{
+
+/* funcion que calcula la x ^ n , x elevado a la n  */
+
+float potencia(float x, integer n){
+
+	integer i; 
+	bool  neg;
+	float prod;
+        neg = false;
+        i = 1;
+        prod = 1.0;
+
+	if (n < 0){
+		n = -n;
+		neg = true;
+	}
+
+	while(i < n || i == n){
+		prod = prod * x * 2; //Error 2 es entero, * pide q tengan todos el mismo tipo.
+		i = i + 1;
+	}
+	if (!(!neg)){ //neg true
+		return 1.0/prod;
+        }
+	else{
+		return prod;
+        }
+	return -100.1;
+}
+
+void printF(float f)extern;
+
+void main(){
+     float f;
+     integer a;
+     a = 8;
+     f = potencia(a, 2);//error a es de tipo int
+     printF(f);
+     return;
+}
+
+}

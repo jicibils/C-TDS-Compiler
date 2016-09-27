@@ -1,0 +1,40 @@
+class main{
+
+bool b;
+
+integer pruif(integer b, integer c ){
+	
+        float res[8];
+        bool i;   
+
+	if(b){ // Error la expresion debe ser de tipo bool
+		res[0] = 1 - c;         
+        }
+        if ( i = true ){ //ERROr la asignacion no retorna valor
+           res [1] += 4.3;   
+        }
+        else{
+           if ( i == true ){
+                res [1] += 4.3;   
+           }
+           else{
+                 res [1] -= 4.3;  
+           }
+  
+       }
+
+	return res[0]; //Error debe retorna un int
+		
+}
+
+void printI(integer i)extern;
+
+integer main(){
+
+    printI( pruif(4,8 ) + 5 );
+    return 1;
+
+    
+}
+
+}

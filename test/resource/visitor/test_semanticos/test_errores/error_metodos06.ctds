@@ -1,0 +1,33 @@
+class main{
+   float c;
+
+   void alo(bool b, integer x){
+      if ( b ) {
+            x= x + 1;
+      }
+      else{
+          x = x - 1;
+      }  
+      return ; 
+   }
+
+   void c(bool b, integer x){ //multiple declaracion, c ya esta declarado en este scope.
+      return ; 
+   }
+
+   integer alo2(integer x){
+      alo(true, x); 
+      x=  x + 1; 
+      return x; 
+   }
+ 
+   void main(){
+        integer y;
+        y = 7;
+        c = y *8;
+        y = alo2(y); 
+        alo(false, (c+3)*y); 
+        return;
+   }
+
+}

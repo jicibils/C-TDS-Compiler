@@ -32,10 +32,6 @@ import main.java.ast.VarLocation;
 import main.java.ast.VarListLocation;
 import main.java.ast.WhileStatement;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class PrettyPrintVisitor implements ASTVisitor<String> {
 
 	@Override

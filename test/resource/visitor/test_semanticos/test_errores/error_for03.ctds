@@ -1,0 +1,30 @@
+class main{
+
+integer A[5] ;
+float B [56];
+bool  C[10];
+
+integer pruArreglos(integer b, integer c ){
+        integer i;
+        A[0] = 2; 
+        
+ 
+        for i = 5.0 , 10.0 { // expresion inicial debe ser de tipo integer 
+               A[i] = i % 2;
+        }
+        
+        return A[1];
+        
+}
+
+void printI(integer i )extern;
+
+integer main(){
+
+    printI(pruArreglos(A[A[B[2]]],8 )); //ERROR: la expr de acceso a arreglos debe ser int
+    
+    return 1;
+    
+}
+
+}

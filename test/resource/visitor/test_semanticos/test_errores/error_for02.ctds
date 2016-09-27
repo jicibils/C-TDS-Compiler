@@ -1,0 +1,34 @@
+class main{
+
+integer  A[5] ;
+float B [56];
+bool C[10];
+
+integer  pruArreglos(integer  b, integer  c ){
+        integer  i;
+        A[0] = 2; 
+        
+        
+ 
+        for i = 5* A[0] , i < 10 { //ERROR la expresion final del for debe ser tipo INT
+               A[i] = i % 2;
+        }
+
+        for i = 5* A[0] , 10 {        } // ERROR o no depende su convención
+
+        
+        for i = 5* A[0] , 10 {   ;     } 
+        return A[1];
+}
+
+void printI(integer  i)extern;
+
+integer  main(){
+
+    printI(pruArreglos(4,8));
+    
+    return 1;
+    
+}
+
+}

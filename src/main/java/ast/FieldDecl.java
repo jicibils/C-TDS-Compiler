@@ -8,10 +8,6 @@ package main.java.ast;
 import java.util.List;
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Adrian Tissera
- */
 public class FieldDecl extends Declaration{
 	private final Type t;
 	private final List<IdFieldDecl> lifd;

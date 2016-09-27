@@ -32,10 +32,6 @@ import main.java.ast.VarListLocation;
 import main.java.ast.VarLocation;
 import main.java.ast.WhileStatement;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public class CheckExistMainVisitor implements ASTVisitor<Integer>{
     
     public CheckExistMainVisitor(){
@@ -69,7 +65,7 @@ public class CheckExistMainVisitor implements ASTVisitor<Integer>{
                 return 1;
             }
         }
-        return 0;
+        return -1;
     }
 
     @Override

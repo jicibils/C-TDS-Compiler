@@ -7,10 +7,6 @@ package main.java.ast;
 
 import main.java.visitor.ASTVisitor;
 
-/**
- *
- * @author Arangue-Cibils-Tissera Team
- */
 public class Param extends AST{
 
 	private Type t;

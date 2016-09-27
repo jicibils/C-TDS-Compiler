@@ -1,0 +1,47 @@
+
+/* Error clases repetidas*/
+
+class test_class{
+   float c;
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void alo2(integer x){
+      alo(); // Error alo tiene un parametro
+      x=  alo(2) + 1; //error metido void usado como expr
+      return;
+   }
+
+}
+
+class test_class{
+   float e;
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void alo2(integer x){
+      alo(2); 
+      x=  1;
+      return;
+   }
+
+}
+
+class main{  //ERROR falta main
+   float c;
+   void alo(integer x){
+      x= x + 1;
+      return;
+   }
+
+   void alo2(integer x){
+      alo(2);
+      x=   x + 1;
+      return;
+   }
+
+}

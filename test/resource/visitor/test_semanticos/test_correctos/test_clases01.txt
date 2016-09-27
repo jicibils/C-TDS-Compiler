@@ -1,0 +1,44 @@
+class test{
+   float c;
+
+   void alo(bool b, integer x){
+      if ( b ) {
+            x= x + 1;
+      }
+      else{
+          x = x - 1;
+      }  
+      return ; 
+   }
+
+   void Alo(bool b, integer x){ //es case sensitive no deberia dar error
+      return ; 
+   }
+
+   integer alo2(integer x){
+      alo(true, x); 
+      x =  x + 1; 
+      return x; 
+   }
+ 
+}
+
+class main{
+
+   void printI(integer i)extern;
+
+ 
+   void main(){
+
+        test t;
+        integer y;
+        y = 7;
+        t.alo(true,y);
+        
+        c = 8.0;
+        y = t.alo2(y); 
+        printI(t.alo2((3)*y)); 
+        return;
+   }
+
+}
