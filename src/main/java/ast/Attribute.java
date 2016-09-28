@@ -18,6 +18,20 @@ public class Attribute extends AST{
         this.type = null;
         this.value = null;
     }
+    public Attribute(String id, AST value){
+        this.id = id;
+        this.type = null;
+        this.value = value;
+    }
+    public Attribute(Type t, AST value){
+        this.type = t;
+        this.value = value;
+    }
+    public Attribute(String id, Type t){
+        this.id = id;
+        this.type = t;
+        this.value = null;
+    }
     
     public String getId(){
         return id;

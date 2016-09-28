@@ -8,13 +8,25 @@ package main.java.ast;
 import main.java.visitor.ASTVisitor;
 
 public class IdFieldDecl extends AST{
-	private final String id;
-	private final IntLiteral il;
+	private String id;
+	private IntLiteral il;
 	
 	public IdFieldDecl(String id, IntLiteral il){
 		this.id = id;
 		this.il = il;
 	}
+	public IdFieldDecl(String id){
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public IntLiteral getSize() {
+		return il;
+	}
+
 
 	@Override
 	public String toString() {

@@ -37,9 +37,8 @@ public class Main {
     }
 
     public static void mainCheck(Program program){
-        int result;
         CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
-        result = mainVisitor.visit(program);
+        Integer result = mainVisitor.visit(program);
         if (result == 0){
             System.out.println("Fatal error: There isn't method 'Main'");            
         }

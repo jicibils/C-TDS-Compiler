@@ -9,14 +9,23 @@ import java.util.List;
 import main.java.visitor.ASTVisitor;
 
 public class FieldDecl extends Declaration{
-	private final Type t;
-	private final List<IdFieldDecl> lifd;
+	private  Type t;
+	private  List<IdFieldDecl> lifd;
 	
 	
 	public FieldDecl(Type t, List<IdFieldDecl> lifd){
 		this.t = t;
 		this.lifd = lifd;
 	}
+
+	public Type getType() {
+		return t;
+	}
+
+	public List<IdFieldDecl> getListId() {
+		return lifd;
+	}
+
 	
 	@Override
 	public String toString(){

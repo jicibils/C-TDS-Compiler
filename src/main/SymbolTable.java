@@ -1,13 +1,10 @@
-package main;
+package main.java.visitor;
+
 
 import java.util.LinkedList;
 import main.java.ast.AST;
 import main.java.ast.Attribute;
 
-/**
- *
- * @author
- */
 public class SymbolTable{
 
 	private LinkedList<LinkedList<AST>> stack;          //stack: LinkedList of LinkedList that represent a stack of AST nodes
@@ -17,12 +14,12 @@ public class SymbolTable{
 	public SymbolTable(){
 		stack = new LinkedList<LinkedList<AST>>();
 		index = 0;
-                stack.add(new LinkedList<AST>());
+        stack.add(new LinkedList<AST>());
 	}
         
 	//Insert new block
 	public void pushNewLevel(){
-                index++;
+        index++;
 		LinkedList newBlock = new LinkedList<AST>();
 		stack.push(newBlock);
 	}
@@ -39,7 +36,7 @@ public class SymbolTable{
 	}
 
 	//Get the symbols presents in a level given as argument
-	public LinkedList<AST> getSymbolsAtIndex(int index){
+	public LinkedList<AST> getLevelAtIndex(int index){
 		return stack.get(index);
 	}
 

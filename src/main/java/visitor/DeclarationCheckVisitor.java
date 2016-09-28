@@ -3,135 +3,177 @@
 package main.java.visitor;
 
 import main.java.ast.*;
+import java.util.List;
+import java.util.LinkedList;
 
 // Concrete visitor
-public class DeclarationCheckVisitor implements ASTVisitor<String> {
+public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
+
+    private SymbolTable table;
 
     public DeclarationCheckVisitor(){
-
-    }
-
-    // visit statements 
-
-
-    public String visit(AssignStmt stmt){
-        return "";
-    }
-
-    public String visit(ReturnStmt stmt){
-        return "";
-    }
-
-    public String visit(IfStatement stmt){
-        return "";
-    }
-
-    public String visit(ContinueStmt stmt){
-        return "";
-    }
-
-    public String visit(WhileStatement stmt){
-        return "";
-    }
-
-    public String visit(BreakStatement stmt){
-        return "";
-    }
-
-    public String visit(SemicolonStmt stmt){
-        return "";
-    }
-
-    public String visit(ForStatement stmt){
-        return "";
-    }
-
-    // visit expressions
-
-
-    public String visit(BinOpExpr expr){
-        return "";
-    }
-    public String visit(UnaryOpExpr expr){
-        return "";
-    }
-    public String visit(MethodCallStmt stmt){
-        return "";
-    }
-
-    // visit literals   
-
-
-    public String visit(IntLiteral lit){
-        return "";
-    }
-    public String visit(FloatLiteral lit){
-        return "";
-    }
-    public String visit(BoolLiteral lit){
-        return "";
-    }
-    
-    // visit locations  
-
-
-    public String visit(VarLocation loc){
-        return "";
-    }
-    public String visit(VarListLocation loc){
-        return "";
-    }
-
-    public String visit(Block aThis){
-        return "";
-    }
-
-    // visit method calls
-
-
-    public String visit(MethodCall call){
-        return "";
+        table = new SymbolTable();
     }
 
     //visit program
 
-
-    public String visit(Program p) {
-        return "";
+    public List<String> visit(Program program) {
+        List<String> errorList = new LinkedList<String>();
+        table.pushNewLevel();
+        for(ClassDecl classdecl : program.getClassList()){
+            Attribute attribute = new Attribute(classdecl.getId(),classdecl);
+            if(table.insertSymbol(attribute)){
+                errorList.addAll(classdecl.accept(this));
+            }
+        }
+        table.popLevel();
+        return errorList;
     }
 
     //visit declarations 
 
 
-    public String visit(ClassDecl cDecl){
-        return "";
+    public List<String> visit(ClassDecl cDecl){
+        List<String> errorList = new LinkedList<String>();
+        table.pushNewLevel();    
+        for(FieldDecl fieldDecl : cDecl.getFieldDecl()){
+            errorList.addAll(fieldDecl.accept(this));
+        }
+
+        for(MethodDecl methodDecl : cDecl.getMethodDecl()){
+            Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType(),methodDecl);
+            if(table.insertSymbol(attribute)){
+                errorList.addAll(methodDecl.accept(this));
+            }
+            
+        }
+        table.popLevel();
+        return errorList;
+    }
+
+    public List<String> visit(FieldDecl fieldDecl){
+        List<String> errorList = new LinkedList<String>();
+        List<IdFieldDecl> list = new LinkedList<IdFieldDecl>();
+        Type type;
+        String id;
+        int i = 0; 
+        type = fieldDecl.getType();
+        list = fieldDecl.getListId();
+        while (i<list.size()){
+            id = list.get(i).getId();
+            Attribute attribute = new Attribute(id,type,fieldDecl);
+            if (!(table.insertSymbol(attribute))){
+                errorList.add("Error fieldDecl");
+            }
+            i++;
+        }
+        return errorList;
     }
 
 
-    public String visit(FieldDecl aThis){
-        return "";
+    public List<String> visit(MethodDecl decl){
+        return new LinkedList<String>();
     }
 
 
-    public String visit(MethodDecl decl){
-        return "";
+    public List<String> visit(IdFieldDecl aThis){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(Param aThis){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(BodyClass aThis){
+        return new LinkedList<String>();
+    }
+   
+    public List<String> visit(Attribute a) {
+        return new LinkedList<String>();
+    }
+    
+    // visit locations  
+
+    public List<String> visit(Block aThis){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(VarLocation loc){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(VarListLocation loc){
+        return new LinkedList<String>();
+    }
+    // visit statements 
+
+
+    public List<String> visit(AssignStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(ReturnStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(IfStatement stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(ContinueStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(WhileStatement stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(BreakStatement stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(SemicolonStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(ForStatement stmt){
+        return new LinkedList<String>();
+    }
+
+    // visit expressions
+
+
+    public List<String> visit(BinOpExpr expr){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(UnaryOpExpr expr){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(MethodCallStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    // visit literals   
+
+
+    public List<String> visit(IntLiteral lit){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(FloatLiteral lit){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(BoolLiteral lit){
+        return new LinkedList<String>();
+    }
+    
+
+
+    // visit method calls
+
+
+    public List<String> visit(MethodCall call){
+        return new LinkedList<String>();
     }
 
 
-    public String visit(IdFieldDecl aThis){
-        return "";
-    }
-    public String visit(Param aThis){
-        return "";
-    }
-
-    public String visit(BodyClass aThis){
-        return "";
-    }
-
-    public String visit(Attribute a) {
-        return "";
-    }
 
 
 }
