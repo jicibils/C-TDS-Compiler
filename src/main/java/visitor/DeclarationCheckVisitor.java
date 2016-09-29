@@ -41,6 +41,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         }
 
         for(MethodDecl methodDecl : cDecl.getMethodDecl()){
+            //add the profile of method
             Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType());
             if(table.insertSymbol(attribute)){
                 errorList.addAll(methodDecl.accept(this));
@@ -63,7 +64,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             id = list.get(i).getId();
             Attribute attribute = new Attribute(id,type,fieldDecl);
             if (!(table.insertSymbol(attribute))){
-                errorList.add("Error fieldDecl");
+                errorList.add("Error fieldDecl: Line: "+fieldDecl.getLineNumber()+" Column: "+fieldDecl.getColumnNumber());
             }
             i++;
         }

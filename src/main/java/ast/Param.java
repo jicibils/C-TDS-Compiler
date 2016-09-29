@@ -19,6 +19,13 @@ public class Param extends AST{
 		this.setColumnNumber(cn);
 	}
 	
+	public Type getType() {
+		return t;
+	}
+
+	public String getId() {
+		return id;
+	}
 	@Override
 	public String toString() {
 		return this.t.toString() + " " +this.id;
