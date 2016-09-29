@@ -119,11 +119,18 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     
     // visit locations  
 
-    public List<String> visit(Block aThis){
+    public List<String> visit(Block block){
         List<String> errorList = new LinkedList<String>();
         table.pushNewLevel();    
+        for(FieldDecl fieldDecl : block.getFieldDecl()){
+            errorList.addAll(fieldDecl.accept(this));
+        }
 
-
+        for(Statement statement : block.getStatements()){
+            errorList.addAll(statement.accept(this));            
+        }
+        
+        table.popLevel();
         return errorList;
     }
 
