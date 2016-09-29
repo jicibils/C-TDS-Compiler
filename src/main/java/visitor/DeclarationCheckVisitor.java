@@ -41,7 +41,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         }
 
         for(MethodDecl methodDecl : cDecl.getMethodDecl()){
-            Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType(),methodDecl);
+            Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType());
             if(table.insertSymbol(attribute)){
                 errorList.addAll(methodDecl.accept(this));
             }
@@ -71,19 +71,34 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
 
-    public List<String> visit(MethodDecl decl){
-        return new LinkedList<String>();
+    public List<String> visit(MethodDecl method){
+        List<String> errorList = new LinkedList<String>();
+        if (!(method.isExtern())){
+            table.pushNewLevel();    
+            Attribute attribute = new Attribute(method.getId(),method.getType(),method);
+            if(table.insertSymbol(attribute)){
+
+                Block block = method.getBlock();
+                errorList.addAll(block.accept(this));
+
+                for(Param param : method.getParam()){
+                    errorList.addAll(param.accept(this));
+                }
+            }
+            table.popLevel();
+        }        
+        return errorList;
     }
 
-
-    public List<String> visit(IdFieldDecl aThis){
-        return new LinkedList<String>();
-    }
     public List<String> visit(Param aThis){
         return new LinkedList<String>();
     }
 
     public List<String> visit(BodyClass aThis){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(IdFieldDecl aThis){
         return new LinkedList<String>();
     }
    
