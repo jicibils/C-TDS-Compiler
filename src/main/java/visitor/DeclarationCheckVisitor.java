@@ -78,21 +78,31 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             table.pushNewLevel();    
             Attribute attribute = new Attribute(method.getId(),method.getType(),method);
             if(table.insertSymbol(attribute)){
+                //open level for parameters
+                table.pushNewLevel();    
+                for(Param param : method.getParam()){
+                    errorList.addAll(param.accept(this));
+                }
 
                 Block block = method.getBlock();
                 errorList.addAll(block.accept(this));
 
-                for(Param param : method.getParam()){
-                    errorList.addAll(param.accept(this));
-                }
-            }
+            }//ELSE {ERROR?????????????????????????????????????????}
+            //close level to parameters
+            table.popLevel();
+            //close level to method
             table.popLevel();
         }        
         return errorList;
     }
 
-    public List<String> visit(Param aThis){
-        return new LinkedList<String>();
+    public List<String> visit(Param param){
+        List<String> errorList = new LinkedList<String>();
+        Attribute attribute = new Attribute(param.getId(),param.getType(),param);
+        if(!(table.insertSymbol(attribute))){
+            errorList.add("Error insert parameter: Line: "+param.getLineNumber()+" Column: "+param.getColumnNumber());
+        }
+        return errorList;
     }
 
     public List<String> visit(BodyClass aThis){
@@ -110,7 +120,11 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     // visit locations  
 
     public List<String> visit(Block aThis){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        table.pushNewLevel();    
+
+
+        return errorList;
     }
 
     public List<String> visit(VarLocation loc){
