@@ -42,7 +42,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
         for(MethodDecl methodDecl : cDecl.getMethodDecl()){
             //add the profile of method
-            Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType());
+            Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType(),methodDecl);
             if(table.insertSymbol(attribute)){
                 errorList.addAll(methodDecl.accept(this));
             }
@@ -75,26 +75,21 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(MethodDecl method){
         List<String> errorList = new LinkedList<String>();
         if (!(method.isExtern())){
+            //open level for parameters
             table.pushNewLevel();    
-            Attribute attribute = new Attribute(method.getId(),method.getType(),method);
-            if(table.insertSymbol(attribute)){
-                //open level for parameters
-                table.pushNewLevel();    
-                for(Param param : method.getParam()){
-                    errorList.addAll(param.accept(this));
-                }
+            for(Param param : method.getParam()){
+                errorList.addAll(param.accept(this));
+            }
 
-                Block block = method.getBlock();
-                errorList.addAll(block.accept(this));
-
-            }//ELSE {ERROR?????????????????????????????????????????}
-            //close level to parameters
-            table.popLevel();
-            //close level to method
-            table.popLevel();
-        }        
+            Block block = method.getBlock();
+            errorList.addAll(block.accept(this));
+        }
+        //close level to parameters
+        table.popLevel();
         return errorList;
-    }
+    }        
+    
+
 
     public List<String> visit(Param param){
         List<String> errorList = new LinkedList<String>();
@@ -129,7 +124,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         for(Statement statement : block.getStatements()){
             errorList.addAll(statement.accept(this));            
         }
-        
+
         table.popLevel();
         return errorList;
     }
