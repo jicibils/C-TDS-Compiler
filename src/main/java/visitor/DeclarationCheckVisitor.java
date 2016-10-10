@@ -179,6 +179,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
+    //QUE HAGO CON LOS BREAK Y CONTINUE
     public List<String> visit(BreakStatement stmt){
         return new LinkedList<String>();
     }
@@ -202,10 +203,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     public List<String> visit(BinOpExpr expr){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(expr.getLeftOperand().accept(this));
+        //tendria que recuperar el operador o no????
+        errorList.addAll(expr.getRightOperand().accept(this));
+        return errorList;
     }
     public List<String> visit(UnaryOpExpr expr){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(expr.getOperand().accept(this));
+        //tendria que recuperar el operador o no????
+        return errorList;
     }
 
     // visit literals   
