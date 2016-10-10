@@ -172,7 +172,11 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     public List<String> visit(ReturnStmt stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        if(stmt.getExpression() != null){
+            errorList.addAll(stmt.getExpression().accept(this));
+        }
+        return errorList;
     }
 
     public List<String> visit(BreakStatement stmt){
