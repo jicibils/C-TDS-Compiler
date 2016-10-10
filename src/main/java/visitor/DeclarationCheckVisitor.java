@@ -159,7 +159,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(ForStatement stmt){
         List<String> errorList = new LinkedList<String>();
         errorList.addAll(stmt.getAssign().accept(this));
-        errorList.addAll(stmt.getCond().accept(this));
+        errorList.addAll(stmt.getCondition().accept(this));
         errorList.addAll(stmt.getBlock().accept(this));
         return errorList;
     }
