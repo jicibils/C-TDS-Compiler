@@ -130,7 +130,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     // visit statements 
-
+// PARA LOS STATMENT TENGO QUE ABRIR UN BLOQUE NUEVO? POR EJEMPLO PARA EL IFSTMT O EL WHILE O FOR??
 
     public List<String> visit(AssignStmt stmt){
         List<String> errorList = new LinkedList<String>();
@@ -146,11 +146,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(ReturnStmt stmt){
-        return new LinkedList<String>();
+    public List<String> visit(IfStatement stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getCondition().accept(this));
+        errorList.addAll(stmt.getIfBlock().accept(this));
+        if (stmt.thereIsElseBlock()){
+            errorList.addAll(stmt.getElseBlock().accept(this));
+        }
+        return errorList;
     }
 
-    public List<String> visit(IfStatement stmt){
+    public List<String> visit(ReturnStmt stmt){
         return new LinkedList<String>();
     }
 
