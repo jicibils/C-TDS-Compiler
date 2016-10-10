@@ -165,7 +165,10 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     public List<String> visit(WhileStatement stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getExpression().accept(this));
+        errorList.addAll(stmt.getBlock().accept(this));
+        return errorList;
     }
 
     public List<String> visit(ReturnStmt stmt){
