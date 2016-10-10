@@ -19,7 +19,7 @@ public class ForStatement extends Statement{
 		condition = c;
 	}
 
-	public Expression getCond(){
+	public Expression getCondition(){
 		return condition;
 	}
 
