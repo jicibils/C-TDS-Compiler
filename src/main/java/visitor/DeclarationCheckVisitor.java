@@ -156,15 +156,19 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(ReturnStmt stmt){
-        return new LinkedList<String>();
-    }
-
-    public List<String> visit(ContinueStmt stmt){
-        return new LinkedList<String>();
+    public List<String> visit(ForStatement stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getAssign().accept(this));
+        errorList.addAll(stmt.getCond().accept(this));
+        errorList.addAll(stmt.getBlock().accept(this));
+        return errorList;
     }
 
     public List<String> visit(WhileStatement stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(ReturnStmt stmt){
         return new LinkedList<String>();
     }
 
@@ -172,13 +176,14 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return new LinkedList<String>();
     }
 
+    public List<String> visit(ContinueStmt stmt){
+        return new LinkedList<String>();
+    }
+
     public List<String> visit(SemicolonStmt stmt){
         return new LinkedList<String>();
     }
 
-    public List<String> visit(ForStatement stmt){
-        return new LinkedList<String>();
-    }
 
     // visit expressions
 
