@@ -129,17 +129,15 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(VarLocation loc){
-        return new LinkedList<String>();
-    }
-    public List<String> visit(VarListLocation loc){
-        return new LinkedList<String>();
-    }
     // visit statements 
 
 
     public List<String> visit(AssignStmt stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getLocation().accept(this));
+        //tendria que recuperar el operador o no????
+        errorList.addAll(stmt.getExpression().accept(this));
+        return errorList;
     }
 
     public List<String> visit(ReturnStmt stmt){
@@ -172,6 +170,12 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     // visit expressions
 
+    public List<String> visit(VarLocation loc){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(VarListLocation loc){
+        return new LinkedList<String>();
+    }
 
     public List<String> visit(BinOpExpr expr){
         return new LinkedList<String>();
