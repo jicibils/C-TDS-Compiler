@@ -140,6 +140,12 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
+    public List<String> visit(MethodCallStmt stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getMethodCall().accept(this));
+        return errorList;
+    }
+
     public List<String> visit(ReturnStmt stmt){
         return new LinkedList<String>();
     }
@@ -183,9 +189,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(UnaryOpExpr expr){
         return new LinkedList<String>();
     }
-    public List<String> visit(MethodCallStmt stmt){
-        return new LinkedList<String>();
-    }
 
     // visit literals   
 
@@ -201,13 +204,15 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
     
 
-
-    // visit method calls
-
+    // visit method call
 
     public List<String> visit(MethodCall call){
         return new LinkedList<String>();
     }
+
+
+
+
 
 
 
