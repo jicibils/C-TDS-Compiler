@@ -130,7 +130,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     // visit statements 
-// PARA LOS STATMENT TENGO QUE ABRIR UN BLOQUE NUEVO? POR EJEMPLO PARA EL IFSTMT O EL WHILE O FOR??
 
     public List<String> visit(AssignStmt stmt){
         List<String> errorList = new LinkedList<String>();
@@ -179,7 +178,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    //QUE HAGO CON LOS BREAK Y CONTINUE
     public List<String> visit(BreakStatement stmt){
         return new LinkedList<String>();
     }
@@ -237,8 +235,16 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
 
-
-
+// DUDAS:
+    // donde van los mensajes de error? en los varLocation y VarListLocation?
+    // en algun lado me faltan los msjs de error
+    // me falta el methodCall y el VarLocation y VarListLocation
+    //QUE HAGO CON LOS BREAK Y CONTINUE
+    // PARA LOS STATMENT TENGO QUE ABRIR UN BLOQUE NUEVO? POR EJEMPLO PARA EL IFSTMT O EL WHILE O FOR??
+    //tendria que recuperar el operador o no???? (UnaryOpExpr)
+    //tendria que recuperar el operador o no???? (BinOpExpr)
+    //tendria que recuperar el operador o no???? (AssignStmt)
+    //que tengo que chequear en este visitor?
 
 
 

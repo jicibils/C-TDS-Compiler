@@ -48,13 +48,11 @@ public class Block extends Statement {
 	@Override
 	public String toString() {
         String result = "{\n";
-
 		if (fieldDecl != null) {
 			for(FieldDecl f : fieldDecl){
 				result += " " + f.toString() + "\n";
 			}	
 		}
-        
 		if (statements != null) {
 			for (Statement s: statements) {
 				result += " " + s.toString() + "\n";
