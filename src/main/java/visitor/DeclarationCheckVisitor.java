@@ -129,24 +129,56 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(VarLocation loc){
-        return new LinkedList<String>();
-    }
-    public List<String> visit(VarListLocation loc){
-        return new LinkedList<String>();
-    }
     // visit statements 
 
-
     public List<String> visit(AssignStmt stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getLocation().accept(this));
+        //tendria que recuperar el operador o no????
+        errorList.addAll(stmt.getExpression().accept(this));
+        return errorList;
     }
 
-    public List<String> visit(ReturnStmt stmt){
-        return new LinkedList<String>();
+    public List<String> visit(MethodCallStmt stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getMethodCall().accept(this));
+        return errorList;
     }
 
     public List<String> visit(IfStatement stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getCondition().accept(this));
+        errorList.addAll(stmt.getIfBlock().accept(this));
+        if (stmt.thereIsElseBlock()){
+            errorList.addAll(stmt.getElseBlock().accept(this));
+        }
+        return errorList;
+    }
+
+    public List<String> visit(ForStatement stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getAssign().accept(this));
+        errorList.addAll(stmt.getCondition().accept(this));
+        errorList.addAll(stmt.getBlock().accept(this));
+        return errorList;
+    }
+
+    public List<String> visit(WhileStatement stmt){
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(stmt.getExpression().accept(this));
+        errorList.addAll(stmt.getBlock().accept(this));
+        return errorList;
+    }
+
+    public List<String> visit(ReturnStmt stmt){
+        List<String> errorList = new LinkedList<String>();
+        if(stmt.getExpression() != null){
+            errorList.addAll(stmt.getExpression().accept(this));
+        }
+        return errorList;
+    }
+
+    public List<String> visit(BreakStatement stmt){
         return new LinkedList<String>();
     }
 
@@ -154,33 +186,32 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return new LinkedList<String>();
     }
 
-    public List<String> visit(WhileStatement stmt){
-        return new LinkedList<String>();
-    }
-
-    public List<String> visit(BreakStatement stmt){
-        return new LinkedList<String>();
-    }
-
     public List<String> visit(SemicolonStmt stmt){
         return new LinkedList<String>();
     }
 
-    public List<String> visit(ForStatement stmt){
-        return new LinkedList<String>();
-    }
 
     // visit expressions
 
+    public List<String> visit(VarLocation loc){
+        return new LinkedList<String>();
+    }
+    public List<String> visit(VarListLocation loc){
+        return new LinkedList<String>();
+    }
 
     public List<String> visit(BinOpExpr expr){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(expr.getLeftOperand().accept(this));
+        //tendria que recuperar el operador o no????
+        errorList.addAll(expr.getRightOperand().accept(this));
+        return errorList;
     }
     public List<String> visit(UnaryOpExpr expr){
-        return new LinkedList<String>();
-    }
-    public List<String> visit(MethodCallStmt stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        errorList.addAll(expr.getOperand().accept(this));
+        //tendria que recuperar el operador o no????
+        return errorList;
     }
 
     // visit literals   
@@ -197,13 +228,23 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
     
 
-
-    // visit method calls
-
+    // visit method call
 
     public List<String> visit(MethodCall call){
         return new LinkedList<String>();
     }
+
+
+// DUDAS:
+    // donde van los mensajes de error? en los varLocation y VarListLocation?
+    // en algun lado me faltan los msjs de error
+    // me falta el methodCall y el VarLocation y VarListLocation
+    //QUE HAGO CON LOS BREAK Y CONTINUE
+    // PARA LOS STATMENT TENGO QUE ABRIR UN BLOQUE NUEVO? POR EJEMPLO PARA EL IFSTMT O EL WHILE O FOR??
+    //tendria que recuperar el operador o no???? (UnaryOpExpr)
+    //tendria que recuperar el operador o no???? (BinOpExpr)
+    //tendria que recuperar el operador o no???? (AssignStmt)
+    //que tengo que chequear en este visitor?
 
 
 

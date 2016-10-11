@@ -22,10 +22,6 @@ public abstract class AST {
 	public void setColumnNumber(int cn) {
 		colNumber = cn;
 	}
-	/*
-        public String getId(){
-            return id;
-        }
-        */
+
 	public abstract <T> T accept(ASTVisitor<T> v);
 }

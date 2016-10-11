@@ -32,7 +32,7 @@ public class WhileStatement extends Statement{
 
 	@Override
 	public String toString(){
-		return "while" + expr.toString() + block.toString();
+		return "while" + expr.toString() + ", \n" + block.toString();
 	}
 
 	@Override

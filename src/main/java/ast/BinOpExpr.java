@@ -53,7 +53,7 @@ public class BinOpExpr extends Expression {
 	
 	@Override
 	public String toString() {
-		return lOperand + " " + operator + " " + rOperand;
+		return lOperand.toString() + " " + operator.toString() + " " + rOperand.toString();
 	}
 
 	@Override

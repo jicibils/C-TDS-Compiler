@@ -47,6 +47,10 @@ public class IfStatement extends Statement {
 		this.elseBlock = elseBlock;
 	}
 	
+	public Boolean thereIsElseBlock() {
+		return elseBlock != null;
+	}
+
 	@Override
 	public String toString() {
 		String rtn = "if " + condition + '\n' + ifBlock.toString();
