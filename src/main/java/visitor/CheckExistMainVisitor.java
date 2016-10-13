@@ -61,11 +61,11 @@ public class CheckExistMainVisitor implements ASTVisitor<Integer>{
     public Integer visit(MethodDecl md){
         
         if(md.getId().equals("main")){
-            if(md.getParam().size()==0){  //A main must not contain any arguments!
+            if(md.getParam().isEmpty()){  //A main must not contain any arguments!
                 return 1;
             }
         }
-        return -1;
+        return 0;
     }
 
     @Override

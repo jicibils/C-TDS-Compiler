@@ -13,11 +13,12 @@ import main.java.visitor.*;
 import java.util.List;
 import java.util.LinkedList;
 
-
+/*
 public class Main {
     /**
      * @param args the command line arguments
      */
+/*
     private static List<String> errorList;
 
     public static void main(String[] args) {        
@@ -44,28 +45,32 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+*/
+    
+public class Main {
 
-    public static void mainCheck(Program program){
-        CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
-        Integer res = mainVisitor.visit(program);
-        if (res == 0){
-            System.out.println("Fatal error: There isn't method 'Main'");            
-        }
-        else{
-            if(res == -1){
-                System.out.println("Fatal error: Method Main contain arguments");
-            }
-            else{
-                if(res > 1){
-                    System.out.println("Fatal error: there is more than one method 'Main'");
-                }
-            }
+    static public void main(String argv[]) {
+
+        try {
+
+        Parser p = new Parser(new Lexer(new FileReader(argv[0])));
+        Program result = (Program)p.parse().value;      
+
+        mainCheck(result);                  //Call to static method
+        } catch (Exception e) {
+            System.out.println("Mensaje de error:\n"+e.getMessage());
+            e.printStackTrace();
+            
         }
     }
-
-    public static void declarationCheck(Program program) {
-        DeclarationCheckVisitor decl = new DeclarationCheckVisitor();
-        errorList.addAll(decl.visit(program));
+    
+    private static void mainCheck(Program program){
+        CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
+        Integer res = mainVisitor.visit(program);
+        //System.out.println("Cantidad de mains: "+res);
+                
+        if((res > 1) || (res == 0))
+            System.out.println("Fatal Error: Program must contain just one main method with no arguments.");
     }
 
 }
