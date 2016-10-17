@@ -8,10 +8,13 @@ package main.java.ast;
 import main.java.visitor.ASTVisitor;
 
 public class IdFieldDecl extends AST{
-	private String id;
-	private IntLiteral il;
+
+	//DONDE HABIA IntLiteral cambie por Integer
 	
-	public IdFieldDecl(String id, IntLiteral il){
+	private String id;
+	private Integer il;
+	
+	public IdFieldDecl(String id, Integer il){
 		this.id = id;
 		this.il = il;
 	}
@@ -23,7 +26,7 @@ public class IdFieldDecl extends AST{
 		return id;
 	}
 
-	public IntLiteral getSize() {
+	public Integer getSize() {
 		return il;
 	}
 

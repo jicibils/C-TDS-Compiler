@@ -53,7 +53,8 @@ FloatLiteral = ([0-9]+"."[0-9]+)
 	"bool" 			{return new Symbol(Sym.TBOOL, yyline, yycolumn, yytext());}
 	"float"			{return new Symbol(Sym.TFLOAT, yyline, yycolumn, yytext());}
 	"integer"		{return new Symbol(Sym.TINTEGER, yyline, yycolumn, yytext());}
-	"true|false"    {return new Symbol(Sym.BOOL_LITERAL, yyline, yycolumn, yytext());}
+	"true"    		{return new Symbol(Sym.TRUE, new Boolean("true"));}
+	"false"			{return new Symbol(Sym.FALSE, new Boolean("false"));}
 
 
 		/*Delimiters*/
@@ -93,9 +94,9 @@ FloatLiteral = ([0-9]+"."[0-9]+)
   	"-="            {return new Symbol(Sym.DEC, yyline, yycolumn, yytext());}
 
 		/*Literals*/
-
-	{IntegerLiteral}			{return new Symbol(Sym.INT_LITERAL, yyline, yycolumn, yytext());}
-	{FloatLiteral}   			{return new Symbol(Sym.FLOAT_LITERAL, yyline, yycolumn, yytext());}
+								//ACA HICE LA MODIFICACION. FIJATE QUE CREO UN INTEGER AHI
+	{IntegerLiteral}			{return new Symbol(Sym.INT_LITERAL, new Integer(Integer.parseInt(yytext())));}
+	{FloatLiteral}   			{return new Symbol(Sym.FLOAT_LITERAL, new Float(Float.parseFloat(yytext())));}
 
 		/*Identifiers*/
 

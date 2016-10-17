@@ -64,10 +64,14 @@ terminal DOT;
 
 terminal DIV;
 terminal MULT;
+//######## ACA LE PUSE ADELANTE Integer a INT_LITERAL #########
+terminal    Integer INT_LITERAL;
+terminal    Float FLOAT_LITERAL;
 
-terminal    IntLiteral INT_LITERAL;
-terminal    FloatLiteral FLOAT_LITERAL;
-terminal    BoolLiteral BOOL_LITERAL;
+//#### modificacion BOOL_LITERAL
+terminal    Boolean TRUE;
+terminal    Boolean FALSE;
+
 terminal    String ID;
 
 /*Non-Terminals*/
@@ -75,15 +79,15 @@ terminal    String ID;
 non terminal Program program; 
 non terminal ClassDecl class_decl;
 non terminal BodyClass body_class;
-non terminal LinkedList<ClassDecl> class_list;
+non terminal List<ClassDecl> class_list;
 non terminal MethodDecl method_decl;
-non terminal LinkedList<MethodDecl> method_list;
+non terminal List<MethodDecl> method_list;
 non terminal IdFieldDecl id_field_decl;
-non terminal LinkedList<IdFieldDecl> list_id_field_decl;
+non terminal List<IdFieldDecl> list_id_field_decl;
 non terminal Param param; 
-non terminal LinkedList<Param> param_list;
+non terminal List<Param> param_list;
 non terminal Block body;
-non terminal assign_op;
+non terminal AssignOpType assign_op;
 non terminal MethodCall method_call;
 non terminal Block block;
 non terminal Type type;
@@ -93,8 +97,12 @@ non terminal Location location;
 non terminal List<String> list_invoc;
 non terminal String invoc;
 non terminal Literal literal;
+
+//########### ver bool_literal #########
+non terminal Boolean bool_literal;
+
 non terminal FieldDecl field_decl;
-non terminal LinkedList<FieldDecl> field_list;
+non terminal List<FieldDecl> field_list;
 non terminal Statement statement, if_stmt, return_stmt;
 non terminal List<Statement> list_statement;
 
@@ -112,10 +120,10 @@ precedence right NOT;
 start with program;
 
 
-program				::= class_list:cl										{: RESULT = new Program(cl, clleft+1, clright+1); System.out.println("No error found. test OK"); :}
+program				::= class_list:cl										{: RESULT = new Program(cl, clleft+1, clright+1); :}
 					;
-
-class_list			::=  class_decl:cd										{: RESULT = new LinkedList<ClassDecl>(); RESULT.add(cd); :}
+																			//{: RESULT = new LinkedList<ClassDecl>(); RESULT.add(cd); :}
+class_list			::=  class_decl:cd										{: LinkedList res = new LinkedList<ClassDecl>(); res.add(cd); RESULT = res ; :}
 					|class_list:cl class_decl:cd							{: cl.add(cd); RESULT = cl; :}
 					;
 
@@ -133,26 +141,30 @@ body_class			::= LBRACE RBRACE
 
 
 /**List Field Decl*/
-
-field_list			::= field_decl:fd										{: RESULT = new LinkedList<FieldDecl>(); RESULT.add(fd); :}
+																			//{: RESULT = new LinkedList<FieldDecl>(); RESULT.add(fd); :}
+field_list			::= field_decl:fd										{: LinkedList res = new LinkedList<FieldDecl>(); res.add(fd); RESULT = res; :}
 					|field_list:fl field_decl:fd							{: fl.add(fd); RESULT = fl; :}
 					;
 
 /*Field Decl*/
 field_decl			::= type:t list_id_field_decl:lifd SEMICOLON			{: RESULT = new FieldDecl(t, lifd); :}
 					;
-/*String*/
+
+/*String*/					//##### ACA DEJE TAL CUAL TENIAMOS PERO MODIFIQUE LA CLASE IdFieldDecl #####
 id_field_decl		::= ID:id												{: RESULT = new IdFieldDecl(id, null); :}
 					| ID:id LBRACK INT_LITERAL:il RBRACK					{: RESULT = new IdFieldDecl(id, il); :}
 					;
+
 /*List String*/
 list_id_field_decl	::= list_id_field_decl:lifd COMMA id_field_decl:ifd		{: lifd.add(ifd); RESULT = lifd; :}
-					| id_field_decl:ifd										{: RESULT = new LinkedList<IdFieldDecl>(); RESULT.add(ifd); :}
-					;
+					| id_field_decl:ifd										{: LinkedList res = new LinkedList<IdFieldDecl>(); res.add(ifd); RESULT = res; :}
+					;														//{: RESULT = new LinkedList<IdFieldDecl>(); RESULT.add(ifd); :}
+
 /****************************************************EndField**************************************************************/
 
 /*Method Declaration*/
-method_list			::= method_decl:md										{: RESULT = new LinkedList<MethodDecl>(); RESULT.add(md); :}
+method_list			::= method_decl:md										{: LinkedList res = new LinkedList<MethodDecl>(); res.add(md); RESULT = res; :}
+																			//{: RESULT = new LinkedList<MethodDecl>(); RESULT.add(md); :}
 					|method_list:ml method_decl:md							{: ml.add(md); RESULT = ml; :}
 					;
 
@@ -161,7 +173,8 @@ method_decl			::= type:t ID:id LPAREN RPAREN body:b					{: RESULT = new MethodDe
 					;
 
 /*************************************Parameter****************************************************************/
-param_list			::= param:p												{: RESULT = new LinkedList<Param>(); RESULT.add(p); :}
+																			//{: RESULT = new LinkedList<Param>(); RESULT.add(p); :}
+param_list			::= param:p												{: LinkedList res = new LinkedList<Param>(); res.add(p); RESULT = res; :}
 					| param_list:pl COMMA param:p							{: pl.add(p); RESULT = pl; :}
 					;
 
@@ -187,7 +200,7 @@ type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
 	   
 /********************************************Statement*************************************************************/
 
-statement			::= location:l assign_op:op expr:e SEMICOLON 		{: RESULT = new AssignStmt(l,(AssignOpType)op,e,lleft+1,lright+1);:}
+statement			::= location:l assign_op:op expr:e SEMICOLON 		{: RESULT = new AssignStmt(l,op,e,lleft+1,lright+1);:}
 					| method_call:mc SEMICOLON 							{: RESULT = new MethodCallStmt(mc,mcleft+1,mcright+1);:}
 					| if_stmt:ifs 										{: RESULT = ifs; :}						
 					| FOR ID:id ASSIGN expr:value COMMA expr:e block:b 	{: RESULT = new ForStatement(id,value,e,b,idleft+1,idright+1) ;:}
@@ -284,13 +297,13 @@ location			::= ID:id {: RESULT = new VarLocation(id,idleft+1,idright+1); :}
 					|ID:id list_invoc:l LBRACK expr:e RBRACK {: RESULT = new VarListLocation(id,e,l,idleft+1,idright+1); :}
 					;
 
-
-literal				::= INT_LITERAL:l										{:RESULT = l;:}
-					|FLOAT_LITERAL:l										{:RESULT = l;:}
-					|BOOL_LITERAL:l											{:RESULT = l;:}
+																				//#### CREO UN INTLITERAL ####
+literal				::= INT_LITERAL:l										{:RESULT = new IntLiteral(l);:}
+					|FLOAT_LITERAL:l										{:RESULT = new FloatLiteral(l);:}
+					|bool_literal:l											{:RESULT = new BoolLiteral(l);:}
 					;
 
-
-
-
+bool_literal		::= TRUE:t 												{: RESULT = t; :}
+					| FALSE:f 												{: RESULT = f; :}
+					;
 
