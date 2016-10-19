@@ -10,9 +10,11 @@ import java.util.LinkedList;
 public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     private SymbolTable table;
+    private int count; 
 
     public DeclarationCheckVisitor(){
         table = new SymbolTable();
+        count = 0;
     }
 
     //visit program
@@ -134,7 +136,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(AssignStmt stmt){
         List<String> errorList = new LinkedList<String>();
         errorList.addAll(stmt.getLocation().accept(this));
-        //tendria que recuperar el operador o no????
         errorList.addAll(stmt.getExpression().accept(this));
         return errorList;
     }
@@ -157,16 +158,20 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     public List<String> visit(ForStatement stmt){
         List<String> errorList = new LinkedList<String>();
+        count++;
         errorList.addAll(stmt.getAssign().accept(this));
         errorList.addAll(stmt.getCondition().accept(this));
         errorList.addAll(stmt.getBlock().accept(this));
+        count--;
         return errorList;
     }
 
     public List<String> visit(WhileStatement stmt){
         List<String> errorList = new LinkedList<String>();
+        count++;
         errorList.addAll(stmt.getExpression().accept(this));
         errorList.addAll(stmt.getBlock().accept(this));
+        count--;
         return errorList;
     }
 
@@ -179,11 +184,19 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     public List<String> visit(BreakStatement stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        if(count == 0){
+            errorList.add("BREAK is outside of a loop ");
+        }
+        return errorList;
     }
 
     public List<String> visit(ContinueStmt stmt){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        if(count == 0){
+            errorList.add("CONTINUE is outside of a loop ");
+        }
+        return errorList;
     }
 
     public List<String> visit(SemicolonStmt stmt){
@@ -191,26 +204,45 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
 
+
+
     // visit expressions
 
     public List<String> visit(VarLocation loc){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        Boolean exist = false;
+        exist = search(loc.getId());
+        if(exist == false){
+            errorList.add("Location was not founded");
+        }else{
+            //SI LO ENCUENTRO QUE HAGO????
+        }
+        return errorList;
     }
+
+
     public List<String> visit(VarListLocation loc){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        Boolean exist = false;
+        exist = search(loc.getId());
+        if(exist == false){
+            errorList.add("Location was not founded");
+        }else{
+            //SI LO ENCUENTRO QUE HAGO???? APARTE DE VISITAR LA EXPRESION??
+            errorList.addAll(loc.getExpression().accept(this)); 
+        }
+        return errorList;
     }
 
     public List<String> visit(BinOpExpr expr){
         List<String> errorList = new LinkedList<String>();
         errorList.addAll(expr.getLeftOperand().accept(this));
-        //tendria que recuperar el operador o no????
         errorList.addAll(expr.getRightOperand().accept(this));
         return errorList;
     }
     public List<String> visit(UnaryOpExpr expr){
         List<String> errorList = new LinkedList<String>();
         errorList.addAll(expr.getOperand().accept(this));
-        //tendria que recuperar el operador o no????
         return errorList;
     }
 
@@ -229,24 +261,77 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     
 
     // visit method call
-
     public List<String> visit(MethodCall call){
-        return new LinkedList<String>();
+        List<String> errorList = new LinkedList<String>();
+        Boolean exist = false;
+        exist = search(call.getId());
+        // COMO DIFERENCIO EL CASO EN DONDE EL METODO TIENE UN ID O UNA LISTA DE ID
+        if(exist == false){
+            errorList.add("Method declaration was not founded");
+        }else{
+            //declaration was founded
+            //TENDRIA QUE INSERTAR EN LA TABLA DE SIMBOLOS O SOLO VISITO LOS ARGUMENTOS
+            for (Expression expr : call.getArgList()) {
+                errorList.addAll(expr.accept(this));
+            }
+        }
+        return errorList;
     }
+
+    //method for search declaration in simbolTable
+    private Boolean search(String id) {
+        Boolean res = false;
+        int currentlevel = table.getIndex();
+        while((res == false) && (currentlevel > 0)){
+            res = table.searchByName(id,currentlevel);
+            currentlevel--;
+        }
+        return res;
+    }
+    //EL SEARCH ESTA BIEN O HAY QUE DISCRIMINAR DISTINTOS NIVELES SABIENDO QUE NO TODOS LOS NIVELES
+    // TIENEN LO MISMO !! ASI COMO ESTA HECHO SI EXISTE LA DECLARACION LA ENCUENTRA???
+
+
+
 
 
 // DUDAS:
-    // donde van los mensajes de error? en los varLocation y VarListLocation?
-    // en algun lado me faltan los msjs de error
     // me falta el methodCall y el VarLocation y VarListLocation
-    //QUE HAGO CON LOS BREAK Y CONTINUE
-    // PARA LOS STATMENT TENGO QUE ABRIR UN BLOQUE NUEVO? POR EJEMPLO PARA EL IFSTMT O EL WHILE O FOR??
-    //tendria que recuperar el operador o no???? (UnaryOpExpr)
-    //tendria que recuperar el operador o no???? (BinOpExpr)
-    //tendria que recuperar el operador o no???? (AssignStmt)
-    //que tengo que chequear en este visitor?
+    // hacer un search que busque declaraciones
+
+
+//***************************************************************
+    // arrglar errores de casteo ! (IntLiteral y LinkedList en fielDecl)
+    //arreglar lo errores en tiempo de ejecucion (CUP)
 
 
 
+    //*************************************LISTO*****************
+    //HACER CON LOS BREAK Y CONTINUE (contador que sume cuando este en el ciclo y reste cuando 
+    // salga y despues en el break y en el continue preguntas por el contador )
+    //*************************************LISTO*****************
+
+
+    //methodCall buscar si esta declarado el metodo en la tabla de simbolos
+
+    //varLocation y el otro es cuando se da un uso y es buscar si existe en la tabla
+    // de simbolos y si esta es asignarle sus tipos y sino esta error
+
+
+
+    //*************************************LISTO*****************
+    //arreglar el mainCheck (VERIFICAR QUE FUNCIONE)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //*************************************LISTO*****************
+
+
+
+    //terminar el declarationCheck
+
+
+
+    // agregar los OFFSET EN DONDE???
+    //codigoIntermedio
+    //arreglar scripts 
+//***************************************************************
 
 }
