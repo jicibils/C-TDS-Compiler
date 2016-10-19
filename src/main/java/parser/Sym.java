@@ -31,10 +31,11 @@ public class Sym {
   public static final int PLUS = 32;
   public static final int ASSIGN = 35;
   public static final int IF = 11;
-  public static final int ID = 44;
+  public static final int ID = 45;
   public static final int DOT = 38;
   public static final int EOF = 0;
   public static final int RETURN = 12;
+  public static final int TRUE = 43;
   public static final int error = 1;
   public static final int EQEQ = 26;
   public static final int MOD = 34;
@@ -48,9 +49,9 @@ public class Sym {
   public static final int WHILE = 13;
   public static final int RBRACE = 18;
   public static final int DEC = 37;
+  public static final int FALSE = 44;
   public static final int FLOAT_LITERAL = 42;
   public static final int GT = 23;
-  public static final int BOOL_LITERAL = 43;
   public static final int INT_LITERAL = 41;
   public static final int NOTEQ = 29;
   public static final String[] terminalNames = new String[] {
@@ -97,7 +98,8 @@ public class Sym {
   "MULT",
   "INT_LITERAL",
   "FLOAT_LITERAL",
-  "BOOL_LITERAL",
+  "TRUE",
+  "FALSE",
   "ID"
   };
 }
