@@ -131,8 +131,8 @@ class_decl			::=  CLASS ID:id body_class:bc							{: RESULT = new ClassDecl(id, 
 					;
 
 body_class			::= LBRACE RBRACE								
-					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, null, flleft+1, flright+1); :}
-					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(null, ml, mlleft+1, mlright+1); :}
+					|LBRACE field_list:fl RBRACE							{: RESULT = new BodyClass(fl, new LinkedList<MethodDecl>(), flleft+1, flright+1); :}
+					|LBRACE method_list:ml RBRACE							{: RESULT = new BodyClass(new LinkedList<FieldDecl>(), ml, mlleft+1, mlright+1); :}
 					|LBRACE field_list:fl method_list:ml RBRACE				{: RESULT = new BodyClass(fl, ml, flleft+1, flright+1); :}
 					;
 /****************************************************Field**************************************************************/
@@ -151,7 +151,7 @@ field_decl			::= type:t list_id_field_decl:lifd SEMICOLON			{: RESULT = new Fiel
 					;
 
 /*String*/					//##### ACA DEJE TAL CUAL TENIAMOS PERO MODIFIQUE LA CLASE IdFieldDecl #####
-id_field_decl		::= ID:id												{: RESULT = new IdFieldDecl(id, null); :}
+id_field_decl		::= ID:id												{: RESULT = new IdFieldDecl(id); :}
 					| ID:id LBRACK INT_LITERAL:il RBRACK					{: RESULT = new IdFieldDecl(id, il); :}
 					;
 
@@ -168,7 +168,7 @@ method_list			::= method_decl:md										{: LinkedList res = new LinkedList<Met
 					|method_list:ml method_decl:md							{: ml.add(md); RESULT = ml; :}
 					;
 
-method_decl			::= type:t ID:id LPAREN RPAREN body:b					{: RESULT = new MethodDecl(t, id, null, b, idleft+1, idright+1); :}
+method_decl			::= type:t ID:id LPAREN RPAREN body:b					{: RESULT = new MethodDecl(t, id, new LinkedList<Param>(), b, idleft+1, idright+1); :}
 					|type:t ID:id LPAREN param_list:pl RPAREN body:b		{: RESULT = new MethodDecl(t, id, pl, b, idleft+1, idright+1); :}
 					;
 
@@ -188,8 +188,8 @@ body				::= block:b												{: RESULT = b; :}
 
 block				::= LBRACE RBRACE 										{: RESULT = new Block(); :}
 					| LBRACE field_list:fl list_statement:ls RBRACE         {: RESULT = new Block(fl,ls); :}
-					| LBRACE field_list:fl RBRACE							{: RESULT = new Block(fl,null); :}
-					| LBRACE list_statement:ls RBRACE						{: RESULT = new Block(null,ls); :}
+					| LBRACE field_list:fl RBRACE							{: RESULT = new Block(fl,new LinkedList<Statement>()); :}
+					| LBRACE list_statement:ls RBRACE						{: RESULT = new Block(new LinkedList<FieldDecl>(),ls); :}
 					;
 
 type				::= TINTEGER      	{:RESULT = Type.TINTEGER;:}
