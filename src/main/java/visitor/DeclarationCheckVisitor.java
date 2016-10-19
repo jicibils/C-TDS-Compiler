@@ -280,13 +280,13 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     //method for search declaration in simbolTable
     private Boolean search(String id) {
-        Boolean res = false;
+        Attribute res = null;
         int currentlevel = table.getIndex();
-        while((res == false) && (currentlevel > 0)){
+        while((res == null) && (currentlevel > 0)){
             res = table.searchByName(id,currentlevel);
             currentlevel--;
         }
-        return res;
+        return (res!=null);
     }
     //EL SEARCH ESTA BIEN O HAY QUE DISCRIMINAR DISTINTOS NIVELES SABIENDO QUE NO TODOS LOS NIVELES
     // TIENEN LO MISMO !! ASI COMO ESTA HECHO SI EXISTE LA DECLARACION LA ENCUENTRA???
