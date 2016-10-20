@@ -301,8 +301,11 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
 //***************************************************************
+
+    //*************************************LISTO*****************
     // arrglar errores de casteo ! (IntLiteral y LinkedList en fielDecl)
     //arreglar lo errores en tiempo de ejecucion (CUP)
+    //*************************************LISTO*****************
 
 
 
@@ -319,9 +322,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
 
-    //*************************************LISTO*****************
-    //arreglar el mainCheck (VERIFICAR QUE FUNCIONE)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //*************************************LISTO*****************
+
+
+    //revisar el mainCheck (el pull borro todo)
 
 
 
@@ -329,7 +332,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
 
-    // agregar los OFFSET EN DONDE???
+    // agregar los OFFSET despues de terminar codigo intermedio
     //codigoIntermedio
     //arreglar scripts 
 //***************************************************************

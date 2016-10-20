@@ -45,9 +45,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                     }
                 }
             case INC :
+                //ESTE CASO O EL DEL ELSE????
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    //tendria que setear el tipo en el location o no hace falta?
-                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+                    VarLocation tempLoc = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+                    tempLoc.setType(stmt.getLocation().getType());   //set type to temporal
+                    IntermediateCode icode = new IntermediateCode(Instruction.INCI,loc,expr,tempLoc); //create 3-ways code
+                    list.add(icode); //add to list
+                    tempCounter++;  //increment counter that store amount of temporal location used
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
@@ -77,7 +81,16 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(IfStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+
+
+
+
+
+
+
+
+        return null;
     }
 
     @Override

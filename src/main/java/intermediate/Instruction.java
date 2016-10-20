@@ -34,6 +34,9 @@ public enum Instruction {
     EQEQ,
     NOTEQ,
 
+    //jumps
+    JUMPF,        //JUMP FALSE
+
     //assigments
     ASSIGNI,        //ASSIGN INTEGER
     ASSIGNF,        //ASSIGN FLOAT

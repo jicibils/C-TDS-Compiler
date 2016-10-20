@@ -49,14 +49,18 @@ public class Main {
     
 public class Main {
 
+    private static List<String> errorList;
+
     static public void main(String argv[]) {
 
         try {
 
-        Parser p = new Parser(new Lexer(new FileReader(argv[0])));
-        Program result = (Program)p.parse().value;      
+            errorList = new LinkedList<String>();
+            Parser p = new Parser(new Lexer(new FileReader(argv[0])));
+            Program result = (Program)p.parse().value;      
 
-        mainCheck(result);                  //Call to static method
+            mainCheck(result);                  //Call to static method
+
         } catch (Exception e) {
             System.out.println("Mensaje de error:\n"+e.getMessage());
             e.printStackTrace();
@@ -67,10 +71,12 @@ public class Main {
     private static void mainCheck(Program program){
         CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
         Integer res = mainVisitor.visit(program);
-        //System.out.println("Cantidad de mains: "+res);
-                
         if((res > 1) || (res == 0))
-            System.out.println("Fatal Error: Program must contain just one main method with no arguments.");
+            System.out.println("Fatal Error: Program must contain just one main method without arguments.");
     }
 
+    private static void declarationCheck(Program program) {
+        DeclarationCheckVisitor decl = new DeclarationCheckVisitor();
+        errorList.addAll(decl.visit(program));
+    }
 }
