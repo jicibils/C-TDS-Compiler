@@ -187,18 +187,32 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(UnaryOpExpr expr) {
         // ! expr
         // - expr
-        
+        Instruction instruction = getAppropiateInstruction(expr.getOperator(), expr.getType());
         //create temporal location to store result
-        VarLocation tempLocation = new VarLocation("T"+tempCounter,expr.getLineNumber(),expr.getColumnNumber());
+        VarLocation tempLoc = new VarLocation("T"+tempCounter,expr.getLineNumber(),expr.getColumnNumber());
+        //set type
+        tempLoc.setType(expr.getType());
         
         //retrieve operand expression
         VarLocation locExpr = (VarLocation)expr.getOperand().accept(this);  //Get operand
         
-        //IntermediateCode ic = new IntermediateCode();
-        
-        
+        IntermediateCode ic = new IntermediateCode(instruction,locExpr,null,tempLoc);
         
         tempCounter++;  //increment temporal counter
+        return tempLoc;
+    }
+    
+    private Instruction getAppropiateInstruction(UnaryOpType operator, Type t){
+        switch(operator){
+            case MINUS :
+                if(t.equals(Type.TINTEGER))
+                    return Instruction.MINUSINT;
+                else
+                    return Instruction.MINUSFLOAT;
+            case NOT :
+                return Instruction.NOT;
+        }
+        
         return null;
     }
 

@@ -30,13 +30,17 @@ public enum Instruction {
     GTEQ,           //great than eq
 
     //equal
-
     EQEQ,
     NOTEQ,
 
     //jumps
     JUMPF,        //JUMP FALSE
 
+    //unary
+    NOT,
+    MINUSFLOAT,
+    MINUSINT,
+    
     //assigments
     ASSIGNI,        //ASSIGN INTEGER
     ASSIGNF,        //ASSIGN FLOAT
