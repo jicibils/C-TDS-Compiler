@@ -34,10 +34,14 @@ public enum Instruction {
     GTEQ,           //great than eq
 
     //equal
-
     EQEQ,
     NOTEQ,
-
+    
+    //unary
+    NOT,
+    MINUSFLOAT,
+    MINUSINT,
+    
     //assigments
     ASSIGN,
     INC,
