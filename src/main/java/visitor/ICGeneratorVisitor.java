@@ -10,10 +10,6 @@ import main.java.ast.*;
 import main.java.intermediate.Instruction;
 import main.java.intermediate.IntermediateCode;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public class ICGeneratorVisitor implements ASTVisitor<Location>{
     
     private LinkedList<IntermediateCode> list;
@@ -33,17 +29,44 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         
         switch (stmt.getOperator()){
             case ASSIGN :                       //assign, op1, op2, res
-                list.add(new IntermediateCode(Instruction.ASSIGN,loc,expr, stmt.getLocation()));  //Necesito usar un temporal o directamente 
-                return stmt.getLocation();                                                       //  lo hago en location izq?
-                
+                if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
+                    //tendria que setear el tipo en el location o no hace falta?
+                    list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));  //Necesito usar un temporal o directamente 
+                    return stmt.getLocation();                                                       //  lo hago en location izq?
+                }else{
+                    if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
+                        list.add(new IntermediateCode(Instruction.ASSIGNF,loc,expr, stmt.getLocation()));
+                        return stmt.getLocation();
+                    }else{
+                        if (stmt.getLocation().getType().equals(Type.TBOOL)) {
+                            list.add(new IntermediateCode(Instruction.ASSIGNB,loc,expr, stmt.getLocation()));
+                            return stmt.getLocation();
+                        }
+                    }
+                }
             case INC :
-                Location temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
-                
+                if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
+                    //tendria que setear el tipo en el location o no hace falta?
+                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+                    return stmt.getLocation();
+                }else{
+                    if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
+                        list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+                        return stmt.getLocation();
+                    }
+                }
             case DEC :
-                //TODO
-            
-        }
-        
+                if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
+                    //tendria que setear el tipo en el location o no hace falta?
+                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+                    return stmt.getLocation();
+                }else{
+                    if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
+                        list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+                        return stmt.getLocation();
+                    }
+                }
+        }        
         return null;
     }
 

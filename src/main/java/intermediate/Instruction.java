@@ -2,10 +2,6 @@
 
 package main.java.intermediate;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public enum Instruction {
     
     //arithmetical
@@ -43,8 +39,12 @@ public enum Instruction {
     MINUSINT,
     
     //assigments
-    ASSIGN,
-    INC,
-    DEC,
+    ASSIGNI,        //ASSIGN INTEGER
+    ASSIGNF,        //ASSIGN FLOAT
+    ASSIGNB,        //ASSIGN BOOL
+    INCI,           //INC INTEGER
+    INCF,           //INC FLOAT
+    DECI,           //DEC INTEGER
+    DECF,           //DEC FLOAT
     ;
 }

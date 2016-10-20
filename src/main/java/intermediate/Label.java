@@ -5,10 +5,6 @@
  */
 package main.java.intermediate;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public class Label {
     private int labelNumber; //attribute that represents the autoincremental number of a label, e.g. Label1
     

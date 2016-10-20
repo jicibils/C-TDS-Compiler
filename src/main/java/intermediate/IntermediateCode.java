@@ -2,10 +2,6 @@ package main.java.intermediate;
 
 import main.java.ast.*;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public class IntermediateCode{
     private Instruction operator;
     
