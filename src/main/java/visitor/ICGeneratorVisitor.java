@@ -15,11 +15,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     
     private LinkedList<IntermediateCode> list;
     private int tempCounter;  //variable to store amount of temporal location used
+    private int labelCounter;  //variable to store amount of labels
     
     public ICGeneratorVisitor(){
         
         list = new LinkedList<>();
         tempCounter = 1;          
+        labelCounter = 0;          
         
     }
 
@@ -73,11 +75,18 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private Label genLabel(){
+        labelCounter++;
+        Label label = new Label(labelCounter);
+        return label;
+
+    }
+
     @Override
     public Location visit(IfStatement stmt) {
         Location tempLoc = stmt.getCondition().accept(this);
         Expression condition = stmt.getCondition();
-        Label jumpToElse = new Label(0);//ESTA BIEN PONERLE EL 0 AL LABEL O IRIA OTRO NUMERO?
+        Label jumpToElse = genLabel();//ESTA BIEN PONERLE EL 0 AL LABEL O IRIA OTRO NUMERO?
         // como se si tengo que "ejecutar" el bolque del if o saltar por falso a lo del else??
 
 
