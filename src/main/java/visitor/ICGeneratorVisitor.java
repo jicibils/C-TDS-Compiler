@@ -8,6 +8,7 @@ package main.java.visitor;
 import java.util.LinkedList;
 import main.java.ast.*;
 import main.java.intermediate.Instruction;
+import main.java.intermediate.Label;
 import main.java.intermediate.IntermediateCode;
 
 public class ICGeneratorVisitor implements ASTVisitor<Location>{
@@ -30,9 +31,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         switch (stmt.getOperator()){
             case ASSIGN :                       //assign, op1, op2, res
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    //tendria que setear el tipo en el location o no hace falta?
-                    list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));  //Necesito usar un temporal o directamente 
-                    return stmt.getLocation();                                                       //  lo hago en location izq?
+                    list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));
+                    return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
                         list.add(new IntermediateCode(Instruction.ASSIGNF,loc,expr, stmt.getLocation()));
@@ -45,13 +45,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                     }
                 }
             case INC :
-                //ESTE CASO O EL DEL ELSE????
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    VarLocation tempLoc = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
-                    tempLoc.setType(stmt.getLocation().getType());   //set type to temporal
-                    IntermediateCode icode = new IntermediateCode(Instruction.INCI,loc,expr,tempLoc); //create 3-ways code
-                    list.add(icode); //add to list
-                    tempCounter++;  //increment counter that store amount of temporal location used
+                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
@@ -61,7 +56,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                 }
             case DEC :
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    //tendria que setear el tipo en el location o no hace falta?
                     list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
                     return stmt.getLocation();
                 }else{
@@ -81,7 +75,10 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(IfStatement stmt) {
-
+        Location tempLoc = stmt.getCondition().accept(this);
+        Expression condition = stmt.getCondition();
+        Label jumpToElse = new Label(0);//ESTA BIEN PONERLE EL 0 AL LABEL O IRIA OTRO NUMERO?
+        // como se si tengo que "ejecutar" el bolque del if o saltar por falso a lo del else??
 
 
 
