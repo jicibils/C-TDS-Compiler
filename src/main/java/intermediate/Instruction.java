@@ -32,7 +32,10 @@ public enum Instruction {
     //equal
     EQEQ,
     NOTEQ,
-    
+
+    //jumps
+    JUMPF,        //JUMP FALSE
+
     //unary
     NOT,
     MINUSFLOAT,
