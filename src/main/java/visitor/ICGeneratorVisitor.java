@@ -7,21 +7,21 @@ package main.java.visitor;
 
 import java.util.LinkedList;
 import main.java.ast.*;
-import main.java.intermediate.Instruction;
-import main.java.intermediate.IntermediateCode;
+import main.java.intermediate.*;
 
 public class ICGeneratorVisitor implements ASTVisitor<Location>{
     
     private LinkedList<IntermediateCode> list;
     private int tempCounter;  //variable to store amount of temporal location used
+    private int labelCounter;
     
     public ICGeneratorVisitor(){
         
         list = new LinkedList<>();
-        tempCounter = 1;          
-        
+        tempCounter = 0;          
+        labelCounter = 0;
     }
-
+        
     @Override
     public Location visit(AssignStmt stmt) {
         Location loc = stmt.getLocation().accept(this); // Get left part. Operand 1
@@ -102,7 +102,31 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(ForStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Create Label BEGINFOR & ENDFOR
+        Label beginFor = new Label("BEGINFOR",labelCounter);
+        labelCounter++;
+        Label endFor = new Label("ENDFOR",labelCounter);
+        labelCounter++;
+        
+        stmt.getAssign().accept(this);                      //ASSIGN 0 _ i - Init i with zero
+        Location i = stmt.getAssign().getLocation();        // i 
+        stmt.getCondition().accept(this);                   //SUM x y T0
+        
+        VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        tempCounter++;
+        
+        list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
+        //list.add(new IntermediateCode(Instruction.LESS,i, WHAT?, temp));          //compare if i < cota. Save result in temp
+        //Comment: supuestamente, segun el ejemplo, debo comparar i con T0. T0 ya tiene cargada la cota al hacer getCondition().accept()
+        list.add(new IntermediateCode(Instruction.JF,temp,null,endFor));            //If false jump to endFor
+        
+        stmt.getBlock().accept(this);
+        
+        list.add(new IntermediateCode(Instruction.INCI,i,new IntLiteral(1),i)); //INC i - i++
+        list.add(new IntermediateCode(Instruction.JMP,null,null,endFor));       //JMP BEGIN FOR
+        list.add(new IntermediateCode(Instruction.LABEL,null,null,endFor));     //LABEL ENDFOR
+        
+        return null;
     }
 
     @Override
