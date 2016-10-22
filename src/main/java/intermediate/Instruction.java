@@ -33,9 +33,6 @@ public enum Instruction {
     EQEQ,
     NOTEQ,
 
-    //jumps
-    JUMPF,        //JUMP FALSE
-
     //unary
     NOT,
     MINUSFLOAT,
@@ -50,10 +47,13 @@ public enum Instruction {
     DECI,           //DEC INTEGER
     DECF,           //DEC FLOAT
 
-    LABEL,          //Label
-    LESS,          
+    //jumps
     JF,             //JUMP FOR FALSE
     JMP,            //JUMP
+    
+    LABEL,          //Label
+    LESS,          
+
     ;
 
 }
