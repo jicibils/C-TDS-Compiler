@@ -90,19 +90,18 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label jumpElse = genLabel("JUMPELSE");
         Label jumpEnd = genLabel("JUMPEND");
 
-        VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
-        tempCounter++;
+        // VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        // tempCounter++;
 
         Location tempLoc = stmt.getCondition().accept(this);
-        Expression condition = stmt.getCondition();
 
         if( stmt.thereIsElseBlock()) {
             //If false jump to JUMP ELSE
-            list.add(new IntermediateCode(Instruction.JF,temp,null,jumpElse));
+            list.add(new IntermediateCode(Instruction.JF,tempLoc,null,jumpElse));
             // Accept the if block
             stmt.getIfBlock().accept(this);
             //jump to JUMP END    
-            list.add(new IntermediateCode(Instruction.JMP,temp,null,jumpEnd));
+            list.add(new IntermediateCode(Instruction.JMP,null,null,jumpEnd));
             //LABEL JUMP ELSE
             list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpElse));
             // Accept the else block
@@ -112,7 +111,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
         }else{
             //If false jump to JUMPEND because there isn't elseBlock
-            list.add(new IntermediateCode(Instruction.JF,temp,null,jumpEnd));
+            list.add(new IntermediateCode(Instruction.JF,tempLoc,null,jumpEnd));
             // Accept the if block
             stmt.getIfBlock().accept(this);
             //LABEL JUMP END
