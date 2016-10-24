@@ -72,11 +72,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
 
-    @Override
-    public Location visit(ReturnStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     private Label genLabel(String name){
         labelCounter++;
         Label label = new Label(name,labelCounter);
@@ -121,24 +116,10 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
 
-    @Override
-    public Location visit(ContinueStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(WhileStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(BreakStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Location visit(SemicolonStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
@@ -268,10 +249,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
 
-    @Override
-    public Location visit(MethodCallStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Location visit(IntLiteral lit) {
@@ -288,6 +265,73 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
 
+
+    @Override
+    public Location visit(Block block) {
+        for(FieldDecl fieldDecl : block.getFieldDecl()){
+            fieldDecl.accept(this);
+        }
+
+        for(Statement statement : block.getStatements()){
+            statement.accept(this);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Location visit(Program program) {
+        for (ClassDecl classDecl : program.getClassList()){
+            classDecl.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Location visit(ClassDecl cDecl) {
+        for (FieldDecl fieldDecl: cDecl.getFieldDecl()) {
+            fieldDecl.accept(this);
+        }
+        for (MethodDecl methodDecl : cDecl.getMethodDecl()) {
+            methodDecl.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Location visit(FieldDecl fieldDecl) {
+        for (IdFieldDecl idFieldDecl : fieldDecl.getListId()) {
+                idFieldDecl.accept(this);                                                              
+        } 
+        return null;
+    }
+
+
+    @Override
+    public Location visit(ContinueStmt stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Location visit(WhileStatement stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Location visit(BreakStatement stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Location visit(ReturnStmt stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Location visit(MethodCallStmt stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     @Override
     public Location visit(VarLocation loc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -299,29 +343,10 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     @Override
-    public Location visit(Block aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Location visit(MethodCall call) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Location visit(Program aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(ClassDecl aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(FieldDecl aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Location visit(MethodDecl aThis) {
