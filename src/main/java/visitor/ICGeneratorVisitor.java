@@ -77,27 +77,48 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private Label genLabel(){
+    private Label genLabel(String name){
         labelCounter++;
-        Label label = new Label(labelCounter);
+        Label label = new Label(name,labelCounter);
         return label;
+
 
     }
 
     @Override
     public Location visit(IfStatement stmt) {
+        Label jumpElse = genLabel("JUMPELSE");
+        Label jumpEnd = genLabel("JUMPEND");
+
+        VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        tempCounter++;
+
         Location tempLoc = stmt.getCondition().accept(this);
         Expression condition = stmt.getCondition();
-        Label jumpToElse = genLabel();//ESTA BIEN PONERLE EL 0 AL LABEL O IRIA OTRO NUMERO?
-        // como se si tengo que "ejecutar" el bolque del if o saltar por falso a lo del else??
 
+        if( stmt.thereIsElseBlock()) {
+            //If false jump to JUMP ELSE
+            list.add(new IntermediateCode(Instruction.JF,temp,null,jumpElse));
+            // Accept the if block
+            stmt.getIfBlock().accept(this);
+            //jump to JUMP END    
+            list.add(new IntermediateCode(Instruction.JMP,temp,null,jumpEnd));
+            //LABEL JUMP ELSE
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpElse));
+            // Accept the else block
+            stmt.getElseBlock().accept(this);
+            //LABEL JUMP END
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpEnd));
 
+        }else{
+            //If false jump to JUMPEND because there isn't elseBlock
+            list.add(new IntermediateCode(Instruction.JF,temp,null,jumpEnd));
+            // Accept the if block
+            stmt.getIfBlock().accept(this);
+            //LABEL JUMP END
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpEnd));
 
-
-
-
-
-
+        }
         return null;
     }
 
