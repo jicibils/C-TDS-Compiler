@@ -8,9 +8,7 @@ package main.java.visitor;
 import java.util.LinkedList;
 import main.java.ast.*;
 
-import main.java.intermediate.Instruction;
-import main.java.intermediate.Label;
-import main.java.intermediate.IntermediateCode;
+import main.java.intermediate.*;
 
 
 public class ICGeneratorVisitor implements ASTVisitor<Location>{
@@ -76,7 +74,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(ReturnStmt stmt) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    private int incTempCounter(){
+        return ++tempCounter;
+    }
+    
     private Label genLabel(){
         labelCounter++;
         Label label = new Label(labelCounter);
@@ -108,7 +110,19 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(WhileStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Label beginWhile  = genLabel();  //OR Label beginWhile = newLabel("BEGINFOR",labelCounter++)?
+        Label endWhile    = genLabel();
+        
+        list.add(new IntermediateCode(Instruction.LABEL,null,null, beginWhile));
+        Location T1 = stmt.getExpression().accept(this);
+        list.add(new IntermediateCode(Instruction.JF,T1,null,endWhile));   //If T1 is false jump to end
+        stmt.getBlock().accept(this);
+        list.add(new IntermediateCode(Instruction.JMP,null,null,beginWhile));
+        list.add(new IntermediateCode(Instruction.LABEL,null,null,endWhile));
+        
+        
+        return null;
     }
 
     @Override
@@ -131,15 +145,15 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         
         stmt.getAssign().accept(this);                      //ASSIGN 0 _ i - Init i with zero
         Location i = stmt.getAssign().getLocation();        // i 
-        stmt.getCondition().accept(this);                   //SUM x y T0
+        Location T0 = stmt.getCondition().accept(this);                   //SUM x y T0. Store this result in temporal
         
-        VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        VarLocation T1 = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
         tempCounter++;
         
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
-        //list.add(new IntermediateCode(Instruction.LESS,i, WHAT?, temp));          //compare if i < cota. Save result in temp
-        //Comment: supuestamente, segun el ejemplo, debo comparar i con T0. T0 ya tiene cargada la cota al hacer getCondition().accept()
-        list.add(new IntermediateCode(Instruction.JF,temp,null,endFor));            //If false jump to endFor
+        list.add(new IntermediateCode(Instruction.LESS,i, T0, T1));          //compare if i < cota. Save result in T1
+        
+        list.add(new IntermediateCode(Instruction.JF,T1,null,endFor));            //If false jump to endFor
         
         stmt.getBlock().accept(this);
         
@@ -255,17 +269,34 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(IntLiteral lit) {
-        return null;
+        Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
+        tempCounter++;
+        
+        list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLocation));
+        
+        return tempLocation;
     }
 
     @Override
     public Location visit(FloatLiteral lit) {
-        return null;
+        VarLocation tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
+        tempCounter++;
+        
+        list.add(new IntermediateCode(Instruction.ASSIGNLITFLOAT,lit, null, tempLocation));
+        
+        return tempLocation;
+        //Debo crear un temporal donde guardar la loc del lit y retornarlo.
+        //Previamente, crear una instruction para cada literal. i.e. Instruction.assignLitFloat(...);
     }
 
     @Override
     public Location visit(BoolLiteral lit) {
-        return null;
+        
+        Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
+        tempCounter++;
+        list.add(new IntermediateCode(Instruction.ASSIGNLITBOOL,lit,null,tempLocation));
+        
+        return tempLocation;
     }
 
     @Override
@@ -292,7 +323,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(Program aThis) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    //Se puede generar un label que me informe que "estoy dentro de la clase"
     @Override
     public Location visit(ClassDecl aThis) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

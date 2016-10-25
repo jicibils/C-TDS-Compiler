@@ -46,7 +46,12 @@ public enum Instruction {
     INCF,           //INC FLOAT
     DECI,           //DEC INTEGER
     DECF,           //DEC FLOAT
-
+    
+    //literal assignments
+    ASSIGNLITFLOAT,
+    ASSIGNLITINT,
+    ASSIGNLITBOOL,
+    
     //jumps
     JF,             //JUMP FOR FALSE
     JMP,            //JUMP
