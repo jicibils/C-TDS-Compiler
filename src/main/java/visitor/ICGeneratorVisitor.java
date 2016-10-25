@@ -78,28 +78,48 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     private int incTempCounter(){
         return ++tempCounter;
     }
-    
-    private Label genLabel(){
+
+    private Label genLabel(String name){
         labelCounter++;
-        Label label = new Label(labelCounter);
+        Label label = new Label(name,labelCounter);
         return label;
+
 
     }
 
     @Override
     public Location visit(IfStatement stmt) {
+        Label jumpElse = genLabel("JUMPELSE");
+        Label jumpEnd = genLabel("JUMPEND");
+
+        // VarLocation temp = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        // tempCounter++;
+
         Location tempLoc = stmt.getCondition().accept(this);
-        Expression condition = stmt.getCondition();
-        Label jumpToElse = genLabel();//ESTA BIEN PONERLE EL 0 AL LABEL O IRIA OTRO NUMERO?
-        // como se si tengo que "ejecutar" el bolque del if o saltar por falso a lo del else??
 
+        if( stmt.thereIsElseBlock()) {
+            //If false jump to JUMP ELSE
+            list.add(new IntermediateCode(Instruction.JF,tempLoc,null,jumpElse));
+            // Accept the if block
+            stmt.getIfBlock().accept(this);
+            //jump to JUMP END    
+            list.add(new IntermediateCode(Instruction.JMP,null,null,jumpEnd));
+            //LABEL JUMP ELSE
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpElse));
+            // Accept the else block
+            stmt.getElseBlock().accept(this);
+            //LABEL JUMP END
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpEnd));
 
+        }else{
+            //If false jump to JUMPEND because there isn't elseBlock
+            list.add(new IntermediateCode(Instruction.JF,tempLoc,null,jumpEnd));
+            // Accept the if block
+            stmt.getIfBlock().accept(this);
+            //LABEL JUMP END
+            list.add(new IntermediateCode(Instruction.LABEL,null,null,jumpEnd));
 
-
-
-
-
-
+        }
         return null;
     }
 
@@ -111,8 +131,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(WhileStatement stmt) {
         
-        Label beginWhile  = genLabel();  //OR Label beginWhile = newLabel("BEGINFOR",labelCounter++)?
-        Label endWhile    = genLabel();
+        Label beginWhile  = genLabel("beginWhile");  //OR Label beginWhile = newLabel("BEGINFOR",labelCounter++)?
+        Label endWhile    = genLabel("endWhile");
         
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginWhile));
         Location T1 = stmt.getExpression().accept(this);
@@ -132,7 +152,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(SemicolonStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
@@ -262,10 +282,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
 
-    @Override
-    public Location visit(MethodCallStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Location visit(IntLiteral lit) {
@@ -299,6 +315,53 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return tempLocation;
     }
 
+
+    @Override
+    public Location visit(Block block) {
+        for(FieldDecl fieldDecl : block.getFieldDecl()){
+            fieldDecl.accept(this);
+        }
+
+        for(Statement statement : block.getStatements()){
+            statement.accept(this);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Location visit(Program program) {
+        for (ClassDecl classDecl : program.getClassList()){
+            classDecl.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Location visit(ClassDecl cDecl) {
+        for (FieldDecl fieldDecl: cDecl.getFieldDecl()) {
+            fieldDecl.accept(this);
+        }
+        for (MethodDecl methodDecl : cDecl.getMethodDecl()) {
+            methodDecl.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Location visit(FieldDecl fieldDecl) {
+        for (IdFieldDecl idFieldDecl : fieldDecl.getListId()) {
+                idFieldDecl.accept(this);                                                              
+        } 
+        return null;
+    }
+
+    @Override
+    public Location visit(MethodCallStmt stmt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    //Se puede generar un label que me informe que "estoy dentro de la clase"
     @Override
     public Location visit(VarLocation loc) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -310,30 +373,10 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     @Override
-    public Location visit(Block aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Location visit(MethodCall call) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Location visit(Program aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    //Se puede generar un label que me informe que "estoy dentro de la clase"
-    @Override
-    public Location visit(ClassDecl aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(FieldDecl aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public Location visit(MethodDecl aThis) {
