@@ -7,6 +7,7 @@ package main.java.visitor;
 
 import java.util.LinkedList;
 import main.java.ast.*;
+import java.util.Stack;
 
 import main.java.intermediate.*;
 
@@ -16,6 +17,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     private LinkedList<IntermediateCode> list;
     private int tempCounter;  //variable to store amount of temporal location used
     private int labelCounter;  //variable to store amount of labels
+    private Stack<Label> stackIn;
+    private Stack<Label> stackOut;
 
     
     public ICGeneratorVisitor(){
@@ -23,6 +26,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         list = new LinkedList<>();
         tempCounter = 1;          
         labelCounter = 0;          
+        stackIn = new Stack<Label>();
+        stackOut = new Stack<Label>();
     }
         
     @Override
@@ -126,22 +131,21 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label beginWhile  = genLabel("beginWhile");  //OR Label beginWhile = newLabel("BEGINFOR",labelCounter++)?
         Label endWhile    = genLabel("endWhile");
         
+        stackIn.push(beginWhile);
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginWhile));
         Location T1 = stmt.getExpression().accept(this);
         list.add(new IntermediateCode(Instruction.JF,T1,null,endWhile));   //If T1 is false jump to end
+        stackOut.push(endWhile);
         stmt.getBlock().accept(this);
         list.add(new IntermediateCode(Instruction.JMP,null,null,beginWhile));
         list.add(new IntermediateCode(Instruction.LABEL,null,null,endWhile));
         
-        
+        stackIn.pop();
+        stackOut.pop();
         return null;
     }
 
 
-    @Override
-    public Location visit(SemicolonStmt stmt) {
-        return null;
-    }
 
     @Override
     public Location visit(ForStatement stmt) {
@@ -151,6 +155,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label endFor = new Label("ENDFOR",labelCounter);
         labelCounter++;
         
+        stackIn.push(beginFor);
         stmt.getAssign().accept(this);                      //ASSIGN 0 _ i - Init i with zero
         Location i = stmt.getAssign().getLocation();        // i 
         Location T0 = stmt.getCondition().accept(this);                   //SUM x y T0. Store this result in temporal
@@ -158,6 +163,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         VarLocation T1 = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
         tempCounter++;
         
+        stackOut.push(endFor);
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
         list.add(new IntermediateCode(Instruction.LESS,i, T0, T1));          //compare if i < cota. Save result in T1
         
@@ -169,6 +175,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         list.add(new IntermediateCode(Instruction.JMP,null,null,endFor));       //JMP BEGIN FOR
         list.add(new IntermediateCode(Instruction.LABEL,null,null,endFor));     //LABEL ENDFOR
         
+        stackIn.pop();
+        stackOut.pop();
         return null;
     }
 
@@ -348,12 +356,21 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     @Override
+    public Location visit(SemicolonStmt stmt) {
+        return null;
+    }
+
+    @Override
     public Location visit(ContinueStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Label continueLabel = stackIn.peek();
+        list.add(new IntermediateCode(Instruction.JMP,null,null,continueLabel));
+        return null;
     }
     @Override
     public Location visit(BreakStatement stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Label breakLabel = stackOut.peek();
+        list.add(new IntermediateCode(Instruction.JMP,null,null,breakLabel));
+        return null;
     }
 
     @Override
