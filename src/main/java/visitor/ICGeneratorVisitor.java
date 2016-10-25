@@ -362,12 +362,14 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(ContinueStmt stmt) {
+        // method peek make pop of stack without remove pop of the stack
         Label continueLabel = stackIn.peek();
         list.add(new IntermediateCode(Instruction.JMP,null,null,continueLabel));
         return null;
     }
     @Override
     public Location visit(BreakStatement stmt) {
+        // method peek make pop of stack without remove pop of the stack
         Label breakLabel = stackOut.peek();
         list.add(new IntermediateCode(Instruction.JMP,null,null,breakLabel));
         return null;
