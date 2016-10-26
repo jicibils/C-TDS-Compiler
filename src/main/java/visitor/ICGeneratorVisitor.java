@@ -24,7 +24,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public ICGeneratorVisitor(){
         
         list = new LinkedList<>();
-        tempCounter = 1;          
+        tempCounter = 0;          
         labelCounter = 0;          
         stackIn = new Stack<Label>();
         stackOut = new Stack<Label>();
@@ -76,8 +76,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     
-    private int incTempCounter(){
-        return ++tempCounter;
+    private void incTempCounter(){
+        tempCounter++;
     }
 
     private Label genLabel(String name){
@@ -128,8 +128,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(WhileStatement stmt) {
         
-        Label beginWhile  = genLabel("beginWhile");  //OR Label beginWhile = newLabel("BEGINFOR",labelCounter++)?
-        Label endWhile    = genLabel("endWhile");
+        Label beginWhile  = genLabel("BEGINWHILE");
+        Label endWhile    = genLabel("ENDWHILE");
         
         stackIn.push(beginWhile);
         stackOut.push(endWhile);
@@ -151,10 +151,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(ForStatement stmt) {
         //Create Label BEGINFOR & ENDFOR
-        Label beginFor = new Label("BEGINFOR",labelCounter);
-        labelCounter++;
-        Label endFor = new Label("ENDFOR",labelCounter);
-        labelCounter++;
+        Label beginFor = genLabel("BEGINFOR");
+        Label endFor = genLabel("ENDFOR");
         
         stackIn.push(beginFor);
         stackOut.push(endFor);
@@ -164,7 +162,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Location T0 = stmt.getCondition().accept(this);                   //SUM x y T0. Store this result in temporal
         
         VarLocation T1 = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
-        tempCounter++;
+        incTempCounter(); //tempCounter++;
         
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
         list.add(new IntermediateCode(Instruction.LESS,i, T0, T1));          //compare if i < cota. Save result in T1
@@ -188,21 +186,20 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         VarLocation locRightExpr = (VarLocation)expr.getRightOperand().accept(this); //location of rightExpr
         
         VarLocation tempLoc = new VarLocation("T"+tempCounter,expr.getLineNumber(),expr.getColumnNumber());  //temporal location to store results
+        incTempCounter(); //tempCounter++ increment counter that store amount of temporal location used
         tempLoc.setType(expr.getType());   //set type to temporal
         
         //I need to obtain the appropiate instruction according to operator and its type
         //since we do not have the binary expression separated by type.
-        Instruction instruction = getAppropiateInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
+        Instruction instruction = getProperInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
         IntermediateCode icode = new IntermediateCode(instruction,locLeftExpr,locRightExpr,tempLoc); //create 3-ways code
         
         list.add(icode); //add to list
         
-        tempCounter++;  //increment counter that store amount of temporal location used
-        
         return tempLoc;
     }
     
-    private Instruction getAppropiateInstruction(BinOpType operator, Type t){
+    private Instruction getProperInstruction(BinOpType operator, Type t){
         switch (operator){
             case LT :
                 return Instruction.LT;
@@ -251,22 +248,23 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(UnaryOpExpr expr) {
         // ! expr
         // - expr
-        Instruction instruction = getAppropiateInstruction(expr.getOperator(), expr.getType());
+        
         //create temporal location to store result
         VarLocation tempLoc = new VarLocation("T"+tempCounter,expr.getLineNumber(),expr.getColumnNumber());
+        incTempCounter(); //tempCounter++ increment temporal counter
         //set type
         tempLoc.setType(expr.getType());
         
         //retrieve operand expression
         VarLocation locExpr = (VarLocation)expr.getOperand().accept(this);  //Get operand
+        Instruction instruction = getProperInstruction(expr.getOperator(), expr.getType());  //Get proper instruction
+        IntermediateCode ic = new IntermediateCode(instruction,locExpr,null,tempLoc);  //Create intermediate code
+        list.add(ic);
         
-        IntermediateCode ic = new IntermediateCode(instruction,locExpr,null,tempLoc);
-        
-        tempCounter++;  //increment temporal counter
         return tempLoc;
     }
     
-    private Instruction getAppropiateInstruction(UnaryOpType operator, Type t){
+    private Instruction getProperInstruction(UnaryOpType operator, Type t){
         switch(operator){
             case MINUS :
                 if(t.equals(Type.TINTEGER))
@@ -284,7 +282,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(IntLiteral lit) {
         Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        tempCounter++;
+        incTempCounter();//tempCounter++;
         
         list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLocation));
         
@@ -294,7 +292,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(FloatLiteral lit) {
         VarLocation tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        tempCounter++;
+        incTempCounter(); //tempCounter++;
         
         list.add(new IntermediateCode(Instruction.ASSIGNLITFLOAT,lit, null, tempLocation));
         
@@ -307,7 +305,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(BoolLiteral lit) {
         
         Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        tempCounter++;
+        incTempCounter(); //tempCounter++;
         list.add(new IntermediateCode(Instruction.ASSIGNLITBOOL,lit,null,tempLocation));
         
         return tempLocation;
@@ -467,7 +465,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(ReturnStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.        
+        //Crear nueva instruccion RETURN 
+        Location temporal = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        incTempCounter();
+
+        list.add(new IntermediateCode(Instruction.RETURN,null,null,temporal));
+
+        return null;
     }
     
 }
