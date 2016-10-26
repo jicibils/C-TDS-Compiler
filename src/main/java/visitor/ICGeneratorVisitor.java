@@ -189,7 +189,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         
         //I need to obtain the appropiate instruction according to operator and its type
         //since we do not have the binary expression separated by type.
-        Instruction instruction = getAppropiateInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
+        Instruction instruction = getProperInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
         IntermediateCode icode = new IntermediateCode(instruction,locLeftExpr,locRightExpr,tempLoc); //create 3-ways code
         
         list.add(icode); //add to list
@@ -197,7 +197,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return tempLoc;
     }
     
-    private Instruction getAppropiateInstruction(BinOpType operator, Type t){
+    private Instruction getProperInstruction(BinOpType operator, Type t){
         switch (operator){
             case LT :
                 return Instruction.LT;
@@ -255,14 +255,14 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         
         //retrieve operand expression
         VarLocation locExpr = (VarLocation)expr.getOperand().accept(this);  //Get operand
-        Instruction instruction = getAppropiateInstruction(expr.getOperator(), expr.getType());  //Get proper instruction
+        Instruction instruction = getProperInstruction(expr.getOperator(), expr.getType());  //Get proper instruction
         IntermediateCode ic = new IntermediateCode(instruction,locExpr,null,tempLoc);  //Create intermediate code
         list.add(ic);
         
         return tempLoc;
     }
     
-    private Instruction getAppropiateInstruction(UnaryOpType operator, Type t){
+    private Instruction getProperInstruction(UnaryOpType operator, Type t){
         switch(operator){
             case MINUS :
                 if(t.equals(Type.TINTEGER))
