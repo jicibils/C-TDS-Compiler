@@ -52,6 +52,24 @@ public enum Instruction {
     ASSIGNLITINT,
     ASSIGNLITBOOL,
     
+    //delimiters
+    LABELBEGINCLASS,
+    LABELBEGINMETHOD,
+    LABELENDMETHOD,
+
+    //push (use in methodCall for params)
+    PUSHID,
+    PUSHPARAM,
+
+    //call (use in methodCall)
+    CALL,
+
+    //initialization
+    INITINT,
+    INITFLOAT,
+    INITBOOL,
+    INITARRAY,
+
     //jumps
     JF,             //JUMP FOR FALSE
     JMP,            //JUMP

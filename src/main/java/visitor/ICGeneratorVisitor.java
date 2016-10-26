@@ -132,10 +132,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label endWhile    = genLabel("ENDWHILE");
         
         stackIn.push(beginWhile);
+        stackOut.push(endWhile);
+
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginWhile));
         Location T1 = stmt.getExpression().accept(this);
         list.add(new IntermediateCode(Instruction.JF,T1,null,endWhile));   //If T1 is false jump to end
-        stackOut.push(endWhile);
         stmt.getBlock().accept(this);
         list.add(new IntermediateCode(Instruction.JMP,null,null,beginWhile));
         list.add(new IntermediateCode(Instruction.LABEL,null,null,endWhile));
@@ -154,6 +155,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label endFor = genLabel("ENDFOR");
         
         stackIn.push(beginFor);
+        stackOut.push(endFor);
+
         stmt.getAssign().accept(this);                      //ASSIGN 0 _ i - Init i with zero
         Location i = stmt.getAssign().getLocation();        // i 
         Location T0 = stmt.getCondition().accept(this);                   //SUM x y T0. Store this result in temporal
@@ -161,7 +164,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         VarLocation T1 = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
         incTempCounter(); //tempCounter++;
         
-        stackOut.push(endFor);
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
         list.add(new IntermediateCode(Instruction.LESS,i, T0, T1));          //compare if i < cota. Save result in T1
         
@@ -334,8 +336,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(ClassDecl cDecl) {
         //label with the name class
-        Label activeClass = genLabel(cDecl.getId());
-        list.add(new IntermediateCode(Instruction.LABEL,null,null,activeClass));
+        Label beginClass = genLabel(cDecl.getId());
+        list.add(new IntermediateCode(Instruction.LABELBEGINCLASS,null,null,beginClass));
         for (FieldDecl fieldDecl: cDecl.getFieldDecl()) {
             fieldDecl.accept(this);
         }
@@ -348,9 +350,25 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(FieldDecl fieldDecl) {
         for (IdFieldDecl idFieldDecl : fieldDecl.getListId()) {
-                idFieldDecl.accept(this);                                                              
+            if(idFieldDecl.isArray()){
+                list.add(new IntermediateCode(Instruction.INITARRAY,null,null,idFieldDecl));
+            }else{
+                if (fieldDecl.getType().equals(Type.TINTEGER)) {
+                    list.add(new IntermediateCode(Instruction.INITINT,null,null,idFieldDecl));
+                }else{
+                    if (fieldDecl.getType().equals(Type.TFLOAT)) {
+                        list.add(new IntermediateCode(Instruction.INITFLOAT,null,null,idFieldDecl));
+                    }else{
+                        if (fieldDecl.getType().equals(Type.TBOOL)) {
+                            list.add(new IntermediateCode(Instruction.INITBOOL,null,null,idFieldDecl));
+                        }
+                    }
+                }
+            }
         } 
         return null;
+                // en vez de aceptar ir insertand los objetos (preguntar si es var o array) initVar y initArray
+                // discriminar entre los accesos a var y array con instrucciones nuevas (en statement o expression)PREGUNTAR PANCHO
     }
 
     @Override
@@ -375,11 +393,18 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(MethodDecl method) {
-        //label with the name method
-        Label activeMethod = genLabel(method.getId());
-        list.add(new IntermediateCode(Instruction.LABEL,null,null,activeMethod));
 
-        //FALTA COMPLETAR!!!!!!!!!!!!!!!!
+        if(!(method.isExtern())){
+            //label with the name method BEGIN METHOD
+            Label beginMethod = genLabel(method.getId());
+            list.add(new IntermediateCode(Instruction.LABELBEGINMETHOD,null,null,beginMethod));
+
+            method.getBlock().accept(this);
+
+            //label with the name method END METHOD
+            Label endMethod = genLabel(method.getId());
+            list.add(new IntermediateCode(Instruction.LABELENDMETHOD,null,null,endMethod));
+        }
 
         return null;
     }
@@ -390,8 +415,15 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     @Override
-    public Location visit(MethodCall call) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Location visit(MethodCall methodCall) {
+
+        for (Expression expression: methodCall.getArgList()) {
+            list.add(new IntermediateCode(Instruction.PUSHPARAM,null,null,expression.accept(this)));
+        }
+
+        list.add(new IntermediateCode(Instruction.CALL,null,null,methodCall));
+
+        return null;
     }
     
     @Override
@@ -403,25 +435,31 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(VarListLocation loc) {
         return loc;
     }
-
+    
     @Override
     public Location visit(IdFieldDecl aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
     public Location visit(Param aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
-    public Location visit(BodyClass aThis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Location visit(BodyClass bodyClass) {
+        for (FieldDecl fieldDeclaration: bodyClass.getFieldDeclaration()) {
+            fieldDeclaration.accept(this);
+        }
+        for (MethodDecl methodDeclaration : bodyClass.getMethodDeclaration()) {
+            methodDeclaration.accept(this);
+        }
+        return null;
     }
 
     @Override
     public Location visit(Attribute a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
