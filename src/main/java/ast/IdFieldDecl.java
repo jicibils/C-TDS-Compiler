@@ -22,6 +22,10 @@ public class IdFieldDecl extends AST{
 		this.id = id;
 	}
 
+	public boolean isArray(){
+ 		return il>0;
+  	}
+
 	public String getId() {
 		return id;
 	}
