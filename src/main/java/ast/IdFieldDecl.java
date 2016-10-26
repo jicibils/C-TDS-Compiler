@@ -20,6 +20,11 @@ public class IdFieldDecl extends AST{
 	}
 	public IdFieldDecl(String id){
 		this.id = id;
+		this.il = -1; //Set to -1 because it is not array
+	}
+
+	public boolean isArray(){
+		return il>0;
 	}
 
 	public String getId() {

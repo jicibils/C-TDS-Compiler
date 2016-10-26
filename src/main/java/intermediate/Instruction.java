@@ -58,7 +58,7 @@ public enum Instruction {
     
     LABEL,          //Label
     LESS,          
-
+    RETURN,
     ;
 
 }

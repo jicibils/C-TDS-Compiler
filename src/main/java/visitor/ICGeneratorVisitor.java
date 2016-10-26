@@ -427,7 +427,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
     @Override
     public Location visit(ReturnStmt stmt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Crear nueva instruccion RETURN 
+        Location temporal = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
+        incTempCounter();
+
+        list.add(new IntermediateCode(Instruction.RETURN,null,null,temporal));
+
+        return null;
     }
     
 }
