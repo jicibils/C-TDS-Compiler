@@ -102,17 +102,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(BodyClass aThis){
-        return new LinkedList<String>();
-    }
-
-    public List<String> visit(IdFieldDecl aThis){
-        return new LinkedList<String>();
-    }
-   
-    public List<String> visit(Attribute a) {
-        return new LinkedList<String>();
-    }
     
     // visit locations  
 
@@ -199,40 +188,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(SemicolonStmt stmt){
-        return new LinkedList<String>();
-    }
-
-
-
-
-    // visit expressions
-
-    public List<String> visit(VarLocation loc){
-        List<String> errorList = new LinkedList<String>();
-        Boolean exist = false;
-        exist = search(loc.getId());
-        if(exist == false){
-            errorList.add("Location was not founded");
-        }else{
-            //SI LO ENCUENTRO QUE HAGO????
-        }
-        return errorList;
-    }
-
-
-    public List<String> visit(VarListLocation loc){
-        List<String> errorList = new LinkedList<String>();
-        Boolean exist = false;
-        exist = search(loc.getId());
-        if(exist == false){
-            errorList.add("Location was not founded");
-        }else{
-            //SI LO ENCUENTRO QUE HAGO???? APARTE DE VISITAR LA EXPRESION??
-            errorList.addAll(loc.getExpression().accept(this)); 
-        }
-        return errorList;
-    }
 
     public List<String> visit(BinOpExpr expr){
         List<String> errorList = new LinkedList<String>();
@@ -246,31 +201,39 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    // visit literals   
+    public List<String> visit(VarLocation loc){
+        List<String> errorList = new LinkedList<String>();
+        Attribute exist = null;
+        exist = search(loc.getId());
+        if(exist == null){
+            errorList.add("Location was not founded");
+        }else{
+            errorList.addAll(loc.accept(this)); 
+        }
+        return errorList;
+    }
 
 
-    public List<String> visit(IntLiteral lit){
-        return new LinkedList<String>();
+    public List<String> visit(VarListLocation loc){
+        List<String> errorList = new LinkedList<String>();
+        Attribute exist = null;
+        exist = search(loc.getId());
+        if(exist == null){
+            errorList.add("Location was not founded");
+        }else{
+            errorList.addAll(loc.getExpression().accept(this)); 
+        }
+        return errorList;
     }
-    public List<String> visit(FloatLiteral lit){
-        return new LinkedList<String>();
-    }
-    public List<String> visit(BoolLiteral lit){
-        return new LinkedList<String>();
-    }
-    
 
     // visit method call
     public List<String> visit(MethodCall call){
         List<String> errorList = new LinkedList<String>();
-        Boolean exist = false;
+        Attribute exist = null;
         exist = search(call.getId());
-        // COMO DIFERENCIO EL CASO EN DONDE EL METODO TIENE UN ID O UNA LISTA DE ID
-        if(exist == false){
+        if(exist == null){
             errorList.add("Method declaration was not founded");
         }else{
-            //declaration was founded
-            //TENDRIA QUE INSERTAR EN LA TABLA DE SIMBOLOS O SOLO VISITO LOS ARGUMENTOS
             for (Expression expr : call.getArgList()) {
                 errorList.addAll(expr.accept(this));
             }
@@ -279,52 +242,67 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
     //method for search declaration in simbolTable
-    private Boolean search(String id) {
+    private Attribute search(String id) {
         Attribute res = null;
         int currentlevel = table.getIndex();
-        while((res == null) && (currentlevel > 0)){
+        while((res == null) && (currentlevel >= 0)){
             res = table.searchByName(id,currentlevel);
             currentlevel--;
         }
-        return (res!=null);
+        // return (res!=null);
+        return res;
+        //ASI ESTA BIEN O EN EL CASO DE LAS CLASES Y LOS METODOS DONDE TIENEN
+        // CAMPOS COMPUESTOS ADENTRO TENDRIA QUE HACER UN TRATAMIENTO ESPECIAL 
+        // PARA EXPLORAR ADENTRO DE ESOS ?????? ESTILO UN FOR EACH O ALGO DEL ESTILO??
+
+
+
     }
-    //EL SEARCH ESTA BIEN O HAY QUE DISCRIMINAR DISTINTOS NIVELES SABIENDO QUE NO TODOS LOS NIVELES
-    // TIENEN LO MISMO !! ASI COMO ESTA HECHO SI EXISTE LA DECLARACION LA ENCUENTRA???
 
+    public List<String> visit(BodyClass bodyClass){
+        List<String> errorList = new LinkedList<String>();
+        for (FieldDecl fieldDeclaration: bodyClass.getFieldDeclaration()) {
+            errorList.addAll(fieldDeclaration.accept(this));
+        }
+        for (MethodDecl methodDeclaration : bodyClass.getMethodDeclaration()) {
+            errorList.addAll(methodDeclaration.accept(this));            
+        }
+        return errorList;
 
+        //EN BODYCLASS NO HAGO NADA O VISITO COMO LO HICE ARRIBA?????
+        // return new LinkedList<String>();
+    }
 
+    public List<String> visit(IdFieldDecl aThis){
+        return new LinkedList<String>();
+    }
+   
+    public List<String> visit(IntLiteral lit){
+        return new LinkedList<String>();
+    }
 
+    public List<String> visit(FloatLiteral lit){
+        return new LinkedList<String>();
+    }
 
-// DUDAS:
-    // me falta el methodCall y el VarLocation y VarListLocation
-    // hacer un search que busque declaraciones
+    public List<String> visit(BoolLiteral lit){
+        return new LinkedList<String>();
+    }
 
+    public List<String> visit(SemicolonStmt stmt){
+        return new LinkedList<String>();
+    }
+
+    public List<String> visit(Attribute a) {
+        return new LinkedList<String>();
+    }
 
 //***************************************************************
-
-    //*************************************LISTO*****************
-    // arrglar errores de casteo ! (IntLiteral y LinkedList en fielDecl)
-    //arreglar lo errores en tiempo de ejecucion (CUP)
-    //*************************************LISTO*****************
-
-
-
-    //*************************************LISTO*****************
-    //HACER CON LOS BREAK Y CONTINUE (contador que sume cuando este en el ciclo y reste cuando 
-    // salga y despues en el break y en el continue preguntas por el contador )
-    //*************************************LISTO*****************
-
 
     //methodCall buscar si esta declarado el metodo en la tabla de simbolos
 
     //varLocation y el otro es cuando se da un uso y es buscar si existe en la tabla
     // de simbolos y si esta es asignarle sus tipos y sino esta error
-
-
-
-
-
-    //revisar el mainCheck (el pull borro todo)
 
 
 
