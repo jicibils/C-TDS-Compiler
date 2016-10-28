@@ -75,8 +75,13 @@ public enum Instruction {
     JMP,            //JUMP
     
     LABEL,          //Label
-    LESS,          
+    LESS,  
+    
+    //return stmts
     RETURN,
+    RETURNINT,
+    RETURNFLOAT,
+    RETURNBOOL,
     ;
 
 }

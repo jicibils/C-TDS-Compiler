@@ -426,7 +426,16 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         return null;
     }
     
+    @Override
+    public Location visit(VarLocation loc) {
+        return loc;
+    }
 
+    @Override
+    public Location visit(VarListLocation loc) {
+        return loc;
+    }
+    
     @Override
     public Location visit(IdFieldDecl aThis) {
         return null;
@@ -454,22 +463,21 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     }
 
     @Override
-    public Location visit(VarLocation loc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location visit(VarListLocation loc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Location visit(ReturnStmt stmt) {
-        //Crear nueva instruccion RETURN 
-        Location temporal = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
-        incTempCounter();
-
-        list.add(new IntermediateCode(Instruction.RETURN,null,null,temporal));
+      
+        Location temporal = stmt.getExpression().accept(this);
+        
+        switch(stmt.getExpression().getType()){
+            case TINTEGER :
+                list.add(new IntermediateCode(Instruction.RETURNINT,null,null,temporal));
+            case TFLOAT :
+                list.add(new IntermediateCode(Instruction.RETURNFLOAT,null,null,temporal));
+            case TBOOL : 
+                list.add(new IntermediateCode(Instruction.RETURNBOOL,null,null,temporal));
+            case TVOID :
+                list.add(new IntermediateCode(Instruction.RETURN,null,null,null));
+            
+        }
 
         return null;
     }
