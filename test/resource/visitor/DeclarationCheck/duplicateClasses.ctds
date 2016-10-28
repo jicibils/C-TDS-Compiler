@@ -1,0 +1,10 @@
+//duplicate classes
+//the class already exists
+
+class test {
+	integer var;
+}
+
+class test{
+	integer var1;
+} 
