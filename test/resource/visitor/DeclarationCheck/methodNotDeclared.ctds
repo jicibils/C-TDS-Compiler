@@ -1,0 +1,9 @@
+//the method "methodTest" not exists
+class main {
+
+	void main() {
+		methodTest();
+		return;
+	}
+	
+}

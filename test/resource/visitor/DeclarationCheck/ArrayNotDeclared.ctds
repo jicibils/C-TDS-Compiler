@@ -1,0 +1,9 @@
+//the array not exists
+class main {
+
+	void main() {
+		var[10] = chori;
+		return;
+	}
+	
+}

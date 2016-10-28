@@ -1,0 +1,8 @@
+//the return not exists
+class Test {
+	
+
+	integer  method() {
+	}
+
+}

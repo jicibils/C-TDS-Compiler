@@ -1,0 +1,12 @@
+//duplicate Declaration Array
+class test{
+	
+	integer var;
+	integer var[10];
+	
+	void methodTest(){
+		return;
+	}
+
+}
+

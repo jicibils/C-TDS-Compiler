@@ -1,0 +1,8 @@
+//duplicate Declaration Var
+//the var already exists
+class test{
+	
+	integer var;
+	integer var;
+
+}

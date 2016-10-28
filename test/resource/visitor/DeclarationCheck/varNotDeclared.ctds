@@ -1,0 +1,9 @@
+//the var "var" not exists
+class main {
+
+	void main() {
+		var  = 10;
+		return;
+	}
+	
+}

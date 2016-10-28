@@ -1,0 +1,14 @@
+//duplicate method
+//the method already exists
+class Test {
+	
+	integer var;
+
+	void methodTest() {
+		return;
+	}
+
+	void methodTest() {
+		return;
+	}
+}
