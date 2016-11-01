@@ -85,8 +85,12 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         Label label = new Label(name,labelCounter);
         return label;
 
-
     }
+
+    public LinkedList<IntermediateCode> getICList(){
+        return list;
+    }
+
 
     @Override
     public Location visit(IfStatement stmt) {

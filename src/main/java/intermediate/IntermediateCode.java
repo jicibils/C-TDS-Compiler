@@ -4,6 +4,7 @@ import main.java.ast.*;
 
 public class IntermediateCode{
     private Instruction operator;
+    private Label label;     
     
     private AST operand1;
     private AST operand2;
@@ -19,4 +20,13 @@ public class IntermediateCode{
     public Instruction getOperator(){
         return operator;
     }
+    public Label getLabel() {
+        return label;
+    }
+
+    @Override
+    public String toString() {
+        return label.toString() + ": " + operator.toString();
+    }
+
 }

@@ -174,17 +174,23 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     public List<String> visit(BreakStatement stmt){
         List<String> errorList = new LinkedList<String>();
+               System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAa");
         if(count == 0){
-            errorList.add("BREAK is outside of a loop ");
-        }
+            String res = "BREAK is outside of a loop ";
+            errorList.add(res);
+               System.out.println("11111111111111111111111111111111");
+         }
         return errorList;
     }
 
     public List<String> visit(ContinueStmt stmt){
         List<String> errorList = new LinkedList<String>();
+               System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBB");
         if(count == 0){
-            errorList.add("CONTINUE is outside of a loop ");
-        }
+            String res = "CONTINUE is outside of a loop ";
+            errorList.add(res);
+               System.out.println("555555555555555555555555555555");
+         }
         return errorList;
     }
 
@@ -311,7 +317,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
     // agregar los OFFSET despues de terminar codigo intermedio
-    //codigoIntermedio
     //arreglar scripts 
 //***************************************************************
 

@@ -1,0 +1,9 @@
+//duplicate params
+//the param "integer x" already exists
+class Test {
+	
+
+	void method(integer x,integer x) {
+		return;
+	}
+}
