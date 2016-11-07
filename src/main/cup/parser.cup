@@ -220,7 +220,7 @@ return_stmt			::= RETURN:r SEMICOLON 										{: RESULT = new ReturnStmt(rleft+
 					| RETURN:r expr:e SEMICOLON 								{: RESULT = new ReturnStmt(e,rleft+1,rright+1); :}
 					;			
 
-list_statement		::= statement:s list_statement:sl 					{:sl.add(s); RESULT = sl;:}
+list_statement		::= list_statement:sl statement:s  					{:sl.add(s); RESULT = sl;:}
 					| statement:s 										{:LinkedList l = new LinkedList<Statement>(); l.add(s); RESULT = l;:}					;
 /*******************************************EndStatement*********************************************************/
 

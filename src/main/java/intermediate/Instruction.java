@@ -150,7 +150,7 @@ public enum Instruction {
             case LABELBEGINCLASS:
                 return "LABELBEGINCLASS";
             case LABELBEGINMETHOD:
-                return "LABELENDMETHOD";
+                return "LABELBEGINMETHOD";
             case LABELENDMETHOD:
                 return "LABELENDMETHOD";
             case PUSHID:

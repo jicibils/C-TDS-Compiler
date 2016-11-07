@@ -13,6 +13,7 @@ import main.java.visitor.*;
 import java.util.List;
 import java.util.LinkedList;
 import main.java.intermediate.*;
+import main.java.ast.ErrorClass;
 
 /*
 public class Main {
@@ -51,6 +52,7 @@ public class Main {
 public class Main {
 
     private static List<String> errorList;
+    private static List<ErrorClass> errorListType;
     private static List<IntermediateCode> iCList;
 
     static public void main(String argv[]) {
@@ -58,18 +60,25 @@ public class Main {
         try {
 
             errorList = new LinkedList<String>();
+            errorListType = new LinkedList<ErrorClass>();
+
             iCList = new LinkedList<IntermediateCode>();
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
             Program result = (Program)p.parse().value;      
 
+
+            // CheckExistMainVisitor
             mainCheck(result);                  //Call to static method
 
+            // DeclarationCheckVisitor
             declarationCheck(result);   //Call to static method
 
             if (errorList.size()==0) {
                 System.out.println("DeclarationCheckVisitor OK!!!!!!");
+                System.out.print("\n   ");
             }else{
                 System.out.println("Fatal Error in DeclarationCheckVisitor");
+                System.out.print("\n   ");
                 int index = errorList.size()-1;
                 while(index>0){
                     String res = errorList.get(index);
@@ -79,11 +88,40 @@ public class Main {
 
             }
 
+            // TypeCheckVisitor
+            if (errorList.size()==0) {
+                typeCheck(result);
+                System.out.println("TypeCheckVisitor OK!!!!!!");
+                System.out.print("\n   ");
+            }else{
+                System.out.println("Fatal Error in TypeCheckVisitor");
+                System.out.print("\n   ");
+                int index = errorListType.size()-1;
+                while(index>0){
+                    ErrorClass res = errorListType.get(index);
+                    System.out.println(res.getDesc());
+                    index--;
+                }
+
+            }
+
+            // ICGeneratorVisitor
             if (errorList.size()==0) {
                 iCGenerator(result);
                 for (IntermediateCode iC : iCList) {
                     System.out.println(iC.toString());
                 }
+                // int index = iCList.size()-1;
+                // while(index>0){
+                //     IntermediateCode res = iCList.get(index);
+                //     System.out.println(res.toString());
+                //     index--;
+                // }
+                System.out.println("intermediate code OK!!!!!!");
+                System.out.print("\n   ");
+            }else{
+                System.out.println("Fatal Error in intermediate code");
+                System.out.print("\n   ");
             }
 
 
@@ -104,6 +142,11 @@ public class Main {
     private static void declarationCheck(Program program) {
         DeclarationCheckVisitor decl = new DeclarationCheckVisitor();
         errorList.addAll(decl.visit(program));
+    }
+
+    private static void typeCheck(Program program) {
+        TypeCheckVisitor tCheck = new TypeCheckVisitor();
+        errorListType.addAll(tCheck.visit(program));
     }
 
     public static void iCGenerator(Program program) {

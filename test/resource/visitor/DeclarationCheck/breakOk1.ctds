@@ -2,7 +2,7 @@ class main {
 	
 	void main() {
 		integer var;
-		
+//		return;		
 		var = 10;
 		while(var>1){
 			var = var - 1;

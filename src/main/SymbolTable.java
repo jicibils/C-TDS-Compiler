@@ -14,14 +14,14 @@ public class SymbolTable{
 	public SymbolTable(){
 		stack = new LinkedList<LinkedList<AST>>();
 		index = 0;
-        stack.add(new LinkedList<AST>());
+        stack.add(index,new LinkedList<AST>());
 	}
         
 	//Insert new block
 	public void pushNewLevel(){
         index++;
 		LinkedList newBlock = new LinkedList<AST>();
-		stack.push(newBlock);
+		stack.add(index,newBlock);
 	}
 
 	//Delete block
@@ -50,14 +50,14 @@ public class SymbolTable{
 	}
 
 	//Search Symbol by its id. In case it exists, it's returned. Otherwise, it returns null.
-        public Attribute searchByName(String id, int index){
-            
-            //LinkedList<AST> tope = stack.get(index); //get linkedList on Top
-            for(AST t : stack.get(index)){
-                    Attribute a = (Attribute) t;
-                    if(a.getId().equals(id));
-                        return a;
-            }
-            return null;
+    public Attribute searchByName(String id, int index){
+        
+        //LinkedList<AST> tope = stack.get(index); //get linkedList on Top
+        for(AST t : stack.get(index)){
+                Attribute a = (Attribute) t;
+                if(a.getId().equals(id));
+                    return a;
         }
+        return null;
+    }
 }

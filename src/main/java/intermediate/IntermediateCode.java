@@ -26,7 +26,9 @@ public class IntermediateCode{
 
     @Override
     public String toString() {
-        return label.toString() + ": " + operator.toString();
+        // return label.toString() + ": " + operator.toString();
+        return operator.toString() + " || ";
+        // return label.toString() + " || ";
     }
 
 }

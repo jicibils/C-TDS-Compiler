@@ -5,10 +5,6 @@
  */
 package main.java.ast;
 
-/**
- *
- * @author Ezequiel Arangue
- */
 public class ErrorClass {
     String desc;
     int line;
