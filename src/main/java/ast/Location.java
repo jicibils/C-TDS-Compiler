@@ -16,6 +16,16 @@ public abstract class Location extends Expression {
 		return declaration;
 	}
 
+	public int getOffset() {
+		return declaration.getOffset();
+	}
+
+	public void setOffset(int offset) {
+		 declaration.setOffset(offset);
+	}
+
+
+
 	public void setDeclaration(Attribute declaration) {
 		this.declaration = declaration;
 		setType(declaration.getType());

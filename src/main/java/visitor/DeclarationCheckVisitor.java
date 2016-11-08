@@ -11,6 +11,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     private SymbolTable table;
     private int count; 
+    public int offset;
+    public int maxOffset;
 
     // atributes that we use in method search for 
     // recognize diferent levels in simbolTable
@@ -22,6 +24,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public DeclarationCheckVisitor(){
         table = new SymbolTable();
         count = 0;
+        offset = -4;
+        maxOffset = offset;
     }
 
     //visit program
@@ -48,19 +52,15 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         List<String> errorList = new LinkedList<String>();
         table.pushNewLevel();    
         for(FieldDecl fieldDecl : cDecl.getFieldDecl()){
-        System.out.println("555555555555555555555555555");
             errorList.addAll(fieldDecl.accept(this));
         }
 
         for(MethodDecl methodDecl : cDecl.getMethodDecl()){
-        System.out.println("66666666666666666666666666");
             //add the profile of method
             Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType(),methodDecl);
             if(table.insertSymbol(attribute)){
-        System.out.println("77777777777777777777777");
                 errorList.addAll(methodDecl.accept(this));
             }else{
-        System.out.println("888888888888888888888888");
 
             }
             
@@ -96,6 +96,10 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         if (!(method.isExtern())){
             //open level for parameters
             table.pushNewLevel();    
+
+            //SET MAXOFFSET
+            method.setMaxOffset(maxOffset);
+
             for(Param param : method.getParam()){
                 errorList.addAll(param.accept(this));
             }
@@ -200,11 +204,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(BreakStatement stmt){
         System.out.println("ESTOY EN BREAK STATEMENT!!!!!!!!!!");
         List<String> errorList = new LinkedList<String>();
-               System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAa");
         if(count == 0){
             String res = "BREAK is outside of a loop ";
             errorList.add(res);
-               System.out.println("11111111111111111111111111111111");
          }
         return errorList;
     }
@@ -212,11 +214,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     public List<String> visit(ContinueStmt stmt){
         System.out.println("ESTOY EN CONTINUE STATEMENT!!!!!!!!!!");
         List<String> errorList = new LinkedList<String>();
-               System.out.println("BBBBBBBBBBBBBBBBBBBBBBBBB");
         if(count == 0){
             String res = "CONTINUE is outside of a loop ";
             errorList.add(res);
-               System.out.println("555555555555555555555555555555");
          }
         return errorList;
     }
@@ -240,12 +240,16 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         System.out.println("ESTOY EN VAR LOCATION!!!!!!!!!!");
         List<String> errorList = new LinkedList<String>();
         boolean flagForError = false;
+        Attribute declaration;
         //if list of ids is empty is a simple location. form ID
         if(loc.getArrayId().isEmpty()){
-            Attribute declaration = search(loc.getId());
+            declaration = search(loc.getId());
             if (declaration != null) {
                 // add the location 
-                    loc.setDeclaration(declaration);   
+                //set Offset
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
             } else {
                 // The location not founded
                 flagForError = true;
@@ -259,10 +263,13 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             //if list of ids isn't empty isn't a simple location
             // The location is of the form ID.ID
     
-            Attribute declaration = search(loc.getId());
+            declaration = search(loc.getId());
             if (declaration!=null) {
                 // add the location 
-                loc.setDeclaration(declaration);   
+                //set Offset
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
             } else {
                 // The location not founded
                 flagForError = true;
@@ -280,13 +287,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         System.out.println("ESTOY EN VAR LIST LOCATION!!!!!!!!!!");
         List<String> errorList = new LinkedList<String>();
         boolean flagForError = false;
+        Attribute declaration;
         //if list of ids is empty is a simple location. form ID[expr]
         if(loc.getArrayId().isEmpty()){
-            Attribute declaration = search(loc.getId());
+            declaration = search(loc.getId());
             if (declaration != null) {
                 // add the location 
-                    loc.setDeclaration(declaration);   
-                    errorList.addAll(loc.getExpression().accept(this)); 
+                //set Offset
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
+                errorList.addAll(loc.getExpression().accept(this)); 
             } else {
                 // The location not founded
                 flagForError = true;
@@ -300,10 +311,13 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             //if list of ids isn't empty isn't a simple location
             // The location is of the form ID.ID[expr]
     
-            Attribute declaration = search(loc.getId());
+            declaration = search(loc.getId());
             if (declaration!=null) {
                 // add the location 
-                loc.setDeclaration(declaration);   
+                //set Offset
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
                 errorList.addAll(loc.getExpression().accept(this)); 
             } else {
                 // The location not founded
@@ -414,6 +428,14 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         System.out.println("ESTOY EN ATTRIBUTE!!!!!!!!!!");
         return new LinkedList<String>();
     }
+
+    private int genOffset() {
+        System.out.println("ESTOY EN GEN OFFSET!!!!!!!!!!");
+        offset -= 4;
+        maxOffset = offset;
+        return offset;
+    }
+
 
 //***************************************************************
 

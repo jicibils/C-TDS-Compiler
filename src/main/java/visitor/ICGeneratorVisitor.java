@@ -19,7 +19,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     private int labelCounter;  //variable to store amount of labels
     private Stack<Label> stackIn;
     private Stack<Label> stackOut;
-
+    private int offset;
+    private int maxOffset;
     
     public ICGeneratorVisitor(){
         
@@ -28,6 +29,9 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         labelCounter = 0;          
         stackIn = new Stack<Label>();
         stackOut = new Stack<Label>();
+
+        offset = 0;
+        maxOffset = 0 ;
     }
 
     @Override
@@ -48,6 +52,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         for (FieldDecl fieldDecl: cDecl.getFieldDecl()) {
             fieldDecl.accept(this);
         }
+        //RECOVERY MAXOFFSET        
+        MethodDecl met = cDecl.getMethodDecl().get(0);
+        offset = met.getMaxOffset();
+        maxOffset = offset;
+
         for (MethodDecl methodDecl : cDecl.getMethodDecl()) {
             methodDecl.accept(this);
         }
@@ -82,11 +91,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(MethodDecl method) {
         System.out.println("ESTOY EN METHODDECL!!!!!!!!!!");
+// COMO HACEMOS DE 64 BIT NO LE PONEMOS OFFSET A LOS PARAMETROS YA QUE USAMOS REGISTROS
 
         if(!(method.isExtern())){
             //label with the name method BEGIN METHOD
             Label beginMethod = genLabel(method.getId());
             list.add(new IntermediateCode(Instruction.LABELBEGINMETHOD,null,null,beginMethod));
+
 
             method.getBlock().accept(this);
 
@@ -125,40 +136,83 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         System.out.println("ESTOY EN ASSIGNSTMT!!!!!!!!!!");
         Location loc = stmt.getLocation().accept(this); // Get left part. Operand 1
         Location expr = stmt.getExpression().accept(this); // Get rigth part. Operand 2
-        
+        Attribute declaration;
+
         switch (stmt.getOperator()){
             case ASSIGN :                       //assign, op1, op2, res
+
+                    //ESTOS IRIAN???? PORQUE NO SON TEMPORALES Y SUPONGO QUE COMO RECUPERA 
+                    // EL LOCATION YA TENDRIA QUE TENER EL OFFSET ASIGNADO
+
+                    //SET OFFSET
+                    declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                    loc.setDeclaration(declaration);
+                    loc.setOffset(genOffset());
+
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));
+
+                    //SET TYPE for declaration
+                    loc.getDeclaration().setType(Type.TINTEGER);
                     return stmt.getLocation();
+
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
                         list.add(new IntermediateCode(Instruction.ASSIGNF,loc,expr, stmt.getLocation()));
+
+                        //SET TYPE for declaration
+                        loc.getDeclaration().setType(Type.TFLOAT);
                         return stmt.getLocation();
                     }else{
                         if (stmt.getLocation().getType().equals(Type.TBOOL)) {
                             list.add(new IntermediateCode(Instruction.ASSIGNB,loc,expr, stmt.getLocation()));
+
+                            //SET TYPE for declaration
+                            loc.getDeclaration().setType(Type.TBOOL);
                             return stmt.getLocation();
                         }
                     }
                 }
             case INC :
+
+                //SET OFFSET
+                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+
+                    //SET TYPE for declaration
+                    loc.getDeclaration().setType(Type.TINTEGER);
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
                         list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+
+                        //SET TYPE for declaration
+                        loc.getDeclaration().setType(Type.TFLOAT);
                         return stmt.getLocation();
                     }
                 }
             case DEC :
+                //SET OFFSET
+                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                loc.setDeclaration(declaration);
+                loc.setOffset(genOffset());
+
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+
+                    //SET TYPE for declaration
+                    loc.getDeclaration().setType(Type.TINTEGER);
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
                         list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+
+                        //SET TYPE for declaration
+                        loc.getDeclaration().setType(Type.TFLOAT);
                         return stmt.getLocation();
                     }
                 }
@@ -323,6 +377,12 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         VarLocation tempLoc = new VarLocation("T"+tempCounter,expr.getLineNumber(),expr.getColumnNumber());  //temporal location to store results
         incTempCounter(); //tempCounter++ increment counter that store amount of temporal location used
         tempLoc.setType(expr.getType());   //set type to temporal
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),expr);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
+
         
         //I need to obtain the appropiate instruction according to operator and its type
         //since we do not have the binary expression separated by type.
@@ -392,6 +452,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         incTempCounter(); //tempCounter++ increment temporal counter
         //set type
         tempLoc.setType(expr.getType());
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),expr);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
         
         //retrieve operand expression
         VarLocation locExpr = (VarLocation)expr.getOperand().accept(this);  //Get operand
@@ -518,5 +583,24 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public LinkedList<IntermediateCode> getICList(){
         return list;
     }    
+
+    private int genOffset() {
+        System.out.println("ESTOY EN GEN OFFSET!!!!!!!!!!");
+        System.out.println(offset);
+        offset = offset - 4;
+        System.out.println(offset);
+        // setMaxOffset(offset);
+        maxOffset = offset;
+        return offset;
+    }
+
+    // private void setMaxOffset(int offset) {
+    //     MethodDecl methodDecl = new MethodDecl().setMaxOffset(offset);
+    // }
+    // public int getMaxOffset() {
+    //     MethodDecl methodDecl = new MethodDecl();
+    //     int off = methodDecl.getMaxOffset();
+    //     return off;
+    // }
     
 }

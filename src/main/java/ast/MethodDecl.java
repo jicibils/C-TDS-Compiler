@@ -10,6 +10,7 @@ public class MethodDecl extends Declaration{
 	private List<Param> pl;
 	private Block b;	
 	private Boolean isExtern;
+	private int maxOffset;
 
 	
 	public MethodDecl(Type t, String id, List<Param> pl, Block b, int ln, int cl) {
@@ -45,6 +46,14 @@ public class MethodDecl extends Declaration{
 	public boolean isExtern() {
 		return isExtern;
 	}
+
+    public int getMaxOffset() {
+        return maxOffset;
+    }
+
+    public void setMaxOffset(int maxOffset) {
+        this.maxOffset = maxOffset;
+    }
 
 
 	@Override
