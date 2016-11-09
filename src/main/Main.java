@@ -91,37 +91,45 @@ public class Main {
             // TypeCheckVisitor
             if (errorList.size()==0) {
                 typeCheck(result);
-                System.out.println("TypeCheckVisitor OK!!!!!!");
-                System.out.print("\n   ");
-            }else{
-                System.out.println("Fatal Error in TypeCheckVisitor");
-                System.out.print("\n   ");
-                int index = errorListType.size()-1;
-                while(index>0){
-                    ErrorClass res = errorListType.get(index);
-                    System.out.println(res.getDesc());
-                    index--;
+
+                if(errorListType.size() == 0){
+                    System.out.println("TypeCheckVisitor OK!!!!!!");
+                    System.out.print("\n   ");
+                }else{
+                    System.out.println("Fatal Error in TypeCheckVisitor");
+                    System.out.print("\n   ");
+                    int index = errorListType.size()-1;
+                    while(index>0){
+                        ErrorClass res = errorListType.get(index);
+                        System.out.println(res.getDesc());
+                        index--;
+                    }
                 }
 
             }
 
             // ICGeneratorVisitor
             if (errorList.size()==0) {
-                iCGenerator(result);
-                for (IntermediateCode iC : iCList) {
-                    System.out.println(iC.toString());
+                if(errorListType.size() == 0){
+                    iCGenerator(result);
+
+                    if(iCList.size() == 0){
+                        for (IntermediateCode iC : iCList) {
+                            System.out.println(iC.toString());
+                        }
+                        // int index = iCList.size()-1;
+                        // while(index>0){
+                        //     IntermediateCode res = iCList.get(index);
+                        //     System.out.println(res.toString());
+                        //     index--;
+                        // }
+                        System.out.println("intermediate code OK!!!!!!");
+                        System.out.print("\n   ");
+                    }else{
+                        System.out.println("Fatal Error in intermediate code");
+                        System.out.print("\n   ");
+                    }
                 }
-                // int index = iCList.size()-1;
-                // while(index>0){
-                //     IntermediateCode res = iCList.get(index);
-                //     System.out.println(res.toString());
-                //     index--;
-                // }
-                System.out.println("intermediate code OK!!!!!!");
-                System.out.print("\n   ");
-            }else{
-                System.out.println("Fatal Error in intermediate code");
-                System.out.print("\n   ");
             }
 
 
@@ -135,8 +143,11 @@ public class Main {
     private static void mainCheck(Program program){
         CheckExistMainVisitor mainVisitor = new CheckExistMainVisitor();
         Integer res = mainVisitor.visit(program);
-        if((res > 1) || (res == 0))
+        if((res > 1) || (res == 0)){
             System.out.println("Fatal Error: Program must contain just one main method without arguments.");
+        }else{
+            System.out.println("Main Check OK!!!");            
+        }
     }
 
     private static void declarationCheck(Program program) {

@@ -1,0 +1,8 @@
+//Declaration Var
+class main{
+	void main() {
+	
+		integer var;
+		integer jar;
+	}
+}
