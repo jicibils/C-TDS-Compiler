@@ -52,10 +52,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         for (FieldDecl fieldDecl: cDecl.getFieldDecl()) {
             fieldDecl.accept(this);
         }
-        //RECOVERY MAXOFFSET        
-        MethodDecl met = cDecl.getMethodDecl().get(0);
-        offset = met.getMaxOffset();
-        maxOffset = offset;
 
         for (MethodDecl methodDecl : cDecl.getMethodDecl()) {
             methodDecl.accept(this);
@@ -96,6 +92,15 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         if(!(method.isExtern())){
             //label with the name method BEGIN METHOD
             Label beginMethod = genLabel(method.getId());
+            beginMethod.setMaxOffset(method.getMaxOffset());
+        System.out.println("OFFSET LABELLLL!!!!!!||||||*******************"+beginMethod.getMaxOffset());
+
+            //INITIALIZED OFFSET
+        System.out.println("OFFSET METHOD DECLARATION!!!!!!||||||*******************");
+        System.out.println(offset);
+            offset = method.getMaxOffset();
+        System.out.println(offset);
+
             list.add(new IntermediateCode(Instruction.LABELBEGINMETHOD,null,null,beginMethod));
 
 
@@ -103,6 +108,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
             //label with the name method END METHOD
             Label endMethod = genLabel(method.getId());
+
+            //UPDATE MAXOFFSET
+            endMethod.setMaxOffset(maxOffset);
+            beginMethod.setMaxOffset(maxOffset);
+        System.out.println("OFFSET LABELLLL!!!!!!||||||*******************"+beginMethod.getMaxOffset());
             list.add(new IntermediateCode(Instruction.LABELENDMETHOD,null,null,endMethod));
         }
 
@@ -589,18 +599,8 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         System.out.println(offset);
         offset = offset - 4;
         System.out.println(offset);
-        // setMaxOffset(offset);
         maxOffset = offset;
         return offset;
     }
-
-    // private void setMaxOffset(int offset) {
-    //     MethodDecl methodDecl = new MethodDecl().setMaxOffset(offset);
-    // }
-    // public int getMaxOffset() {
-    //     MethodDecl methodDecl = new MethodDecl();
-    //     int off = methodDecl.getMaxOffset();
-    //     return off;
-    // }
     
 }

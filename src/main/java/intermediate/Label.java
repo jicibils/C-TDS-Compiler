@@ -11,16 +11,19 @@ import main.java.visitor.ASTVisitor;
 public class Label extends AST{
     private String id;
     private int labelNumber; //attribute that represents the autoincremental number of a label, e.g. Label1
+    private int maxOffset; //maxOffset used for recovery max offset to DeclarationCheckVisitor
     
     
     public Label(int n){
         this.id = "Label";
         this.labelNumber = n;
+        this.maxOffset = 0;
     }
     
     public Label(String id, int n){
         this.id = id;
         this.labelNumber = n;
+        this.maxOffset = 0;
     }
     
     public void setLabelNumber(int n){
@@ -38,6 +41,15 @@ public class Label extends AST{
     public void setLabelId(String name){
         id = name;
     }
+
+    public int getMaxOffset() {
+        return maxOffset;
+    }
+
+    public void setMaxOffset(int offset) {
+         this.maxOffset = offset;
+    }
+
     
     @Override
     public String toString(){

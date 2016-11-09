@@ -80,7 +80,12 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         list = fieldDecl.getListId();
         while (i<list.size()){
             id = list.get(i).getId();
+
+            //OFFSET
             Attribute attribute = new Attribute(id,type,fieldDecl);
+            attribute.setOffset(genOffset());
+
+
             if (!(table.insertSymbol(attribute))){
                 errorList.add("Error fieldDecl: Line: "+fieldDecl.getLineNumber()+" Column: "+fieldDecl.getColumnNumber());
             }
@@ -97,16 +102,23 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             //open level for parameters
             table.pushNewLevel();    
 
-            //SET MAXOFFSET
-            method.setMaxOffset(maxOffset);
+            //SET MAXOFFSET 
+            // EMPEZAR SIEMPRE ACA LOS MAXOFFSET CON -4
+            offset = -4;
 
             for(Param param : method.getParam()){
                 errorList.addAll(param.accept(this));
             }
 
             Block block = method.getBlock();
+
             errorList.addAll(block.accept(this));
+
+            method.setMaxOffset(offset);
+        System.out.println("MAX OFFSET declaration !!!!!!!!!!");
+                System.out.println(method.getMaxOffset());
         }
+
         //close level to parameters
         table.popLevel();
         return errorList;
@@ -246,9 +258,11 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
             declaration = search(loc.getId());
             if (declaration != null) {
                 // add the location 
+
                 //set Offset
                 loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                //METERLE EL OFFSET QUE YA TRAJO!! NO UNO NUEVO
+                loc.setOffset(declaration.getOffset());
 
             } else {
                 // The location not founded
@@ -268,7 +282,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 // add the location 
                 //set Offset
                 loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                loc.setOffset(declaration.getOffset());
 
             } else {
                 // The location not founded
@@ -295,7 +309,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 // add the location 
                 //set Offset
                 loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                loc.setOffset(declaration.getOffset());
 
                 errorList.addAll(loc.getExpression().accept(this)); 
             } else {
@@ -316,7 +330,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 // add the location 
                 //set Offset
                 loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                loc.setOffset(declaration.getOffset());
 
                 errorList.addAll(loc.getExpression().accept(this)); 
             } else {
@@ -431,7 +445,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     private int genOffset() {
         System.out.println("ESTOY EN GEN OFFSET!!!!!!!!!!");
+        System.out.println(offset);
         offset -= 4;
+        System.out.println(offset);
         maxOffset = offset;
         return offset;
     }
