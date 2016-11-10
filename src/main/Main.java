@@ -54,6 +54,7 @@ public class Main {
     private static List<ErrorClass> errorList;
     private static List<ErrorClass> errorListType;
     private static List<IntermediateCode> iCList;
+    private static LinkedList<String> errorAssembler;   
 
     static public void main(String argv[]) {
 
@@ -61,6 +62,7 @@ public class Main {
 
             errorList = new LinkedList<ErrorClass>();
             errorListType = new LinkedList<ErrorClass>();
+            errorAssembler = new LinkedList<String>();
 
             iCList = new LinkedList<IntermediateCode>();
             Parser p = new Parser(new Lexer(new FileReader(argv[0])));
@@ -167,6 +169,9 @@ public class Main {
         iCGeneratorVisitor.visit(program);
         iCList = iCGeneratorVisitor.getICList();
     }
+
+
+
 }
 
 
