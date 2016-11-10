@@ -3,11 +3,12 @@
 package main.java.visitor;
 
 import main.java.ast.*;
+import main.java.ast.ErrorClass;
 import java.util.List;
 import java.util.LinkedList;
 
 // Concrete visitor
-public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
+public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
 
     private SymbolTable table;
     private int count; 
@@ -30,14 +31,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     //visit program
 
-    public List<String> visit(Program program) {
+    public List<ErrorClass> visit(Program program) {
         System.out.println("ESTOY EN PROGRAM!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         // table.pushNewLevel();// cuando construis el objeto ahi se crea el nivel necesario para program(class)
         for(ClassDecl classdecl : program.getClassList()){
             Attribute attribute = new Attribute(classdecl.getId(),classdecl);
             if(table.insertSymbol(attribute)){
                 errorList.addAll(classdecl.accept(this));
+            }else{
+                String errorAssign = "Error class: already exists a class with name: " + classdecl.getId() +" ->  Line: "+classdecl.getLineNumber()+" Column: "+classdecl.getColumnNumber();
+                errorList.add(new ErrorClass(classdecl.getLineNumber(), classdecl.getColumnNumber(), errorAssign));
             }
         }
         table.popLevel();
@@ -47,9 +51,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     //visit declarations 
 
 
-    public List<String> visit(ClassDecl cDecl){
+    public List<ErrorClass> visit(ClassDecl cDecl){
         System.out.println("ESTOY EN CLASS DECLARATION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         table.pushNewLevel();    
         for(FieldDecl fieldDecl : cDecl.getFieldDecl()){
             errorList.addAll(fieldDecl.accept(this));
@@ -58,20 +62,21 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         for(MethodDecl methodDecl : cDecl.getMethodDecl()){
             //add the profile of method
             Attribute attribute = new Attribute(methodDecl.getId(),methodDecl.getType(),methodDecl);
+
             if(table.insertSymbol(attribute)){
                 errorList.addAll(methodDecl.accept(this));
             }else{
-
+                String errorAssign = "Error method: already exists a method with name: " + methodDecl.getId() +" ->  Line: "+methodDecl.getLineNumber()+" Column: "+methodDecl.getColumnNumber();
+                errorList.add(new ErrorClass(methodDecl.getLineNumber(), methodDecl.getColumnNumber(), errorAssign));
             }
-            
         }
         table.popLevel();
         return errorList;
     }
 
-    public List<String> visit(FieldDecl fieldDecl){
+    public List<ErrorClass> visit(FieldDecl fieldDecl){
         System.out.println("ESTOY EN FIELD DECLARATION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         List<IdFieldDecl> list = new LinkedList<IdFieldDecl>();
         Type type;
         String id;
@@ -87,7 +92,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
             if (!(table.insertSymbol(attribute))){
-                errorList.add("Error fieldDecl: Line: "+fieldDecl.getLineNumber()+" Column: "+fieldDecl.getColumnNumber());
+                String errorAssign = "Error fieldDecl: already exists a field with name: " + id +" ->  Line: "+fieldDecl.getLineNumber()+" Column: "+fieldDecl.getColumnNumber();
+                errorList.add(new ErrorClass(fieldDecl.getLineNumber(), fieldDecl.getColumnNumber(), errorAssign));
             }
             i++;
         }
@@ -95,10 +101,16 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     }
 
 
-    public List<String> visit(MethodDecl method){
+    public List<ErrorClass> visit(MethodDecl method){
         System.out.println("ESTOY EN METHOD DECLARATION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         if (!(method.isExtern())){
+
+            if (!method.thereIsReturn()) {
+                String errorAssign = "Error method: there isn't return statement in the method: " + method.getId() +" ->  Line: "+method.getLineNumber()+" Column: "+method.getColumnNumber();
+                errorList.add(new ErrorClass(method.getLineNumber(), method.getColumnNumber(), errorAssign));
+            }
+
             //open level for parameters
             table.pushNewLevel();    
 
@@ -126,12 +138,14 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     
 
 
-    public List<String> visit(Param param){
+
+    public List<ErrorClass> visit(Param param){
         System.out.println("ESTOY EN PARAM!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         Attribute attribute = new Attribute(param.getId(),param.getType(),param);
         if(!(table.insertSymbol(attribute))){
-            errorList.add("Error insert parameter: Line: "+param.getLineNumber()+" Column: "+param.getColumnNumber());
+                String errorAssign = "Error parameters: already exists a parameter with name: " + param.getId() +" ->  Line: "+param.getLineNumber()+" Column: "+param.getColumnNumber();
+                errorList.add(new ErrorClass(param.getLineNumber(), param.getColumnNumber(), errorAssign));
         }
         return errorList;
     }
@@ -139,9 +153,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
     
     // visit locations  
 
-    public List<String> visit(Block block){
+    public List<ErrorClass> visit(Block block){
         System.out.println("ESTOY EN BLOCK!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         table.pushNewLevel();    
         for(FieldDecl fieldDecl : block.getFieldDecl()){
             errorList.addAll(fieldDecl.accept(this));
@@ -157,24 +171,24 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
     // visit statements 
 
-    public List<String> visit(AssignStmt stmt){
+    public List<ErrorClass> visit(AssignStmt stmt){
         System.out.println("ESTOY EN ASSIGN STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         errorList.addAll(stmt.getLocation().accept(this));
         errorList.addAll(stmt.getExpression().accept(this));
         return errorList;
     }
 
-    public List<String> visit(MethodCallStmt stmt){
+    public List<ErrorClass> visit(MethodCallStmt stmt){
         System.out.println("ESTOY EN METHOD CALL STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<ErrorClass>();
         errorList.addAll(stmt.getMethodCall().accept(this));
         return errorList;
     }
 
-    public List<String> visit(IfStatement stmt){
+    public List<ErrorClass> visit(IfStatement stmt){
         System.out.println("ESTOY EN IF STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         errorList.addAll(stmt.getCondition().accept(this));
         errorList.addAll(stmt.getIfBlock().accept(this));
         if (stmt.thereIsElseBlock()){
@@ -183,9 +197,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(ForStatement stmt){
+    public List<ErrorClass> visit(ForStatement stmt){
         System.out.println("ESTOY EN FOR STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         count++;
         errorList.addAll(stmt.getAssign().accept(this));
         errorList.addAll(stmt.getCondition().accept(this));
@@ -194,9 +208,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(WhileStatement stmt){
+    public List<ErrorClass> visit(WhileStatement stmt){
         System.out.println("ESTOY EN WHILE STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         count++;
         errorList.addAll(stmt.getExpression().accept(this));
         errorList.addAll(stmt.getBlock().accept(this));
@@ -204,53 +218,53 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return errorList;
     }
 
-    public List<String> visit(ReturnStmt stmt){
+    public List<ErrorClass> visit(ReturnStmt stmt){
         System.out.println("ESTOY EN RETURN STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         if(stmt.getExpression() != null){
             errorList.addAll(stmt.getExpression().accept(this));
         }
         return errorList;
     }
 
-    public List<String> visit(BreakStatement stmt){
+    public List<ErrorClass> visit(BreakStatement stmt){
         System.out.println("ESTOY EN BREAK STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         if(count == 0){
-            String res = "BREAK is outside of a loop ";
-            errorList.add(res);
+            String errorAssign = "Error BreakStatement: BREAK is outside of a loop:  ->  Line: "+stmt.getLineNumber()+" Column: "+stmt.getColumnNumber();
+            errorList.add(new ErrorClass(stmt.getLineNumber(), stmt.getColumnNumber(), errorAssign));
          }
         return errorList;
     }
 
-    public List<String> visit(ContinueStmt stmt){
+    public List<ErrorClass> visit(ContinueStmt stmt){
         System.out.println("ESTOY EN CONTINUE STATEMENT!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         if(count == 0){
-            String res = "CONTINUE is outside of a loop ";
-            errorList.add(res);
+            String errorAssign = "Error ContinueStatement: CONTINUE is outside of a loop:  ->  Line: "+stmt.getLineNumber()+" Column: "+stmt.getColumnNumber();
+            errorList.add(new ErrorClass(stmt.getLineNumber(), stmt.getColumnNumber(), errorAssign));
          }
         return errorList;
     }
 
 
-    public List<String> visit(BinOpExpr expr){
+    public List<ErrorClass> visit(BinOpExpr expr){
         System.out.println("ESTOY EN BIN OP EXPRESSION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         errorList.addAll(expr.getLeftOperand().accept(this));
         errorList.addAll(expr.getRightOperand().accept(this));
         return errorList;
     }
-    public List<String> visit(UnaryOpExpr expr){
+    public List<ErrorClass> visit(UnaryOpExpr expr){
         System.out.println("ESTOY EN UNARY OP EXPRESSION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         errorList.addAll(expr.getOperand().accept(this));
         return errorList;
     }
 
-    public List<String> visit(VarLocation loc){
+    public List<ErrorClass> visit(VarLocation loc){
         System.out.println("ESTOY EN VAR LOCATION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         boolean flagForError = false;
         Attribute declaration;
         //if list of ids is empty is a simple location. form ID
@@ -269,8 +283,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 flagForError = true;
             }
             if (flagForError) {
-                String res = "VarLocation doesn't exist";
-                errorList.add(res);
+                String errorAssign = "Error VarLocation: LOCATION doesn't exist:  ->  Line: "+loc.getLineNumber()+" Column: "+loc.getColumnNumber();
+                errorList.add(new ErrorClass(loc.getLineNumber(), loc.getColumnNumber(), errorAssign));
             }
         }else{
 
@@ -289,17 +303,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 flagForError = true;
             }
             if (flagForError) {
-                String res = "VarLocation doesn't exist";
-                errorList.add(res);
+                String errorAssign = "Error VarLocation: LOCATION doesn't exist:  ->  Line: "+loc.getLineNumber()+" Column: "+loc.getColumnNumber();
+                errorList.add(new ErrorClass(loc.getLineNumber(), loc.getColumnNumber(), errorAssign));
             }
         }
         return errorList;
     }
 
 
-    public List<String> visit(VarListLocation loc){
+    public List<ErrorClass> visit(VarListLocation loc){
         System.out.println("ESTOY EN VAR LIST LOCATION!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         boolean flagForError = false;
         Attribute declaration;
         //if list of ids is empty is a simple location. form ID[expr]
@@ -317,8 +331,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 flagForError = true;
             }
             if (flagForError) {
-                String res = "VarListLocation doesn't exist";
-                errorList.add(res);
+                String errorAssign = "Error VarListLocation: LOCATION doesn't exist:  ->  Line: "+loc.getLineNumber()+" Column: "+loc.getColumnNumber();
+                errorList.add(new ErrorClass(loc.getLineNumber(), loc.getColumnNumber(), errorAssign));
             }
         }else{
 
@@ -338,8 +352,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
                 flagForError = true;
             }
             if (flagForError) {
-                String res = "VarLocation doesn't exist";
-                errorList.add(res);
+                String errorAssign = "Error VarListLocation: LOCATION doesn't exist:  ->  Line: "+loc.getLineNumber()+" Column: "+loc.getColumnNumber();
+                errorList.add(new ErrorClass(loc.getLineNumber(), loc.getColumnNumber(), errorAssign));
             }
         }
         return errorList;
@@ -348,13 +362,17 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
 
 
     // visit method call
-    public List<String> visit(MethodCall call){
+    public List<ErrorClass> visit(MethodCall call){
         System.out.println("ESTOY EN METHOD CALL!!!!!!!!!!");
-        List<String> errorList = new LinkedList<String>();
+        List<ErrorClass> errorList = new LinkedList<>();
         Attribute exist = null;
         exist = search(call.getId());
+        System.out.println("ESTOY EN METHOD CALL!!!!!!!!!!*********************************");
+        System.out.println(exist);
+
         if(exist == null){
-            errorList.add("Method declaration was not founded");
+            String errorAssign = "Error MethodCall: method declaration was not founded :  ->  Line: "+call.getLineNumber()+" Column: "+call.getColumnNumber();
+            errorList.add(new ErrorClass(call.getLineNumber(), call.getColumnNumber(), errorAssign));
         }else{
             for (Expression expr : call.getArgList()) {
                 errorList.addAll(expr.accept(this));
@@ -398,9 +416,9 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         return res;
     }
 
-    public List<String> visit(BodyClass bodyClass){
+    public List<ErrorClass> visit(BodyClass bodyClass){
         System.out.println("ESTOY EN BODY CLASS!!!!!!!!!!");
-        // List<String> errorList = new LinkedList<String>();
+        // List<ErrorClass> errorList = new LinkedList<ErrorClass>();
         // for (FieldDecl fieldDeclaration: bodyClass.getFieldDeclaration()) {
         //     errorList.addAll(fieldDeclaration.accept(this));
         // }
@@ -410,37 +428,37 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<String>> {
         // return errorList;
 
         //EN BODYCLASS NO HAGO NADA O VISITO COMO LO HICE ARRIBA?????
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
-    public List<String> visit(IdFieldDecl aThis){
+    public List<ErrorClass> visit(IdFieldDecl aThis){
         System.out.println("ESTOY EN ID FIELD DECLARATION!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
    
-    public List<String> visit(IntLiteral lit){
+    public List<ErrorClass> visit(IntLiteral lit){
         System.out.println("ESTOY EN INT LITERAL!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
-    public List<String> visit(FloatLiteral lit){
+    public List<ErrorClass> visit(FloatLiteral lit){
         System.out.println("ESTOY EN FLOAT LITERAL!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
-    public List<String> visit(BoolLiteral lit){
+    public List<ErrorClass> visit(BoolLiteral lit){
         System.out.println("ESTOY EN BOOL LITERAL!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
-    public List<String> visit(SemicolonStmt stmt){
+    public List<ErrorClass> visit(SemicolonStmt stmt){
         System.out.println("ESTOY EN SEMI COLON STATEMENT!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
-    public List<String> visit(Attribute a) {
+    public List<ErrorClass> visit(Attribute a) {
         System.out.println("ESTOY EN ATTRIBUTE!!!!!!!!!!");
-        return new LinkedList<String>();
+        return new LinkedList<ErrorClass>();
     }
 
     private int genOffset() {

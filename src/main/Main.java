@@ -51,7 +51,7 @@ public class Main {
     
 public class Main {
 
-    private static List<String> errorList;
+    private static List<ErrorClass> errorList;
     private static List<ErrorClass> errorListType;
     private static List<IntermediateCode> iCList;
 
@@ -59,7 +59,7 @@ public class Main {
 
         try {
 
-            errorList = new LinkedList<String>();
+            errorList = new LinkedList<ErrorClass>();
             errorListType = new LinkedList<ErrorClass>();
 
             iCList = new LinkedList<IntermediateCode>();
@@ -80,9 +80,9 @@ public class Main {
                 System.out.println("Fatal Error in DeclarationCheckVisitor");
                 System.out.print("\n   ");
                 int index = errorList.size()-1;
-                while(index>0){
-                    String res = errorList.get(index);
-                    System.out.println(res);
+                while(index>=0){
+                    ErrorClass res = errorList.get(index);
+                    System.out.println(res.getDesc());
                     index--;
                 }
 
@@ -99,7 +99,7 @@ public class Main {
                     System.out.println("Fatal Error in TypeCheckVisitor");
                     System.out.print("\n   ");
                     int index = errorListType.size()-1;
-                    while(index>0){
+                    while(index>=0){
                         ErrorClass res = errorListType.get(index);
                         System.out.println(res.getDesc());
                         index--;
@@ -145,8 +145,10 @@ public class Main {
         Integer res = mainVisitor.visit(program);
         if((res > 1) || (res == 0)){
             System.out.println("Fatal Error: Program must contain just one main method without arguments.");
+            System.out.print("\n   ");
         }else{
             System.out.println("Main Check OK!!!");            
+            System.out.print("\n   ");
         }
     }
 

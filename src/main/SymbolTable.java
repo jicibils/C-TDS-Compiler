@@ -42,22 +42,36 @@ public class SymbolTable{
 
 	//Insert a symbol in present level. If the symbol is inserted returns true, otherwise, returns false
 	public boolean insertSymbol(Attribute symbol){
-		if(searchByName(symbol.getId(),index)==null){  //this branch means symbols is not inserted yet
+		if(!existSymbol(symbol,index)){  //this branch means symbols is not inserted yet
 			stack.get(index).add(symbol);  //insert in top of stack
 			return true;
 		}
 		return false;		//returns false if symbol is already inserted.
 	}
 
+
+	private boolean existSymbol(Attribute symbol,int index) {
+		for (AST ast : stack.get(index)) {
+			Attribute a = (Attribute)ast;
+			if (symbol.getId().equals(a.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	//Search Symbol by its id. In case it exists, it's returned. Otherwise, it returns null.
     public Attribute searchByName(String id, int index){
         
         //LinkedList<AST> tope = stack.get(index); //get linkedList on Top
         for(AST t : stack.get(index)){
-                Attribute a = (Attribute) t;
-                if(a.getId().equals(id));
-                    return a;
+            Attribute a = (Attribute) t;
+            if(a.getId().equals(id)){
+                return a;
+            }
         }
         return null;
     }
+
 }
