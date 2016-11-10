@@ -56,6 +56,48 @@ public class MethodDecl extends Declaration{
     }
 
 
+	public boolean thereIsReturn() {
+		if (!isExtern) {
+			return searchReturn(b);
+		} 
+		return false;
+	}
+
+	// Returns true if the block has a return in the first list of statements 
+	private boolean blockHasReturn(Block block) {
+		for (Statement stmt : block.getStatements()) {
+			if (stmt instanceof ReturnStmt) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	// Returns true if the  Block has a return in the list of statements
+	private boolean searchReturn(Block block) {
+		if (blockHasReturn(block)) {
+			return true;
+		} else {
+			List<Statement> listStmt = block.getStatements();
+			boolean exist = false;
+			for (int i = 0; i < listStmt.size() && !exist; i++) {
+				Statement stmt = listStmt.get(i);
+				if (stmt instanceof IfStatement) {
+					IfStatement ifStmt = (IfStatement) stmt;
+					if (ifStmt.thereIsElseBlock()) {
+						exist = searchReturn(ifStmt.getIfBlock()) && searchReturn(ifStmt.getElseBlock());	
+					}
+				} else if (stmt instanceof Block) {
+					exist = searchReturn((Block)stmt);
+				}
+			}
+			return exist;
+		}
+		
+	}
+
+
 	@Override
 	public String toString() {
 		String result = this.t + " " + this.id + " (";
@@ -83,3 +125,9 @@ public class MethodDecl extends Declaration{
 	}
 	
 }
+
+
+
+
+
+

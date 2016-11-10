@@ -5,6 +5,7 @@
  */
 package main.java.ast;
 
+
 public class ErrorClass {
     String desc;
     int line;

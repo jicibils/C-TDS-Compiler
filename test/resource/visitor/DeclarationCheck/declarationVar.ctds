@@ -4,5 +4,6 @@ class main{
 	
 		integer var;
 		integer jar;
+		return;
 	}
 }
