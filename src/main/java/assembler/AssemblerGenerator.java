@@ -52,107 +52,108 @@ public class AssemblerGenerator {
 
  		switch (instruction) {
             case ADDFLOAT:
- 				return generateCodeFloatOperation(iCode,"addf");
+ 				return generateCodeFloatOperation(iCode,"addfloat");
             case ADDINT:
- 				return generateCodeIntegerOperation(iCode,"addi");
+ 				return generateCodeIntegerOperation(iCode,"addint");
             case SUBFLOAT:
-                return "SUBFLOAT";
+ 				return generateCodeFloatOperation(iCode,"subfloat");
             case SUBINT:
-                return "SUBINT";
+ 				return generateCodeIntegerOperation(iCode,"subint");
             case MULTFLOAT:
-                return "MULTFLOAT";
+ 				return generateCodeFloatOperation(iCode,"multfloat");
             case MULTINT:
-                return "MULTINT";
+ 				return generateCodeIntegerOperation(iCode,"multint");
             case DIVFLOAT:
-                return "DIVFLOAT";
+ 				return generateCodeFloatOperation(iCode,"divfloat");
             case DIVINT:
-                return "DIVINT";
+ 				return generateCodeIntegerOperation(iCode,"divint");
             case MOD:
-                return "MOD";
+    			return generateCodeOperatorMod(iCode,"mod");
             case ANDAND:
-                return "ANDAND";
+ 				return generateCodeOperatorConditional(iCode,"andand");
             case OROR:
-                return "OROR";
+ 				return generateCodeOperatorConditional(iCode,"oror");
             case LT:
-                return "LT";
+    			return generateCodeOperatorRelational(iCode,"lt");
             case LTEQ:
-                return "LTEQ";
+    			return generateCodeOperatorRelational(iCode,"lteq");
             case GT:
-                return "GT";
+    			return generateCodeOperatorRelational(iCode,"gt");
             case GTEQ:
-                return "GTEQ";
+    			return generateCodeOperatorRelational(iCode,"gteq");
             case EQEQ:
-                return "EQEQ";
+    			return generateCodeOperatorEqual(iCode,"eqeq");
             case NOTEQ:
-                return "NOTEQ";
+    			return generateCodeOperatorEqual(iCode,"noteq");
             case NOT:
-                return "NOT";
+    			return generateCodeOperatorNot(iCode,"not");
             case MINUSFLOAT:
-                return "MINUSFLOAT";
+ 				return generateCodeFloatOperation(iCode,"minusfloat");
             case MINUSINT:
-                return "MINUSINT";
+ 				return generateCodeIntegerOperation(iCode,"minusint");
             case ASSIGNI:
-                return "ASSIGNI";
+ 				return generateCodeAssignStmt(iCode,"assigni");
             case ASSIGNF:
-                return "ASSIGNF";
+ 				return generateCodeAssignStmt(iCode,"assignf");
             case ASSIGNB:
-                return "ASSIGNB";
+     			return generateCodeAssignStmt(iCode,"assignb");
             case INCI:
-                return "INCI";
+ 				return generateCodeAssignStmt(iCode,"inci");
             case INCF:
-                return "INCF";
+ 				return generateCodeAssignStmt(iCode,"incf");
             case DECI:
-                return "DECI";
+ 				return generateCodeAssignStmt(iCode,"deci");
             case DECF:
-                return "DECF";
+ 				return generateCodeAssignStmt(iCode,"decf");
             case ASSIGNLITFLOAT:
-                return "ASSIGNLITFLOAT";
+ 				return generateCodeLiteralStmt(iCode,"assignlitfloat");
             case ASSIGNLITINT:
-                return "ASSIGNLITINT";
+ 				return generateCodeLiteralStmt(iCode,"assignlitint");
             case ASSIGNLITBOOL:
-                return "ASSIGNLITBOOL";
+     			return generateCodeLiteralStmt(iCode,"assignlitbool");
             case LABELBEGINCLASS:
-			return "LABELBEGINCLASS";
+     			return generateCodeLabels(iCode,"labelbeginclass");
             case LABELBEGINMETHOD:
-                return "LABELBEGINMETHOD";
+     			return generateCodeLabels(iCode,"labelbeginmethod");
             case LABELENDMETHOD:
-                return "LABELENDMETHOD";
+     			return generateCodeLabels(iCode,"labelendmethod");
             case PUSHID:
-                return "PUSHID";
+    			return generateCodeOperatorPush(iCode,"pushid");
             case PUSHPARAM:
-                return "PUSHPARAM";
+    			return generateCodeOperatorPush(iCode,"pushparam");
             case CALL:
-                return "CALL";
+    			return generateCodeOperatorCall(iCode,"call");
             case INITINT:
-                return "INITINT";
+ 				return generateCodeInitVar(iCode,"initint");
             case INITFLOAT:
-                return "INITFLOAT";
+ 				return generateCodeInitVar(iCode,"initfloat");
             case INITBOOL:;
-                return "INITBOOL";
+     			return generateCodeInitVar(iCode,"initbool");
             case INITARRAY:;
-                return "INITARRAY";
+     			return generateCodeInitVar(iCode,"initarray");
             case JF:
-                return "JF";
+    			return generateCodeOperatorJump(iCode,"jf");
             case JMP:
-                return "JMP";
+    			return generateCodeOperatorJump(iCode,"jmp");
             case LABEL:
-                return "LABEL";
+     			return generateCodeLabels(iCode,"label");
             case LESS:
-                return "LESS";
+    			return generateCodeOperatorLess(iCode,"less");
             case RETURN:
-                return "RETURN";
+ 				return generateCodeReturnStmt(iCode,"return");
             case RETURNINT:
-                return "RETURNINT";
+ 				return generateCodeReturnStmt(iCode,"returnint");
             case RETURNFLOAT:
-                return "RETURNFLOAT";
+ 				return generateCodeReturnStmt(iCode,"returnfloat");
             case RETURNBOOL:
-                return "RETURNBOOL";
+ 				return generateCodeReturnStmt(iCode,"returnbool");
  			default: return "";
         }
     }
 
 
  	private static String initialize() {
+        System.out.println("ESTOY EN INITIALIZE!!!!!!!!!!");
  		String initialize = "     .file 	"+"fileName"+"\n";
  			initialize += "     .text \n";
  			initialize += "     .globl 	main \n";
@@ -165,6 +166,7 @@ public class AssemblerGenerator {
 
 
  	private static String finish() {
+        System.out.println("ESTOY EN FINISH!!!!!!!!!!");
  		String finish = " \n";
  			finish += ".LFE0: \n";
  			finish += "		.size 	main, 	.-main \n";
@@ -175,11 +177,261 @@ public class AssemblerGenerator {
  	}
 
  	private static String generateCodeFloatOperation(IntermediateCode iCode,String nameInstruction) {
- 		return nameInstruction;
+        System.out.println("ESTOY EN GENERATE CODE FLOAT OPERATION!!!!!!!!!!");
+ 		if(nameInstruction.equals("addfloat")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("subfloat")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("multfloat")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("divfloat")){
+		 				return nameInstruction;
+		 			}else{
+				 		if(nameInstruction.equals("minusfloat")){
+			 				return nameInstruction;
+			 			}
+		 			}			 				
+	 			}
+ 			}
+		}
+		return nameInstruction;
  	}
 
  	private static String generateCodeIntegerOperation(IntermediateCode iCode,String nameInstruction) {
- 		return nameInstruction;
+        System.out.println("ESTOY EN GENERATE CODE INTEGER OPERATION!!!!!!!!!!");
+ 		if(nameInstruction.equals("addint")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("subint")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("multint")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("divint")){
+		 				return nameInstruction;
+		 			}else{
+				 		if(nameInstruction.equals("minusint")){
+			 				return nameInstruction;
+			 			}
+		 			}			 				
+	 			}
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+
+ 	private static String generateCodeReturnStmt(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE RETURN STMT!!!!!!!!!!");
+ 		if(nameInstruction.equals("return")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("returnint")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("returnfloat")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("returnbool")){
+		 				return nameInstruction;
+		 			}
+ 				}
+ 			}
+ 		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeAssignStmt(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE ASSIGN STMT!!!!!!!!!!");
+ 		if(nameInstruction.equals("assigni")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("assignf")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("assignb")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("inci")){
+ 						return nameInstruction;
+ 					}else{
+	 					if(nameInstruction.equals("incf")){
+	 						return nameInstruction;
+	 					}else{
+		 					if(nameInstruction.equals("deci")){
+				 				return nameInstruction;
+				 			}else{
+			 					if(nameInstruction.equals("decf")){
+					 				return nameInstruction;
+					 			}
+				 			}
+				 		}
+				 	}
+ 				}
+ 			}
+ 		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeLiteralStmt(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE LITERAL STMT!!!!!!!!!!");
+ 		if(nameInstruction.equals("assignlitint")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("assignlitfloat")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("assignlitbool")){
+	 				return nameInstruction;
+ 				}
+ 			}
+ 		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorConditional(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL!!!!!!!!!!");
+ 		if(nameInstruction.equals("andand")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("oror")){
+	 			return nameInstruction;
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+
+ 	private static String generateCodeOperatorRelational(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL!!!!!!!!!!");
+ 		if(nameInstruction.equals("lt")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("lteq")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("gt")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("gteq")){
+		 				return nameInstruction;
+		 			}			 				
+	 			}
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorEqual(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR EQUAL!!!!!!!!!!");
+ 		if(nameInstruction.equals("eqeq")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("noteq")){
+	 			return nameInstruction;
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorPush(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR PUSH!!!!!!!!!!");
+ 		if(nameInstruction.equals("pushid")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("pushparam")){
+	 			return nameInstruction;
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorCall(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR CALL!!!!!!!!!!");
+ 		if(nameInstruction.equals("call")){
+ 			return nameInstruction;
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorJump(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR JUMP!!!!!!!!!!");
+ 		if(nameInstruction.equals("jf")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("jmp")){
+	 			return nameInstruction;
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeInitVar(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE INIT VAR!!!!!!!!!!");
+ 		if(nameInstruction.equals("initint")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("initfloat")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("initbool")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("initarray")){
+		 				return nameInstruction;
+		 			}			 				
+	 			}
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeLabels(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE LABELS!!!!!!!!!!");
+ 		if(nameInstruction.equals("label")){
+ 			return nameInstruction;
+ 		}else{
+	 		if(nameInstruction.equals("labelbeginclass")){
+	 			return nameInstruction;
+	 		}else{
+		 		if(nameInstruction.equals("labelbeginmethod")){
+	 				return nameInstruction;
+ 				}else{
+			 		if(nameInstruction.equals("labelendmethod")){
+		 				return nameInstruction;
+		 			}			 				
+	 			}
+ 			}
+		}
+		return nameInstruction;
+ 	}
+
+ 	private static String generateCodeOperatorNot(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR NOT!!!!!!!!!!");
+ 		if(nameInstruction.equals("not")){
+ 			return nameInstruction;
+		}
+		return nameInstruction;
+ 	}
+
+ 	 	private static String generateCodeOperatorMod(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR MOD!!!!!!!!!!");
+ 		if(nameInstruction.equals("mod")){
+ 			return nameInstruction;
+		}
+		return nameInstruction;
+ 	}
+
+ 	 	private static String generateCodeOperatorLess(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR LESS!!!!!!!!!!");
+ 		if(nameInstruction.equals("less")){
+ 			return nameInstruction;
+		}
+		return nameInstruction;
  	}
 
 }
