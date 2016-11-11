@@ -13,6 +13,7 @@ import main.java.visitor.*;
 import java.util.List;
 import java.util.LinkedList;
 import main.java.intermediate.*;
+import main.java.assembler.*;
 import main.java.ast.ErrorClass;
 
 /*
@@ -115,25 +116,21 @@ public class Main {
                 if(errorListType.size() == 0){
                     iCGenerator(result);
 
-                    if(iCList.size() == 0){
+                    if(iCList.size() != 0){
                         for (IntermediateCode iC : iCList) {
                             System.out.println(iC.toString());
                         }
-                        // int index = iCList.size()-1;
-                        // while(index>0){
-                        //     IntermediateCode res = iCList.get(index);
-                        //     System.out.println(res.toString());
-                        //     index--;
-                        // }
                         System.out.println("intermediate code OK!!!!!!");
                         System.out.print("\n   ");
+            
+                        // AssemblerGenerator
+                        generateAssembler();
                     }else{
                         System.out.println("Fatal Error in intermediate code");
                         System.out.print("\n   ");
                     }
                 }
             }
-
 
         } catch (Exception e) {
             System.out.println("Mensaje de error:\n"+e.getMessage());
@@ -168,6 +165,10 @@ public class Main {
         ICGeneratorVisitor iCGeneratorVisitor = new ICGeneratorVisitor();
         iCGeneratorVisitor.visit(program);
         iCList = iCGeneratorVisitor.getICList();
+    }
+
+    private static void generateAssembler() {
+        AssemblerGenerator.generateCodeAssembler(iCList);
     }
 
 
