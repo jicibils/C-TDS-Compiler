@@ -39,4 +39,10 @@ public class ErrorClass {
     public void setColumn(int c){
         this.col = c;
     }
+    
+    public String toString(){
+        String res = "";
+        res = "Line: "+line+" Col: "+col+"\n"+desc;
+        return res;
+    }
 }
