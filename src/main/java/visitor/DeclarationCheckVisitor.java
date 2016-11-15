@@ -105,12 +105,12 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
         System.out.println("ESTOY EN METHOD DECLARATION!!!!!!!!!!");
         List<ErrorClass> errorList = new LinkedList<>();
         if (!(method.isExtern())){
-
-            if (!method.thereIsReturn()) {
+            
+            if(!method.thereIsReturn()){
                 String errorAssign = "Error method: there isn't return statement in the method: " + method.getId() +" ->  Line: "+method.getLineNumber()+" Column: "+method.getColumnNumber();
                 errorList.add(new ErrorClass(method.getLineNumber(), method.getColumnNumber(), errorAssign));
             }
-
+            
             //open level for parameters
             table.pushNewLevel();    
 
@@ -127,8 +127,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
             errorList.addAll(block.accept(this));
 
             method.setMaxOffset(offset);
-        System.out.println("MAX OFFSET declaration !!!!!!!!!!");
-                System.out.println(method.getMaxOffset());
+            System.out.println("MAX OFFSET declaration !!!!!!!!!!");
+            System.out.println(method.getMaxOffset());
         }
 
         //close level to parameters
@@ -367,9 +367,10 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
         List<ErrorClass> errorList = new LinkedList<>();
         Attribute exist = null;
         exist = search(call.getId());
+        call.setType(exist.getType());
         System.out.println("ESTOY EN METHOD CALL!!!!!!!!!!*********************************");
-        System.out.println(exist);
-
+        System.out.println(exist.toString());
+        
         if(exist == null){
             String errorAssign = "Error MethodCall: method declaration was not founded :  ->  Line: "+call.getLineNumber()+" Column: "+call.getColumnNumber();
             errorList.add(new ErrorClass(call.getLineNumber(), call.getColumnNumber(), errorAssign));

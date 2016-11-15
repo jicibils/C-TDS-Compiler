@@ -41,8 +41,8 @@ public class ErrorClass {
     }
     
     public String toString(){
-        String res = "";
-        res = "Line: "+line+" Col: "+col+"\n"+desc;
+        String res;
+        res = "Error at Line: "+line+" Col: "+col+". "+desc;
         return res;
     }
 }

@@ -11,16 +11,16 @@ public class IfStatement extends Statement {
 		this.condition = cond;
 		this.ifBlock = ifBl;
 		this.elseBlock = null;
-		this.setLineNumber(line);
-		this.setColumnNumber(column);
+		setLineNumber(line);
+		setColumnNumber(column);
 	}
 	
 	public IfStatement(Expression cond, Block ifBl, Block elseBl, int line, int column) {
 		this.condition = cond;
 		this.ifBlock = ifBl;
 		this.elseBlock = elseBl;
-		this.setLineNumber(line);
-		this.setColumnNumber(column);
+		setLineNumber(line);
+		setColumnNumber(column);
 	}
 
 	public Expression getCondition() {

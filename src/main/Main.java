@@ -93,29 +93,38 @@ public class Main {
             // TypeCheckVisitor
             if (errorList.size()==0) {
                 typeCheck(result);
-
+                
                 if(errorListType.size() == 0){
                     System.out.println("TypeCheckVisitor OK!!!!!!");
                     System.out.print("\n   ");
                 }else{
                     System.out.println("Fatal Error in TypeCheckVisitor");
                     System.out.print("\n   ");
+                    
+                    for(ErrorClass e : errorListType){
+                        System.out.println(e.toString());
+                    }
+                    /*
                     int index = errorListType.size()-1;
                     while(index>=0){
                         ErrorClass res = errorListType.get(index);
                         System.out.println(res.getDesc());
                         index--;
-                    }
+                    }*/
+                    
                 }
 
             }
-
+            
             // ICGeneratorVisitor
             if (errorList.size()==0) {
                 if(errorListType.size() == 0){
                     iCGenerator(result);
 
-                    if(iCList.size() == 0){
+                    if(iCList.size() != 0){
+                        
+                        System.out.println("\n##### Codigo Intermedio #####\n");
+                        
                         for (IntermediateCode iC : iCList) {
                             System.out.println(iC.toString());
                         }
@@ -128,15 +137,15 @@ public class Main {
                         System.out.println("intermediate code OK!!!!!!");
                         System.out.print("\n   ");
                     }else{
+                        
                         System.out.println("Fatal Error in intermediate code");
                         System.out.print("\n   ");
                     }
                 }
             }
-
-
+            
         } catch (Exception e) {
-            System.out.println("Mensaje de error:\n"+e.getMessage());
+            //System.out.println("Mensaje de error:\n"+e.getMessage());
             e.printStackTrace();
             
         }
