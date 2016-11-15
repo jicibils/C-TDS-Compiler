@@ -110,9 +110,9 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
             Label endMethod = genLabel(method.getId());
 
             //UPDATE MAXOFFSET
-            endMethod.setMaxOffset(maxOffset);
-            beginMethod.setMaxOffset(maxOffset);
-        System.out.println("OFFSET LABELLLL!!!!!!||||||*******************"+beginMethod.getMaxOffset());
+            endMethod.setMaxOffset(offset);
+            beginMethod.setMaxOffset(offset);
+        System.out.println("OFFSET LABELLLL!!!!!!||||||*******************||||||||||||||"+beginMethod.getMaxOffset());
             list.add(new IntermediateCode(Instruction.LABELENDMETHOD,null,null,endMethod));
         }
 
