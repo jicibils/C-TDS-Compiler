@@ -1084,7 +1084,7 @@ class CUP$Parser$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Block b = (Block)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new IfStatement(e,b,eleft+1,eright+1);
+		RESULT = new IfStatement(e,b,bleft+1,bright+1);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("if_stmt",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1102,7 +1102,7 @@ class CUP$Parser$actions {
 		int b2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int b2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Block b2 = (Block)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new IfStatement(e,b1,b2,eleft+1,eright+1);
+		RESULT = new IfStatement(e,b1,b2,b1left+1,b2right+1);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("if_stmt",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
