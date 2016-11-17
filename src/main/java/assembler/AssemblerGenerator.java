@@ -260,15 +260,19 @@ public class AssemblerGenerator {
  	private static String generateCodeInitVar(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE INIT VAR!!!!!!!!!!");
  		if(nameInstruction.equals("initint")){
+	        System.out.println("ESTOY EN GENERATE CODE INIT INT!!!!!!!!!!");
  			return "";
  		}else{
 	 		if(nameInstruction.equals("initfloat")){
+    		    System.out.println("ESTOY EN GENERATE CODE INIT FLOAT!!!!!!!!!!");
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("initbool")){
+        			System.out.println("ESTOY EN GENERATE CODE INIT BOOL!!!!!!!!!!");
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("initarray")){
+        				System.out.println("ESTOY EN GENERATE CODE INIT ARRAY!!!!!!!!!!");
 		 				return "";
 		 			}			 				
 	 			}
@@ -280,24 +284,42 @@ public class AssemblerGenerator {
  	private static String generateCodeAssignStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE ASSIGN STMT!!!!!!!!!!");
  		if(nameInstruction.equals("assigni")){
- 			return "";
+ 	        System.out.println("ESTOY EN GENERATE CODE ASSIGN INT!!!!!!!!!!");
+
+ 	        //recovery offset and value of object
+	        VarLocation varLocation = (VarLocation)iCode.getResult();
+	        int offset = varLocation.getOffset();
+	        AssignStmt assignStmt  = (AssignStmt)varLocation.getDeclaration().getValue();
+	        Expression expression = assignStmt.getExpression();
+
+	        //make the assembler
+ 			String result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
+ 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("assignf")){
+    		    System.out.println("ESTOY EN GENERATE CODE ASSIGN FLOAT!!!!!!!!!!");
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("assignb")){
+        			System.out.println("ESTOY EN GENERATE CODE ASSIGN BOOL!!!!!!!!!!");
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("inci")){
+        				System.out.println("ESTOY EN GENERATE CODE ASSIGN INC INT!!!!!!!!!!");
  						return "";
  					}else{
 	 					if(nameInstruction.equals("incf")){
+        					System.out.println("ESTOY EN GENERATE CODE ASSIGN INC FLOAT!!!!!!!!!!");
 	 						return "";
 	 					}else{
 		 					if(nameInstruction.equals("deci")){
+        						System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC INT!!!!!!!!!!");
 				 				return "";
 				 			}else{
 			 					if(nameInstruction.equals("decf")){
+        							System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC FLOAT!!!!!!!!!!");
 					 				return "";
 					 			}
 				 			}
@@ -367,13 +389,12 @@ public class AssemblerGenerator {
  		}else{
 	 		if(nameInstruction.equals("returnint")){
 		        System.out.println("ESTOY EN GENERATE CODE RETURN INTEGER!!!!!!!!!!");
-	 			String result = "\t movl	$4, -4(%rbp) \n";
-	 				result += "\t movl	-4(%rbp), %eax \n";	
-	 				result += "\t movl	%eax, %esi \n";	
+	 			String	result = "\t movl	%eax, %esi \n";	
 	 				result += "\t movl	$.LC0, %edi \n";	
 	 				result += "\t movl	$0, %eax \n";	
 	 				result += "\t call	printf \n";	
 	 				result += "\t movl	$0, %eax \n";
+
 	 			return result;	
 	 		}else{
 		 		if(nameInstruction.equals("returnfloat")){
@@ -394,12 +415,15 @@ public class AssemblerGenerator {
  	private static String generateCodeLiteralStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE LITERAL STMT!!!!!!!!!!");
  		if(nameInstruction.equals("assignlitint")){
+	        System.out.println("ESTOY EN GENERATE CODE LITERAL INT!!!!!!!!!!");
  			return "";
  		}else{
 	 		if(nameInstruction.equals("assignlitfloat")){
+    		    System.out.println("ESTOY EN GENERATE CODE LITERAL FLOAT!!!!!!!!!!");
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("assignlitbool")){
+        			System.out.println("ESTOY EN GENERATE CODE LITERAL BOOL!!!!!!!!!!");
 	 				return "";
  				}
  			}

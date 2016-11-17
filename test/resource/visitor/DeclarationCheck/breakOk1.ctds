@@ -21,7 +21,8 @@
 
 class main{
 	integer main(){
-	    integer i;
+	    integer i ;
+	    i = 10;
 	    return i;
 	}
 }
