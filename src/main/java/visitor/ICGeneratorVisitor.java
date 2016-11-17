@@ -150,14 +150,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
         switch (stmt.getOperator()){
             case ASSIGN :                       //assign, op1, op2, res
-
-                    //ESTOS IRIAN???? PORQUE NO SON TEMPORALES Y SUPONGO QUE COMO RECUPERA 
-                    // EL LOCATION YA TENDRIA QUE TENER EL OFFSET ASIGNADO
-
+                   System.out.println("ESTOY EN ASSIGN!!!!!!!!!!");
                     //SET OFFSET
                     declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                    loc.setDeclaration(declaration);
-                    loc.setOffset(genOffset());
+                    expr.setDeclaration(declaration);
+                    expr.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));
@@ -185,10 +182,12 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                 }
             case INC :
 
+               System.out.println("ESTOY EN INC!!!!!!!!!!");
                 //SET OFFSET
-                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+
+                // declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                // loc.setDeclaration(declaration);
+                // loc.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
@@ -206,20 +205,21 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                     }
                 }
             case DEC :
+                System.out.println("ESTOY EN DEC!!!!!!!!!!");
                 //SET OFFSET
-                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                // declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                // loc.setDeclaration(declaration);
+                // loc.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+                    list.add(new IntermediateCode(Instruction.DECI,loc,expr, stmt.getLocation()));
 
                     //SET TYPE for declaration
                     loc.getDeclaration().setType(Type.TINTEGER);
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
-                        list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+                        list.add(new IntermediateCode(Instruction.DECF,loc,expr, stmt.getLocation()));
 
                         //SET TYPE for declaration
                         loc.getDeclaration().setType(Type.TFLOAT);

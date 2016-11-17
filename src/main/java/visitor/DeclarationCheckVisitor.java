@@ -298,6 +298,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
                 loc.setDeclaration(declaration);
                 loc.setOffset(declaration.getOffset());
 
+
             } else {
                 // The location not founded
                 flagForError = true;
@@ -367,14 +368,12 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
         List<ErrorClass> errorList = new LinkedList<>();
         Attribute exist = null;
         exist = search(call.getId());
-        call.setType(exist.getType());
-        System.out.println("ESTOY EN METHOD CALL!!!!!!!!!!*********************************");
-        System.out.println(exist.toString());
         
         if(exist == null){
             String errorAssign = "Error MethodCall: method declaration was not founded :  ->  Line: "+call.getLineNumber()+" Column: "+call.getColumnNumber();
             errorList.add(new ErrorClass(call.getLineNumber(), call.getColumnNumber(), errorAssign));
         }else{
+            call.setType(exist.getType());
             for (Expression expr : call.getArgList()) {
                 errorList.addAll(expr.accept(this));
             }
@@ -385,6 +384,7 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
     //method for search declaration in simbolTable
     private Attribute search(String id) {
         System.out.println("ESTOY EN SEARCH!!!!!!!!!!");
+        List<ErrorClass> errorList = new LinkedList<>();
         Attribute res = null;
         int index = table.getIndex();
         if(index>levelBlock) {
@@ -407,9 +407,10 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
                     if (res == null) {
                         // search in level 0 (en escala de 0 a 3) inside of classDecl
                         res = table.searchByName(id,levelClass);
-                    // }else{
-                    //     errorList.add("Search is not successful");
-
+                        if (res == null) {
+                            String errorAssign = "Error Search: The search is not successful";
+                            errorList.add(new ErrorClass(0,0, errorAssign));
+                        }
                     }    
                 }
             }

@@ -283,14 +283,16 @@ public class AssemblerGenerator {
 
  	private static String generateCodeAssignStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE ASSIGN STMT!!!!!!!!!!");
+
+
  		if(nameInstruction.equals("assigni")){
  	        System.out.println("ESTOY EN GENERATE CODE ASSIGN INT!!!!!!!!!!");
 
- 	        //recovery offset and value of object
 	        VarLocation varLocation = (VarLocation)iCode.getResult();
-	        int offset = varLocation.getOffset();
-	        AssignStmt assignStmt  = (AssignStmt)varLocation.getDeclaration().getValue();
+	        Location loc = (Location)iCode.getOp2();
+	        AssignStmt assignStmt  = (AssignStmt)loc.getDeclaration().getValue();
 	        Expression expression = assignStmt.getExpression();
+			int offset = varLocation.getOffset();
 
 	        //make the assembler
  			String result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
@@ -308,7 +310,14 @@ public class AssemblerGenerator {
  				}else{
 			 		if(nameInstruction.equals("inci")){
         				System.out.println("ESTOY EN GENERATE CODE ASSIGN INC INT!!!!!!!!!!");
- 						return "";
+
+				        VarLocation varLocation = (VarLocation)iCode.getResult();
+        				int offset = varLocation.getOffset();
+				        //make the assembler
+			 			String result = "\t addl	$1, "+offset+"(%rbp) \n";
+			 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+			 			return result;
  					}else{
 	 					if(nameInstruction.equals("incf")){
         					System.out.println("ESTOY EN GENERATE CODE ASSIGN INC FLOAT!!!!!!!!!!");
@@ -316,7 +325,15 @@ public class AssemblerGenerator {
 	 					}else{
 		 					if(nameInstruction.equals("deci")){
         						System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC INT!!!!!!!!!!");
-				 				return "";
+
+						        VarLocation varLocation = (VarLocation)iCode.getResult();
+		        				int offset = varLocation.getOffset();
+						        //make the assembler
+					 			String result = "\t subl	$1, "+offset+"(%rbp) \n";
+					 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+					 			return result;
+
 				 			}else{
 			 					if(nameInstruction.equals("decf")){
         							System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC FLOAT!!!!!!!!!!");
