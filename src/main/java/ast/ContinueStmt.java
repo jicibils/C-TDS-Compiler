@@ -5,8 +5,8 @@ import main.java.visitor.ASTVisitor;
 public class ContinueStmt extends Statement{
 
 	public ContinueStmt(int line, int column){
-        this.setLineNumber(line);
-        this.setColumnNumber(column);
+        setLineNumber(line);
+        setColumnNumber(column);
 	}
     
     @Override

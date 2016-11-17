@@ -73,7 +73,9 @@ public class Attribute extends AST{
        this.offset = offset;
     }
 
-
+    public String toString(){
+        return "Id "+id+ " Type "+type.toString()+" Value "+value.toString();
+    }
 
     @Override
     public <T> T accept(ASTVisitor<T> v) {

@@ -7,7 +7,8 @@ import java.util.List;
 import main.java.ast.*;
 
 public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
-   
+    private Type returnTypeMethod; //Attribute to save return type of a method
+    
     @Override
     public List<ErrorClass> visit(Program p) {
         LinkedList<ErrorClass> errors = new LinkedList<>();
@@ -38,10 +39,21 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
     public List<ErrorClass> visit(FieldDecl field) {
         return new LinkedList<>();
     }
-
+    
+    private void setReturnTypeVar(Type t){
+        returnTypeMethod = t;
+    }
+    
+    private Type getReturnTypeVar(){
+        return returnTypeMethod;
+    } 
+    
     @Override
     public List<ErrorClass> visit(MethodDecl md) {
         LinkedList<ErrorClass> errors = new LinkedList<>();
+        //Guardar en var global tipo ret
+        setReturnTypeVar(md.getType());
+        
         //Que hacer si es externo? si no es null, hago
         if(md.getBlock() != null){ 
             errors.addAll(md.getBlock().accept(this));
@@ -74,12 +86,16 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
             if(errors.isEmpty()){
                 //There is no errors in expression
                 
+                System.out.println("******** EL TIPO DE LOCATION (izq) ES ******** "+stmt.getLocation().getType());
+                System.out.println("######## EL TIPO DE EXPRESSION (der) ES ######## "+stmt.getExpression().getType());
+                System.out.println("\n");
                 if(!(stmt.getLocation().getType().equals(stmt.getExpression().getType()))){ //check if type loc = type expr
                     String errorAssign = "Error: location type doesn't match with expression type";
                     errors.add(new ErrorClass(stmt.getLineNumber(), stmt.getColumnNumber(), errorAssign));
                 }else{
                     Type type = stmt.getLocation().getType(); //Since types matches, use one of them to do the comparison
                     AssignOpType operator = stmt.getOperator();
+                    
                     if(!(validOperator(type, operator))){  // The types matched but operator is not valid for the type of operands. Add error to list.
                         String errorNotValidOp = "Error: not valid operator. Operands must be type integer or type float";
                         errors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(), errorNotValidOp));
@@ -96,6 +112,23 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
     //Private method used in AssignStmt visit to check if a operator is valid for those operands
     //For example, int += int or float += are valid but bool += bool is not.
     
+    private boolean validOperator(Type t, AssignOpType op){
+        switch(t){
+            case TBOOL : switch(op){
+                case INC :
+                    return false;
+                case DEC :
+                    return false;
+                default :
+                    return true;
+            }
+            
+            default :
+                return true;
+        }
+    }
+    
+    /*   
     private boolean validOperator(Type t, AssignOpType op){
         switch (op){
             case INC : switch(t){
@@ -120,10 +153,34 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
                 return false;
         }
     }
-
+*/
     @Override
     public List<ErrorClass> visit(ReturnStmt stmt) {
-        return new LinkedList<ErrorClass>();
+        
+        LinkedList<ErrorClass> errors = new LinkedList<>();
+        
+        if(stmt.getExpression() != null){
+            errors.addAll(stmt.getExpression().accept(this));
+            
+            if(!getReturnTypeVar().equals(Type.TVOID)){
+                if(!stmt.getExpression().getType().equals(getReturnTypeVar())){
+                    String error = "Error: Types doesn't match. Return type should be of type "+getReturnTypeVar()+" but it is of type "+stmt.getExpression().getType()+".";
+                    errors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),error));
+                }
+            } else {
+                String error = "Error: Void methods must not have a return expression.";
+                errors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),error));
+            }
+        } else {
+            
+            if(!getReturnTypeVar().equals(Type.TVOID)){
+                //String error = "Error: Return type of method is void but the expression is returning a return expression with Type "+getReturnTypeVar()+".";
+                String error = "Error: The method must return an expression of type "+getReturnTypeVar()+ " but return expression is empty.";
+                errors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),error));
+            }
+        }
+        
+        return errors;
     }
 
     @Override
@@ -136,7 +193,7 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
                 errorsIf.addAll(stmt.getElseBlock().accept(this));
             }
         }else{
-            errorsIf.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),"Error: the if condition type must be boolean"));
+            errorsIf.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),"Error: the if condition type must be bool. "));
         }
         return errorsIf;
     }
@@ -183,16 +240,24 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
         //DECIDIR Que hacer si getAssign da error?
         //Se decide, por sugerencia, cortar al hallar el primer error.
         
+        //There is no errors in initial assign. So, proceed to visit 
         if(listErrors.isEmpty()){
             if(stmt.getAssign().getExpression().getType().equals(Type.TINTEGER)){
-                listErrors.addAll(stmt.getCondition().accept(this)); //visit loop condition
-                
-                if(stmt.getCondition().getType().equals(Type.TINTEGER)){
-                    listErrors.addAll(stmt.getBlock().accept(this)); //visit block
+                //If expr in initial assign is TYPE INTEGER accept condition
+                listErrors.addAll(stmt.getCondition().accept(this));
+                //if there is no errors, check type of cond
+                if(listErrors.isEmpty()){
+                    if(stmt.getCondition().getType().equals(Type.TINTEGER)){
+                        listErrors.addAll(stmt.getBlock().accept(this)); //accept block
+                    } else {
+                        listErrors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),"Error: the type of condition must be integer"));
+                    }
                 }
+                
             }else{
-                listErrors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),"Error: initial and final expression must be of TYPE INTEGER"));
+                listErrors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),"Error: initial and final expression must be type integer"));
             }
+            return listErrors;
         }
         return listErrors;
     }
@@ -216,7 +281,7 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
                 BinOpType operator = expr.getOperator();                //Type operator
         
                 if(!(typeLeftOp.equals(typeRightOp) && checkCompatibility(typeLeftOp, operator))){ //operator aren't equal or operator and operands aren't comp
-                    String errorString = "Error: Type operands aren't equal or type operands and operator aren't compatible" ;
+                    String errorString = "Error: Type operands aren't equal or operands type aren't compatible with operator." ;
                     errors.add(new ErrorClass(expr.getLineNumber(),expr.getColumnNumber(), errorString));
                     
                 }else{
@@ -386,11 +451,15 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
 
     @Override
     public List<ErrorClass> visit(MethodCall call) {
-        return new LinkedList<ErrorClass>();
-    }
+        //return new LinkedList<ErrorClass>();
 
+        LinkedList<ErrorClass> errors = new LinkedList<>();
+        
+        return errors;
+    }
+    
     @Override
     public List<ErrorClass> visit(Attribute a) {
-        return new LinkedList<ErrorClass>();
+        return new LinkedList<>();
     }
 }

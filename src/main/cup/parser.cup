@@ -212,8 +212,8 @@ statement			::= location:l assign_op:op expr:e SEMICOLON 		{: RESULT = new Assig
 					| block:b 											{: RESULT = b; :}
 					;
 
-if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b,eleft+1,eright+1);:}
-					| IF LPAREN expr:e RPAREN block:b1 ELSE block:b2 			{:RESULT = new IfStatement(e,b1,b2,eleft+1,eright+1);:}
+if_stmt				::= IF LPAREN expr:e RPAREN block:b 				 		{:RESULT = new IfStatement(e,b,bleft+1,bright+1);:}
+					| IF LPAREN expr:e RPAREN block:b1 ELSE block:b2 			{:RESULT = new IfStatement(e,b1,b2,b1left+1,b2right+1);:}
 					; 
 
 return_stmt			::= RETURN:r SEMICOLON 										{: RESULT = new ReturnStmt(rleft+1,rright+1); :}
