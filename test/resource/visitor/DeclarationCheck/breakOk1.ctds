@@ -11,13 +11,19 @@
 //	}
 //}
 
-class main {
-	void main() {
+//class main {
+//	void main() {
 
-        integer var;
-		return;
-    }
+//      integer var;
+//		return;
+//    }
+//}
 
+class main{
+	integer main(){
+	    integer i;
+	    return i;
+	}
 }
 
 
