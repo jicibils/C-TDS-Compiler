@@ -428,7 +428,26 @@ public class AssemblerGenerator {
 	 		}else{
 		 		if(nameInstruction.equals("multint")){
         			System.out.println("ESTOY EN MULTIPLICACION INTEGER!!!!!!!!!!");
-	 				return "";
+
+
+			        VarLocation op1 = (VarLocation)iCode.getOp1();
+			        int offsetOp1 = op1.getOffset();
+
+			        VarLocation op2 = (VarLocation)iCode.getOp2();
+			        int offsetOp2 = op2.getOffset();
+
+			        VarLocation res = (VarLocation)iCode.getResult();
+			        int offsetRes = res.getOffset();
+
+			        //make the assembler
+		 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+		 				// result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+		 				result += "\t imull	"+offsetOp2+"(%rbp), %eax \n";	
+		 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+		 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+	 				return result;
+
  				}else{
 			 		if(nameInstruction.equals("divint")){
         				System.out.println("ESTOY EN DIVISION INTIGER!!!!!!!!!!");
