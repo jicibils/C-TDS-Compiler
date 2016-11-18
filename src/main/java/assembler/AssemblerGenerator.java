@@ -249,7 +249,7 @@ public class AssemblerGenerator {
  	private static String finish(String id) {
         System.out.println("ESTOY EN FINISH!!!!!!!!!!");
  		String finish = " \n";
- 			//FILENAME ES EL NOMBRE DEL ULTIMO METODO QUE HAYA
+ 			//FILENAME is the name of the last method 
  			finish += "		.size 	"+id+", 	.-"+id+" \n";
  			// finish += "		.ident 	\"GCC:  (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\" \n";
  			// finish += "		.section	.note.GNU-stack,'',@progbits \n";
@@ -292,11 +292,19 @@ public class AssemblerGenerator {
 	        Location loc = (Location)iCode.getOp2();
 	        AssignStmt assignStmt  = (AssignStmt)loc.getDeclaration().getValue();
 	        Expression expression = assignStmt.getExpression();
-			int offset = varLocation.getOffset();
 
-	        //make the assembler
- 			String result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
+			int offset = varLocation.getOffset();
+			String result;
+			if (expression instanceof IntLiteral) {
+		        //make the assembler
+	 			result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
  				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+	 		}else{
+		        //make the assembler
+	 			result = "\t movl	"+offset+"(%rbp), %edx \n";
+	 			result += "\t movl	%edx, "+offset+"(%rbp) \n";
+	 			result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+	 		}		
 
  			return result;
  		}else{
@@ -376,18 +384,58 @@ public class AssemblerGenerator {
  	private static String generateCodeIntegerOperation(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE INTEGER OPERATION!!!!!!!!!!");
  		if(nameInstruction.equals("addint")){
- 			return "";
+	        System.out.println("ESTOY EN SUMA INTEGER2!!!!!!!!!!");
+
+	        VarLocation op1 = (VarLocation)iCode.getOp1();
+	        int offsetOp1 = op1.getOffset();
+
+	        VarLocation op2 = (VarLocation)iCode.getOp2();
+	        int offsetOp2 = op2.getOffset();
+
+	        VarLocation res = (VarLocation)iCode.getResult();
+	        int offsetRes = res.getOffset();
+
+	        //make the assembler
+ 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+ 				result += "\t addl	%edx, %eax \n";	
+ 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+ 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("subint")){
-	 			return "";
+    	    	System.out.println("ESTOY EN RESTA INTEGER !!!!!!!!!!");
+
+		        VarLocation op1 = (VarLocation)iCode.getOp1();
+		        int offsetOp1 = op1.getOffset();
+
+		        VarLocation op2 = (VarLocation)iCode.getOp2();
+		        int offsetOp2 = op2.getOffset();
+
+		        VarLocation res = (VarLocation)iCode.getResult();
+		        int offsetRes = res.getOffset();
+
+		        //make the assembler
+	 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+	 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+	 				result += "\t subl	%edx, %eax \n";	
+	 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+	 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+ 				return result;
+	
 	 		}else{
 		 		if(nameInstruction.equals("multint")){
+        			System.out.println("ESTOY EN MULTIPLICACION INTEGER!!!!!!!!!!");
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("divint")){
+        				System.out.println("ESTOY EN DIVISION INTIGER!!!!!!!!!!");
 		 				return "";
 		 			}else{
 				 		if(nameInstruction.equals("minusint")){
+        					System.out.println("ESTOY EN MINUS INTEGER!!!!!!!!!!");
 			 				return "";
 			 			}
 		 			}			 				
@@ -432,8 +480,20 @@ public class AssemblerGenerator {
  	private static String generateCodeLiteralStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE LITERAL STMT!!!!!!!!!!");
  		if(nameInstruction.equals("assignlitint")){
+
 	        System.out.println("ESTOY EN GENERATE CODE LITERAL INT!!!!!!!!!!");
- 			return "";
+
+
+	        VarLocation varLocation = (VarLocation)iCode.getResult();
+	        IntLiteral intLiteral = (IntLiteral)iCode.getOp1();
+
+			int offset = varLocation.getOffset();
+
+	        //make the assembler
+	 		String result = "\t movl	$"+intLiteral+", "+offset+"(%rbp) \n";
+				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("assignlitfloat")){
     		    System.out.println("ESTOY EN GENERATE CODE LITERAL FLOAT!!!!!!!!!!");

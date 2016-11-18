@@ -398,7 +398,26 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         //since we do not have the binary expression separated by type.
         Instruction instruction = getProperInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
         IntermediateCode icode = new IntermediateCode(instruction,locLeftExpr,locRightExpr,tempLoc); //create 3-ways code
-        
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println(instruction);
+        System.out.println(locLeftExpr);
+        System.out.println(locRightExpr);
+        System.out.println(tempLoc);
+
+            System.out.println(tempLoc.getId());
+            System.out.println(tempLoc.getDeclaration().getType());
+            System.out.println(tempLoc.getDeclaration().getValue());
+            System.out.println(tempLoc.getOffset());
+
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+
         list.add(icode); //add to list
         
         return tempLoc;
@@ -520,12 +539,19 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(IntLiteral lit) {
         System.out.println("ESTOY EN INTLITERAL!!!!!!!!!!");
-        Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        incTempCounter();//tempCounter++;
+
+        VarLocation tempLoc = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());  //temporal location to store results
+        incTempCounter(); //tempCounter++ increment counter that store amount of temporal location used
+        tempLoc.setType(Type.TINTEGER);   //set type to temporal
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),lit);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
+
+        list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLoc));
         
-        list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLocation));
-        
-        return tempLocation;
+        return tempLoc;
     }
 
     @Override

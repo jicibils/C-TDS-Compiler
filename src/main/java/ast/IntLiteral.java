@@ -35,19 +35,17 @@ public class IntLiteral extends Literal {
 		this.rawValue = stringValue;
 	}
 
-	/*
-	* Get Integer value
-	*/
+	
+	
 
-	public Integer getValue() {
+	public Integer getIntValue() {
 		return value;
 	}
 
-	/*
-	* Set Integer value
-	*/
+	
+	
 
-	public void setValue(Integer value) {
+	public void setIntValue(Integer value) {
 		this.value = value;
 	}
 	

@@ -428,8 +428,6 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
         //     errorList.addAll(methodDeclaration.accept(this));            
         // }
         // return errorList;
-
-        //EN BODYCLASS NO HAGO NADA O VISITO COMO LO HICE ARRIBA?????
         return new LinkedList<ErrorClass>();
     }
 
@@ -471,23 +469,5 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
         maxOffset = offset;
         return offset;
     }
-
-
-//***************************************************************
-
-    //methodCall buscar si esta declarado el metodo en la tabla de simbolos
-
-    //varLocation y el otro es cuando se da un uso y es buscar si existe en la tabla
-    // de simbolos y si esta es asignarle sus tipos y sino esta error
-
-
-
-    //terminar el declarationCheck
-
-
-
-    // agregar los OFFSET despues de terminar codigo intermedio
-    //arreglar scripts 
-//***************************************************************
 
 }
