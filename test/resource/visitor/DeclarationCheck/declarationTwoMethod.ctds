@@ -1,0 +1,13 @@
+//two methods
+class Main {
+	
+	integer var;
+
+	void methodTest() {
+		return;
+	}
+
+	void main() {
+		return;
+	}
+}

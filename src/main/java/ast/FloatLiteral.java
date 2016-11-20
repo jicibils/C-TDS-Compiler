@@ -35,19 +35,13 @@ public class FloatLiteral extends Literal {
 
 	////////////////////////////////////////////
 
-	/*
-	* Get Float value
-	*/
 
-	public Float getValue() {
+	public Float getFloatvalue() {
 		return value;
 	}
 
-	/*
-	* Set Float value
-	*/
 
-	public void setValue(Float value) {
+	public void setFloatvalue(Float value) {
 		this.value = value;
 	}
 	

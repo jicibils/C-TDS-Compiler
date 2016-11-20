@@ -12,6 +12,12 @@ import java.io.InputStreamReader;
 
 
 public class AssemblerGenerator {
+	private static int contLabelMethod = -1; //index for initialize methods
+    private static PrintWriter writer;
+    private static int cantMethods = 0;
+	private static int index = 1; //index for finish methods
+    private static LinkedList<String> listIdMethod; //list ids methods
+
 
     public AssemblerGenerator(){
 	}
@@ -22,19 +28,24 @@ public class AssemblerGenerator {
  		try {
 
  			// Output file
-      		PrintWriter writer = new PrintWriter("assembler.s", "UTF-8");
+      		writer = new PrintWriter("assembler.s", "UTF-8");
+      		IntermediateCode ultObj = new IntermediateCode(null,null,null,null);
 
-      		//initialize the file
-			writer.println(initialize());
+      		//make the list with method's ids
+      		contMethods(iCodeStmt);
 			
+
 			for (IntermediateCode intermediateCode: iCodeStmt) {
 
 				// Generate the assembler for each instruction
 				writer.println(generateCodeInstruction(intermediateCode));
+				ultObj = intermediateCode;
 			}			
 
+			// recovery name method
+			Label label = (Label)ultObj.getResult();
       		//finish the file
-			writer.println(finish());
+			writer.println(finish(label.getLabelId()));
 
 			writer.close();
 
@@ -44,11 +55,26 @@ public class AssemblerGenerator {
 
  	}
 
+ 	//method that return the number of methods and make list with method's ids
+ 	private static void contMethods(List<IntermediateCode> iCodeStmt) {
+        System.out.println("ESTOY EN CONT METHODS!!!!!!!!!!");
+        listIdMethod = new LinkedList<String>();        
+		for (IntermediateCode obj: iCodeStmt) {
+			Instruction instruction = obj.getOperator();
+			String res = instruction.toString();
+	        if(res.equals("LABELBEGINMETHOD")){
+			Label label = (Label)obj.getResult();
+	        	listIdMethod.add(label.getLabelId());	        	
+	        	cantMethods++;
+	        }
+		}	
+    }
 
  	private static String generateCodeInstruction(IntermediateCode iCode) {
         System.out.println("ESTOY EN GENERATE CODE INSTRUCTION!!!!!!!!!!");
  		
  		Instruction instruction = iCode.getOperator();
+
 
  		switch (instruction) {
             case ADDFLOAT:
@@ -114,6 +140,11 @@ public class AssemblerGenerator {
             case LABELBEGINCLASS:
      			return generateCodeLabels(iCode,"labelbeginclass");
             case LABELBEGINMETHOD:
+		 		if(contLabelMethod == -1){
+					Label label = (Label)iCode.getResult();
+			  		//initialize the file
+					writer.println(initialize(label.getLabelId()));
+				}
      			return generateCodeLabels(iCode,"labelbeginmethod");
             case LABELENDMETHOD:
      			return generateCodeLabels(iCode,"labelendmethod");
@@ -151,122 +182,170 @@ public class AssemblerGenerator {
         }
     }
 
+    //method for generate the number of methods' labels in assembler file
+ 	private static int contLabelMethod() {
+        System.out.println("ESTOY EN CONT LABEL METHOD()!!!!!!!!!!");
+ 		return contLabelMethod = contLabelMethod + 1;
+ 	}
 
- 	private static String initialize() {
+
+	//initialize assembler's file 
+ 	private static String initialize(String id) {
         System.out.println("ESTOY EN INITIALIZE!!!!!!!!!!");
- 		String initialize = "     .file 	"+"fileName"+"\n";
+        String initialize = "     .file     "+"\""+"assembler.s"+"\""+"\n";
+ 			initialize += "     .section 		.rodata \n";
+ 			initialize += ".LC0: \n";
+ 			initialize += "     .string "+"\"%d\" \n";
  			initialize += "     .text \n";
- 			initialize += "     .globl 	main \n";
- 			initialize += "     .type 	main, @function \n";
- 			initialize += "main: \n";
- 			initialize += ".LFB0: \n";
+ 			initialize += "     .globl 	"+id+" \n";
+ 			initialize += "     .type 	"+id+", @function \n";
+			//FILENAME ES EL NOMBRE DEL PRIMER METODO QUE HAYAs 			
  			initialize += "\n";
  			return initialize;
  	}
 
+	//initialize methods in assembler's file 
+ 	private static String initializeMethod(String id,int maxOffset) {
+        System.out.println("ESTOY EN INITIALIZE METHOD!!!!!!!!!!");
+ 		String initializeMethod = id+": \n";
+ 			initializeMethod += " .LFB"+contLabelMethod()+": \n";
+			initializeMethod += "\t pushq	%rbp\n";
+			initializeMethod += "\t movq	%rsp, %rbp\n";
+			initializeMethod += "\t subq	$"+(maxOffset * (-1))+", %rsp\n";
+ 			initializeMethod += "\n";
+ 			return initializeMethod;
+ 	}
 
- 	private static String finish() {
+	//finish methods in assembler's file, common for all
+ 	private static String finishMethodCommon(String id) {
+        System.out.println("ESTOY EN FINISH METHOD COMMON!!!!!!!!!!");
+ 		String	finishMethodCommon = " \n";
+			finishMethodCommon +="\t leave \n";
+  			finishMethodCommon += "\t ret \n";
+ 			finishMethodCommon += ".LFE"+contLabelMethod+": \n";
+ 			finishMethodCommon += " \n";
+ 			return finishMethodCommon;
+
+ 	}
+
+ 	//recovery id to next method to current method
+ 	private static String nextMethod(){
+ 		return listIdMethod.get(contLabelMethod + 1);
+ 	}
+
+	//finish methods in assembler's file, if the method isn't the last method
+ 	private static String finishMethod(String id) {
+        System.out.println("ESTOY EN FINISH METHOD!!!!!!!!!!");
+ 		String	finishMethod = " \n";
+ 			finishMethod += "		.size 	"+id+", 	.-"+id+" \n";
+ 			finishMethod += "		.globl	"+nextMethod()+" \n";
+ 			finishMethod += "		.type	"+nextMethod()+", @function \n";
+ 			finishMethod += " \n";
+ 			return finishMethod;
+ 		}
+
+
+	//finish methods in assembler's file, if the method is the last method
+ 	private static String finish(String id) {
         System.out.println("ESTOY EN FINISH!!!!!!!!!!");
  		String finish = " \n";
- 			finish += ".LFE0: \n";
- 			finish += "		.size 	main, 	.-main \n";
- 			finish += "		.ident 	'GCC:  (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4' \n";
- 			finish += "		.section	.note.GNU-stack,'',@progbits \n";
+ 			//FILENAME is the name of the last method 
+ 			finish += "		.size 	"+id+", 	.-"+id+" \n";
+ 			// finish += "		.ident 	\"GCC:  (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\" \n";
+ 			// finish += "		.section	.note.GNU-stack,'',@progbits \n";
  			finish += " \n";
  			return finish;
  	}
 
- 	private static String generateCodeFloatOperation(IntermediateCode iCode,String nameInstruction) {
-        System.out.println("ESTOY EN GENERATE CODE FLOAT OPERATION!!!!!!!!!!");
- 		if(nameInstruction.equals("addfloat")){
- 			return nameInstruction;
+ 	private static String generateCodeInitVar(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE INIT VAR!!!!!!!!!!");
+ 		if(nameInstruction.equals("initint")){
+	        System.out.println("ESTOY EN GENERATE CODE INIT INT!!!!!!!!!!");
+ 			return "";
  		}else{
-	 		if(nameInstruction.equals("subfloat")){
-	 			return nameInstruction;
+	 		if(nameInstruction.equals("initfloat")){
+    		    System.out.println("ESTOY EN GENERATE CODE INIT FLOAT!!!!!!!!!!");
+	 			return "";
 	 		}else{
-		 		if(nameInstruction.equals("multfloat")){
-	 				return nameInstruction;
+		 		if(nameInstruction.equals("initbool")){
+        			System.out.println("ESTOY EN GENERATE CODE INIT BOOL!!!!!!!!!!");
+	 				return "";
  				}else{
-			 		if(nameInstruction.equals("divfloat")){
-		 				return nameInstruction;
-		 			}else{
-				 		if(nameInstruction.equals("minusfloat")){
-			 				return nameInstruction;
-			 			}
+			 		if(nameInstruction.equals("initarray")){
+        				System.out.println("ESTOY EN GENERATE CODE INIT ARRAY!!!!!!!!!!");
+		 				return "";
 		 			}			 				
 	 			}
  			}
 		}
-		return nameInstruction;
- 	}
-
- 	private static String generateCodeIntegerOperation(IntermediateCode iCode,String nameInstruction) {
-        System.out.println("ESTOY EN GENERATE CODE INTEGER OPERATION!!!!!!!!!!");
- 		if(nameInstruction.equals("addint")){
- 			return nameInstruction;
- 		}else{
-	 		if(nameInstruction.equals("subint")){
-	 			return nameInstruction;
-	 		}else{
-		 		if(nameInstruction.equals("multint")){
-	 				return nameInstruction;
- 				}else{
-			 		if(nameInstruction.equals("divint")){
-		 				return nameInstruction;
-		 			}else{
-				 		if(nameInstruction.equals("minusint")){
-			 				return nameInstruction;
-			 			}
-		 			}			 				
-	 			}
- 			}
-		}
-		return nameInstruction;
- 	}
-
-
- 	private static String generateCodeReturnStmt(IntermediateCode iCode,String nameInstruction) {
-        System.out.println("ESTOY EN GENERATE CODE RETURN STMT!!!!!!!!!!");
- 		if(nameInstruction.equals("return")){
- 			return nameInstruction;
- 		}else{
-	 		if(nameInstruction.equals("returnint")){
-	 			return nameInstruction;
-	 		}else{
-		 		if(nameInstruction.equals("returnfloat")){
-	 				return nameInstruction;
- 				}else{
-			 		if(nameInstruction.equals("returnbool")){
-		 				return nameInstruction;
-		 			}
- 				}
- 			}
- 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeAssignStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE ASSIGN STMT!!!!!!!!!!");
+
+
  		if(nameInstruction.equals("assigni")){
- 			return nameInstruction;
+ 	        System.out.println("ESTOY EN GENERATE CODE ASSIGN INT!!!!!!!!!!");
+
+	        VarLocation varLocation = (VarLocation)iCode.getResult();
+	        Location loc = (Location)iCode.getOp2();
+	        AssignStmt assignStmt  = (AssignStmt)loc.getDeclaration().getValue();
+	        Expression expression = assignStmt.getExpression();
+
+			int offset = varLocation.getOffset();
+			String result;
+			if (expression instanceof IntLiteral) {
+		        //make the assembler
+	 			result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
+ 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+	 		}else{
+		        //make the assembler
+	 			result = "\t movl	"+offset+"(%rbp), %edx \n";
+	 			result += "\t movl	%edx, "+offset+"(%rbp) \n";
+	 			result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+	 		}		
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("assignf")){
-	 			return nameInstruction;
+    		    System.out.println("ESTOY EN GENERATE CODE ASSIGN FLOAT!!!!!!!!!!");
+	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("assignb")){
-	 				return nameInstruction;
+        			System.out.println("ESTOY EN GENERATE CODE ASSIGN BOOL!!!!!!!!!!");
+	 				return "";
  				}else{
 			 		if(nameInstruction.equals("inci")){
- 						return nameInstruction;
+        				System.out.println("ESTOY EN GENERATE CODE ASSIGN INC INT!!!!!!!!!!");
+
+				        VarLocation varLocation = (VarLocation)iCode.getResult();
+        				int offset = varLocation.getOffset();
+				        //make the assembler
+			 			String result = "\t addl	$1, "+offset+"(%rbp) \n";
+			 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+			 			return result;
  					}else{
 	 					if(nameInstruction.equals("incf")){
-	 						return nameInstruction;
+        					System.out.println("ESTOY EN GENERATE CODE ASSIGN INC FLOAT!!!!!!!!!!");
+	 						return "";
 	 					}else{
 		 					if(nameInstruction.equals("deci")){
-				 				return nameInstruction;
+        						System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC INT!!!!!!!!!!");
+
+						        VarLocation varLocation = (VarLocation)iCode.getResult();
+		        				int offset = varLocation.getOffset();
+						        //make the assembler
+					 			String result = "\t subl	$1, "+offset+"(%rbp) \n";
+					 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+					 			return result;
+
 				 			}else{
 			 					if(nameInstruction.equals("decf")){
-					 				return nameInstruction;
+        							System.out.println("ESTOY EN GENERATE CODE ASSIGN DEC FLOAT!!!!!!!!!!");
+					 				return "";
 					 			}
 				 			}
 				 		}
@@ -274,164 +353,310 @@ public class AssemblerGenerator {
  				}
  			}
  		}
-		return nameInstruction;
+		return "";
  	}
+
+
+ 	private static String generateCodeFloatOperation(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE FLOAT OPERATION!!!!!!!!!!");
+ 		if(nameInstruction.equals("addfloat")){
+ 			return "";
+ 		}else{
+	 		if(nameInstruction.equals("subfloat")){
+	 			return "";
+	 		}else{
+		 		if(nameInstruction.equals("multfloat")){
+	 				return "";
+ 				}else{
+			 		if(nameInstruction.equals("divfloat")){
+		 				return "";
+		 			}else{
+				 		if(nameInstruction.equals("minusfloat")){
+			 				return "";
+			 			}
+		 			}			 				
+	 			}
+ 			}
+		}
+		return "";
+ 	}
+
+ 	private static String generateCodeIntegerOperation(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE INTEGER OPERATION!!!!!!!!!!");
+ 		if(nameInstruction.equals("addint")){
+	        System.out.println("ESTOY EN SUMA INTEGER2!!!!!!!!!!");
+
+	        VarLocation op1 = (VarLocation)iCode.getOp1();
+	        int offsetOp1 = op1.getOffset();
+
+	        VarLocation op2 = (VarLocation)iCode.getOp2();
+	        int offsetOp2 = op2.getOffset();
+
+	        VarLocation res = (VarLocation)iCode.getResult();
+	        int offsetRes = res.getOffset();
+
+	        //make the assembler
+ 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+ 				result += "\t addl	%edx, %eax \n";	
+ 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+ 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+ 			return result;
+ 		}else{
+	 		if(nameInstruction.equals("subint")){
+    	    	System.out.println("ESTOY EN RESTA INTEGER !!!!!!!!!!");
+
+		        VarLocation op1 = (VarLocation)iCode.getOp1();
+		        int offsetOp1 = op1.getOffset();
+
+		        VarLocation op2 = (VarLocation)iCode.getOp2();
+		        int offsetOp2 = op2.getOffset();
+
+		        VarLocation res = (VarLocation)iCode.getResult();
+		        int offsetRes = res.getOffset();
+
+		        //make the assembler
+	 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+	 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+	 				result += "\t subl	%edx, %eax \n";	
+	 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+	 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+ 				return result;
+	
+	 		}else{
+		 		if(nameInstruction.equals("multint")){
+        			System.out.println("ESTOY EN MULTIPLICACION INTEGER!!!!!!!!!!");
+
+
+			        VarLocation op1 = (VarLocation)iCode.getOp1();
+			        int offsetOp1 = op1.getOffset();
+
+			        VarLocation op2 = (VarLocation)iCode.getOp2();
+			        int offsetOp2 = op2.getOffset();
+
+			        VarLocation res = (VarLocation)iCode.getResult();
+			        int offsetRes = res.getOffset();
+
+			        //make the assembler
+		 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+		 				// result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
+		 				result += "\t imull	"+offsetOp2+"(%rbp), %eax \n";	
+		 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+		 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+	 				return result;
+
+ 				}else{
+			 		if(nameInstruction.equals("divint")){
+        				System.out.println("ESTOY EN DIVISION INTIGER!!!!!!!!!!");
+		 				return "";
+		 			}else{
+				 		if(nameInstruction.equals("minusint")){
+        					System.out.println("ESTOY EN MINUS INTEGER!!!!!!!!!!");
+			 				return "";
+			 			}
+		 			}			 				
+	 			}
+ 			}
+		}
+		return "";
+ 	}
+
+ 	// return is implemented how the sentence "printf" in C
+ 	private static String generateCodeReturnStmt(IntermediateCode iCode,String nameInstruction) {
+        System.out.println("ESTOY EN GENERATE CODE RETURN STMT!!!!!!!!!!");
+ 		if(nameInstruction.equals("return")){
+        	System.out.println("ESTOY EN GENERATE CODE RETURN !!!!!!!!!!");
+ 			return "";
+ 		}else{
+	 		if(nameInstruction.equals("returnint")){
+		        System.out.println("ESTOY EN GENERATE CODE RETURN INTEGER!!!!!!!!!!");
+	 			String	result = "\t movl	%eax, %esi \n";	
+	 				result += "\t movl	$.LC0, %edi \n";	
+	 				result += "\t movl	$0, %eax \n";	
+	 				result += "\t call	printf \n";	
+	 				result += "\t movl	$0, %eax \n";
+
+	 			return result;	
+	 		}else{
+		 		if(nameInstruction.equals("returnfloat")){
+			        System.out.println("ESTOY EN GENERATE CODE RETURN FLOAT!!!!!!!!!!");
+	 				return "";
+ 				}else{
+			 		if(nameInstruction.equals("returnbool")){
+				        System.out.println("ESTOY EN GENERATE CODE RETURN BOOL!!!!!!!!!!");
+		 				return "";
+		 			}
+ 				}
+ 			}
+ 		}
+		return "";
+ 	}
+
 
  	private static String generateCodeLiteralStmt(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE LITERAL STMT!!!!!!!!!!");
  		if(nameInstruction.equals("assignlitint")){
- 			return nameInstruction;
+
+	        System.out.println("ESTOY EN GENERATE CODE LITERAL INT!!!!!!!!!!");
+
+
+	        VarLocation varLocation = (VarLocation)iCode.getResult();
+	        IntLiteral intLiteral = (IntLiteral)iCode.getOp1();
+
+			int offset = varLocation.getOffset();
+
+	        //make the assembler
+	 		String result = "\t movl	$"+intLiteral+", "+offset+"(%rbp) \n";
+				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("assignlitfloat")){
-	 			return nameInstruction;
+    		    System.out.println("ESTOY EN GENERATE CODE LITERAL FLOAT!!!!!!!!!!");
+	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("assignlitbool")){
-	 				return nameInstruction;
+        			System.out.println("ESTOY EN GENERATE CODE LITERAL BOOL!!!!!!!!!!");
+	 				return "";
  				}
  			}
  		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorConditional(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("andand")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("oror")){
-	 			return nameInstruction;
+	 			return "";
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
 
  	private static String generateCodeOperatorRelational(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("lt")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("lteq")){
-	 			return nameInstruction;
+	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("gt")){
-	 				return nameInstruction;
+	 				return "";
  				}else{
 			 		if(nameInstruction.equals("gteq")){
-		 				return nameInstruction;
+		 				return "";
 		 			}			 				
 	 			}
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorEqual(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR EQUAL!!!!!!!!!!");
  		if(nameInstruction.equals("eqeq")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("noteq")){
-	 			return nameInstruction;
+	 			return "";
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorPush(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR PUSH!!!!!!!!!!");
  		if(nameInstruction.equals("pushid")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("pushparam")){
-	 			return nameInstruction;
+	 			return "";
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorCall(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CALL!!!!!!!!!!");
  		if(nameInstruction.equals("call")){
- 			return nameInstruction;
+ 			return "";
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorJump(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR JUMP!!!!!!!!!!");
  		if(nameInstruction.equals("jf")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("jmp")){
-	 			return nameInstruction;
+	 			return "";
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
- 	private static String generateCodeInitVar(IntermediateCode iCode,String nameInstruction) {
-        System.out.println("ESTOY EN GENERATE CODE INIT VAR!!!!!!!!!!");
- 		if(nameInstruction.equals("initint")){
- 			return nameInstruction;
- 		}else{
-	 		if(nameInstruction.equals("initfloat")){
-	 			return nameInstruction;
-	 		}else{
-		 		if(nameInstruction.equals("initbool")){
-	 				return nameInstruction;
- 				}else{
-			 		if(nameInstruction.equals("initarray")){
-		 				return nameInstruction;
-		 			}			 				
-	 			}
- 			}
-		}
-		return nameInstruction;
- 	}
 
  	private static String generateCodeLabels(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE LABELS!!!!!!!!!!");
  		if(nameInstruction.equals("label")){
- 			return nameInstruction;
+ 			return "";
  		}else{
 	 		if(nameInstruction.equals("labelbeginclass")){
-	 			return nameInstruction;
+	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("labelbeginmethod")){
-	 				return nameInstruction;
+			        Label label = (Label)iCode.getResult();
+		 			String res = initializeMethod(label.getLabelId(),label.getMaxOffset());
+	 				return res;
  				}else{
 			 		if(nameInstruction.equals("labelendmethod")){
-		 				return nameInstruction;
+				        Label label = (Label)iCode.getResult();
+			 			String result = finishMethodCommon(label.getLabelId());
+			 			if(index < cantMethods){
+			 				index++;
+				 			String res = finishMethod(label.getLabelId());
+			 				return result + res;
+			 			}else{
+			 				return result;
+			 			}
 		 			}			 				
 	 			}
  			}
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	private static String generateCodeOperatorNot(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR NOT!!!!!!!!!!");
  		if(nameInstruction.equals("not")){
- 			return nameInstruction;
+ 			return "";
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	 	private static String generateCodeOperatorMod(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR MOD!!!!!!!!!!");
  		if(nameInstruction.equals("mod")){
- 			return nameInstruction;
+ 			return "";
 		}
-		return nameInstruction;
+		return "";
  	}
 
  	 	private static String generateCodeOperatorLess(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR LESS!!!!!!!!!!");
  		if(nameInstruction.equals("less")){
- 			return nameInstruction;
+ 			return "";
 		}
-		return nameInstruction;
+		return "";
  	}
 
 }

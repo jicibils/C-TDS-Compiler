@@ -150,14 +150,11 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
 
         switch (stmt.getOperator()){
             case ASSIGN :                       //assign, op1, op2, res
-
-                    //ESTOS IRIAN???? PORQUE NO SON TEMPORALES Y SUPONGO QUE COMO RECUPERA 
-                    // EL LOCATION YA TENDRIA QUE TENER EL OFFSET ASIGNADO
-
+                   System.out.println("ESTOY EN ASSIGN!!!!!!!!!!");
                     //SET OFFSET
                     declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                    loc.setDeclaration(declaration);
-                    loc.setOffset(genOffset());
+                    expr.setDeclaration(declaration);
+                    expr.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.ASSIGNI,loc,expr, stmt.getLocation()));
@@ -185,10 +182,12 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                 }
             case INC :
 
+               System.out.println("ESTOY EN INC!!!!!!!!!!");
                 //SET OFFSET
-                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+
+                // declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                // loc.setDeclaration(declaration);
+                // loc.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
                     list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
@@ -206,20 +205,21 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
                     }
                 }
             case DEC :
+                System.out.println("ESTOY EN DEC!!!!!!!!!!");
                 //SET OFFSET
-                declaration = new Attribute(loc.getId(),loc.getType(),stmt);
-                loc.setDeclaration(declaration);
-                loc.setOffset(genOffset());
+                // declaration = new Attribute(loc.getId(),loc.getType(),stmt);
+                // loc.setDeclaration(declaration);
+                // loc.setOffset(stmt.getLocation().getOffset());
 
                 if (stmt.getLocation().getType().equals(Type.TINTEGER)) {
-                    list.add(new IntermediateCode(Instruction.INCI,loc,expr, stmt.getLocation()));
+                    list.add(new IntermediateCode(Instruction.DECI,loc,expr, stmt.getLocation()));
 
                     //SET TYPE for declaration
                     loc.getDeclaration().setType(Type.TINTEGER);
                     return stmt.getLocation();
                 }else{
                     if (stmt.getLocation().getType().equals(Type.TFLOAT)) {
-                        list.add(new IntermediateCode(Instruction.INCF,loc,expr, stmt.getLocation()));
+                        list.add(new IntermediateCode(Instruction.DECF,loc,expr, stmt.getLocation()));
 
                         //SET TYPE for declaration
                         loc.getDeclaration().setType(Type.TFLOAT);
@@ -398,7 +398,26 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         //since we do not have the binary expression separated by type.
         Instruction instruction = getProperInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
         IntermediateCode icode = new IntermediateCode(instruction,locLeftExpr,locRightExpr,tempLoc); //create 3-ways code
-        
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println(instruction);
+        System.out.println(locLeftExpr);
+        System.out.println(locRightExpr);
+        System.out.println(tempLoc);
+
+            System.out.println(tempLoc.getId());
+            System.out.println(tempLoc.getDeclaration().getType());
+            System.out.println(tempLoc.getDeclaration().getValue());
+            System.out.println(tempLoc.getOffset());
+
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+
         list.add(icode); //add to list
         
         return tempLoc;
@@ -520,12 +539,19 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     @Override
     public Location visit(IntLiteral lit) {
         System.out.println("ESTOY EN INTLITERAL!!!!!!!!!!");
-        Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        incTempCounter();//tempCounter++;
+
+        VarLocation tempLoc = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());  //temporal location to store results
+        incTempCounter(); //tempCounter++ increment counter that store amount of temporal location used
+        tempLoc.setType(Type.TINTEGER);   //set type to temporal
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),lit);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
+
+        list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLoc));
         
-        list.add(new IntermediateCode(Instruction.ASSIGNLITINT,lit,null,tempLocation));
-        
-        return tempLocation;
+        return tempLoc;
     }
 
     @Override

@@ -16,19 +16,13 @@ public class BoolLiteral extends Literal{
 		return Type.TBOOL;
 	}
 
-	/*
-	* Get Boolean value
-	*/
 
-	public Boolean getValue() {
+	public Boolean getBoolvalue() {
 		return value;
 	}
 
-	/*
-	* Set Boolean value
-	*/
 
-	public void setValue(Boolean value) {
+	public void setBoolvalue(Boolean value) {
 		this.value = value;
 	}
 	

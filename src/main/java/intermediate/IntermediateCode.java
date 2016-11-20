@@ -24,6 +24,16 @@ public class IntermediateCode{
         return label;
     }
 
+    public AST getOp1() {
+        return operand1;
+    }
+    public AST getOp2() {
+        return operand2;
+    }
+    public AST getResult() {
+        return result;
+    }
+
     @Override
     public String toString() {
         // return label.toString() + ": " + operator.toString();

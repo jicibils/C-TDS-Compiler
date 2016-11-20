@@ -1,23 +1,15 @@
-//class main {
-	
-//	void main() {
-//		integer var;
-//		var = 10;
-//		while(var>1){
-//			var = var - 1;
-//			break;
-//		}
-//		return;
-//	}
-//}
-
 class main {
+	
 	void main() {
-
-        integer var;
+		integer var;
+		var = 10;
+		while(var>1){
+			var = var - 1;
+			break;
+		}
 		return;
-    }
-
+	}
 }
+
 
 

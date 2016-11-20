@@ -1,0 +1,11 @@
+class main{
+	integer main(){
+	    integer i ;
+	    integer y;
+	    i = 9;
+	    y = 12;
+	    i += 1;
+	    return i;
+	}
+}
+
