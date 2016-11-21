@@ -575,11 +575,20 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
     public Location visit(BoolLiteral lit) {
         
         System.out.println("ESTOY EN BOOLLITERAL!!!!!!!!!!");
-        Location tempLocation = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());
-        incTempCounter(); //tempCounter++;
-        list.add(new IntermediateCode(Instruction.ASSIGNLITBOOL,lit,null,tempLocation));
+
+        VarLocation tempLoc = new VarLocation("T"+tempCounter,lit.getLineNumber(),lit.getColumnNumber());  
+        incTempCounter(); //tempCounter++ 
+        tempLoc.setType(Type.TBOOL);   //set type to temporal
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),lit);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
+
+        list.add(new IntermediateCode(Instruction.ASSIGNLITBOOL,lit,null,tempLoc));
+
         
-        return tempLocation;
+        return tempLoc;
     }
 
 

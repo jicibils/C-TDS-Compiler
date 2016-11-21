@@ -314,6 +314,49 @@ public class AssemblerGenerator {
 	 		}else{
 		 		if(nameInstruction.equals("assignb")){
         			System.out.println("ESTOY EN GENERATE CODE ASSIGN BOOL!!!!!!!!!!");
+
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+ 			System.out.println(iCode);
+ 			System.out.println(iCode.getOp1());
+ 			System.out.println(iCode.getOp2());
+ 			System.out.println(iCode.getResult());
+
+ 			VarLocation var1 = (VarLocation)iCode.getOp1();
+ 			System.out.println("");
+ 			System.out.println(var1.getId());
+ 			System.out.println(var1.getDeclaration());
+ 			System.out.println(var1.getDeclaration().getValue());
+ 			System.out.println(var1.getOffset());
+ 			System.out.println("");
+
+ 			VarLocation var2 = (VarLocation)iCode.getOp2();
+ 			System.out.println("");
+ 			System.out.println(var2.getId());
+ 			System.out.println(var2.getDeclaration());
+ 			System.out.println(var2.getDeclaration().getValue());
+ 			System.out.println(var2.getOffset());
+ 			System.out.println("");
+ 			VarLocation var3 = (VarLocation)iCode.getResult();
+ 			System.out.println("");
+ 			System.out.println(var3.getId());
+ 			System.out.println(var3.getDeclaration());
+ 			System.out.println(var3.getDeclaration().getValue());
+ 			System.out.println(var3.getOffset());
+ 			System.out.println("");
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+
+
+
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("inci")){
@@ -475,7 +518,6 @@ public class AssemblerGenerator {
         					System.out.println("ESTOY EN MINUS INTEGER!!!!!!!!!!");
 					        VarLocation res = (VarLocation)iCode.getResult();
 					        int offsetRes = res.getOffset();
-        					// FALLA EN EL TYPECHECK
 							// String result = " \t negl	%eax \n";
 							String result = " \t negl	"+offsetRes+"(%rbp) \n";
 							return result;
@@ -488,7 +530,6 @@ public class AssemblerGenerator {
  	}
 
 
- 	//ERROR ENTRA A TODOS LOS RETURN DEL CODIGO INTERMEDIO
 
 
  	// return is implemented how the sentence "printf" in C
@@ -552,7 +593,25 @@ public class AssemblerGenerator {
 	 		}else{
 		 		if(nameInstruction.equals("assignlitbool")){
         			System.out.println("ESTOY EN GENERATE CODE LITERAL BOOL!!!!!!!!!!");
-	 				return "";
+		
+			        VarLocation varLocation = (VarLocation)iCode.getResult();
+			        BoolLiteral boolLiteral = (BoolLiteral)iCode.getOp1();
+					int offset = varLocation.getOffset();
+					int varBool;
+
+					if(boolLiteral.getBoolvalue()){
+	        			System.out.println("                     AAAAAAAAAAAAAAaa                !!!!!!!!!!");
+	        			 varBool = 1; //1 = TRUE
+					}else{
+	        			System.out.println("                     BBBBBBBBBBBBBBBBB                !!!!!!!!!!");
+	        			 varBool = 0; //0 = FALSE						
+					}
+
+			        //make the assembler
+			 		String result = "\t movl	$"+varBool+", "+offset+"(%rbp) \n";
+						// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
+		 			return result;
  				}
  			}
  		}
@@ -562,6 +621,7 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorConditional(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("andand")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL 		AND AND !!!!!!!!!!");
 
  			System.out.println("");
  			System.out.println("");
@@ -607,7 +667,50 @@ public class AssemblerGenerator {
  			return result;
  		}else{
 	 		if(nameInstruction.equals("oror")){
-	 			return "";
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL 		OR OR!!!!!!!!!!");
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+ 			System.out.println(iCode);
+ 			System.out.println(iCode.getOp1());
+ 			System.out.println(iCode.getOp2());
+ 			System.out.println(iCode.getResult());
+
+ 			VarLocation var1 = (VarLocation)iCode.getOp1();
+ 			System.out.println("");
+ 			System.out.println(var1.getId());
+ 			System.out.println(var1.getDeclaration());
+ 			System.out.println(var1.getDeclaration().getValue());
+ 			System.out.println(var1.getOffset());
+ 			System.out.println("");
+
+ 			VarLocation var2 = (VarLocation)iCode.getOp2();
+ 			System.out.println("");
+ 			System.out.println(var2.getId());
+ 			System.out.println(var2.getDeclaration());
+ 			System.out.println(var2.getDeclaration().getValue());
+ 			System.out.println(var2.getOffset());
+ 			System.out.println("");
+ 			VarLocation var3 = (VarLocation)iCode.getResult();
+ 			System.out.println("");
+ 			System.out.println(var3.getId());
+ 			System.out.println(var3.getDeclaration());
+ 			System.out.println(var3.getDeclaration().getValue());
+ 			System.out.println(var3.getOffset());
+ 			System.out.println("");
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+ 			String result = "\t cmpl	$3, -8(%rbp) \n";
+ 				result += "\t jne	.L2 \n";
+
+ 			return result;
  			}
 		}
 		return "";
@@ -617,15 +720,19 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorRelational(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("lt")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LT  !!!!!!!!!!");
  			return "";
  		}else{
 	 		if(nameInstruction.equals("lteq")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LTEQ   !!!!!!!!!!");
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("gt")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GT 		!!!!!!!!!!");
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("gteq")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GTEQ 	!!!!!!!!!!");
 		 				return "";
 		 			}			 				
 	 			}
@@ -637,9 +744,11 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorEqual(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR EQUAL!!!!!!!!!!");
  		if(nameInstruction.equals("eqeq")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR EQUAL 		EQEQ 	!!!!!!!!!!");
  			return "";
  		}else{
 	 		if(nameInstruction.equals("noteq")){
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR EQUAL 		NOTEQ 	!!!!!!!!!!");
 	 			return "";
  			}
 		}
@@ -669,9 +778,11 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorJump(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR JUMP!!!!!!!!!!");
  		if(nameInstruction.equals("jf")){
+        System.out.println("                JF                       !!!!!!!!!!");
  			return "";
  		}else{
 	 		if(nameInstruction.equals("jmp")){
+        System.out.println("               JUMP                        !!!!!!!!!!");
 	 			Label label = (Label)iCode.getResult();
 				String result = " \t jmp ."+label.toString()+" \n";
 				return result;
@@ -759,12 +870,22 @@ public class AssemblerGenerator {
 
 //MOD -> LO HAGO COMO C O LO TENGO QUE HACER A MANO         (((((((ESTA HECHO COMO C)))))))
 
-//MINUSINT -> NO FUNCIONA SE CLAVA EN TYPECHECK
+//MINUSINT -> NO FUNCIONA SE CLAVA EN TYPECHECK 	((((((LISTO))))))
 
 //JMP -> CONSEGUIR EL LABEL A DONDE SALTAR DESPUES DEL JMP 	(((((((((LISTO)))))))))
 //JMP -> creo que me lo tira desacomodado
 
-//ERROR EN LOS RETURN -> EN EL CODIGO INTERMEDIO ENTRA A TODOS LOS TIPOS DE RETURN 
+//ERROR EN LOS RETURN -> EN EL CODIGO INTERMEDIO ENTRA A TODOS LOS TIPOS DE RETURN ((((((LISTO))))))
 
 // RECUPERAR EL TEMPORAL DEL RETURN QUE AHI TENGO LO QUE TENGO QUE RETORNAR 
-// Y BORRAR TODOS LOS ULTIMOS MOV A EAX DE LAS ACCIONES		
+// Y BORRAR TODOS LOS ULTIMOS MOV A EAX DE LAS ACCIONES		(((((((LISTO)))))))
+
+
+
+// ERROR EN EL MINUS INT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???)
+
+// OPERADORES CONDICIONALES
+
+// OPERADORES RELACIONALES 
+
+// IMPLEMENTAR BOOLEANOS
