@@ -316,48 +316,29 @@ public class AssemblerGenerator {
         			System.out.println("ESTOY EN GENERATE CODE ASSIGN BOOL!!!!!!!!!!");
 
 
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
+			        VarLocation varLocation = (VarLocation)iCode.getResult();
+			        Location loc = (Location)iCode.getOp2();
+			        AssignStmt assignStmt  = (AssignStmt)loc.getDeclaration().getValue();
+			        Expression expression = assignStmt.getExpression();
+					int varBool;
+					int offset = varLocation.getOffset();
+					String result = "";
 
- 			System.out.println(iCode);
- 			System.out.println(iCode.getOp1());
- 			System.out.println(iCode.getOp2());
- 			System.out.println(iCode.getResult());
+					if (expression instanceof BoolLiteral) {
+						BoolLiteral boolLiteral = (BoolLiteral)expression;
+						if(boolLiteral.getBoolvalue()){
+		        			 varBool = 1; //1 = TRUE
+					        //make the assembler
+				 			result = "\t movl	$"+varBool+", "+offset+"(%rbp) \n";
+			 			}else{
+		        			 varBool = 0; //0 = FALSE						
+					        //make the assembler
+				 			result = "\t movl	$"+varBool+", "+offset+"(%rbp) \n";
+				 		}
+				 	}
 
- 			VarLocation var1 = (VarLocation)iCode.getOp1();
- 			System.out.println("");
- 			System.out.println(var1.getId());
- 			System.out.println(var1.getDeclaration());
- 			System.out.println(var1.getDeclaration().getValue());
- 			System.out.println(var1.getOffset());
- 			System.out.println("");
+		 			return result;
 
- 			VarLocation var2 = (VarLocation)iCode.getOp2();
- 			System.out.println("");
- 			System.out.println(var2.getId());
- 			System.out.println(var2.getDeclaration());
- 			System.out.println(var2.getDeclaration().getValue());
- 			System.out.println(var2.getOffset());
- 			System.out.println("");
- 			VarLocation var3 = (VarLocation)iCode.getResult();
- 			System.out.println("");
- 			System.out.println(var3.getId());
- 			System.out.println(var3.getDeclaration());
- 			System.out.println(var3.getDeclaration().getValue());
- 			System.out.println(var3.getOffset());
- 			System.out.println("");
-
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
-
-
-
-
-	 				return "";
  				}else{
 			 		if(nameInstruction.equals("inci")){
         				System.out.println("ESTOY EN GENERATE CODE ASSIGN INC INT!!!!!!!!!!");
@@ -560,7 +541,16 @@ public class AssemblerGenerator {
  				}else{
 			 		if(nameInstruction.equals("returnbool")){
 				        System.out.println("ESTOY EN GENERATE CODE RETURN BOOL!!!!!!!!!!");
-		 				return "";
+			 			VarLocation varLocation = (VarLocation)iCode.getResult();
+			 			int offset = varLocation.getOffset();
+
+			 			String	result = "\t movl	"+offset+"(%rbp), %esi \n";	
+			 				result += "\t movl	$.LC0, %edi \n";	
+			 				result += "\t movl	$0, %eax \n";	
+			 				result += "\t call	printf \n";	
+			 				result += "\t movl	$0, %eax \n";
+
+			 			return result;	
 		 			}
  				}
  			}
@@ -600,17 +590,13 @@ public class AssemblerGenerator {
 					int varBool;
 
 					if(boolLiteral.getBoolvalue()){
-	        			System.out.println("                     AAAAAAAAAAAAAAaa                !!!!!!!!!!");
 	        			 varBool = 1; //1 = TRUE
 					}else{
-	        			System.out.println("                     BBBBBBBBBBBBBBBBB                !!!!!!!!!!");
 	        			 varBool = 0; //0 = FALSE						
 					}
 
 			        //make the assembler
 			 		String result = "\t movl	$"+varBool+", "+offset+"(%rbp) \n";
-						// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
-
 		 			return result;
  				}
  			}
