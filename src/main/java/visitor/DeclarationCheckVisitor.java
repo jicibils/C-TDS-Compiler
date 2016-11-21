@@ -116,7 +116,8 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
 
             //SET MAXOFFSET 
             // EMPEZAR SIEMPRE ACA LOS MAXOFFSET CON -4
-            offset = -4;
+            // offset = -4;
+            offset = 0;
 
             for(Param param : method.getParam()){
                 errorList.addAll(param.accept(this));

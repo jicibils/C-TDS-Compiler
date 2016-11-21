@@ -298,12 +298,12 @@ public class AssemblerGenerator {
 			if (expression instanceof IntLiteral) {
 		        //make the assembler
 	 			result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
- 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+ 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 	 		}else{
 		        //make the assembler
 	 			result = "\t movl	"+offset+"(%rbp), %edx \n";
 	 			result += "\t movl	%edx, "+offset+"(%rbp) \n";
-	 			result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+	 			// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 	 		}		
 
  			return result;
@@ -323,7 +323,7 @@ public class AssemblerGenerator {
         				int offset = varLocation.getOffset();
 				        //make the assembler
 			 			String result = "\t addl	$1, "+offset+"(%rbp) \n";
-			 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+			 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
 			 			return result;
  					}else{
@@ -338,7 +338,7 @@ public class AssemblerGenerator {
 		        				int offset = varLocation.getOffset();
 						        //make the assembler
 					 			String result = "\t subl	$1, "+offset+"(%rbp) \n";
-					 				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+					 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
 					 			return result;
 
@@ -400,7 +400,7 @@ public class AssemblerGenerator {
  				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
  				result += "\t addl	%edx, %eax \n";	
  				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
- 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+ 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
  			return result;
  		}else{
@@ -421,7 +421,7 @@ public class AssemblerGenerator {
 	 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
 	 				result += "\t subl	%edx, %eax \n";	
 	 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
-	 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+	 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
  				return result;
 	
@@ -441,21 +441,44 @@ public class AssemblerGenerator {
 
 			        //make the assembler
 		 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
-		 				// result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
 		 				result += "\t imull	"+offsetOp2+"(%rbp), %eax \n";	
 		 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
-		 				result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+		 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
 	 				return result;
 
  				}else{
 			 		if(nameInstruction.equals("divint")){
         				System.out.println("ESTOY EN DIVISION INTIGER!!!!!!!!!!");
-		 				return "";
+						
+						//ERROR DE COMA FLOTANTE
+				        VarLocation op1 = (VarLocation)iCode.getOp1();
+				        int offsetOp1 = op1.getOffset();
+
+				        VarLocation op2 = (VarLocation)iCode.getOp2();
+				        int offsetOp2 = op2.getOffset();
+
+				        VarLocation res = (VarLocation)iCode.getResult();
+				        int offsetRes = res.getOffset();
+
+				        //make the assembler
+			 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+			 				result += "\t cltd \n";
+			 				result += "\t idivl	"+offsetOp2+"(%rbp) \n";	
+			 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
+			 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+		 				return result;
+	
 		 			}else{
 				 		if(nameInstruction.equals("minusint")){
         					System.out.println("ESTOY EN MINUS INTEGER!!!!!!!!!!");
-			 				return "";
+					        VarLocation res = (VarLocation)iCode.getResult();
+					        int offsetRes = res.getOffset();
+        					// FALLA EN EL TYPECHECK
+							// String result = " \t negl	%eax \n";
+							String result = " \t negl	"+offsetRes+"(%rbp) \n";
+							return result;
 			 			}
 		 			}			 				
 	 			}
@@ -463,6 +486,10 @@ public class AssemblerGenerator {
 		}
 		return "";
  	}
+
+
+ 	//ERROR ENTRA A TODOS LOS RETURN DEL CODIGO INTERMEDIO
+
 
  	// return is implemented how the sentence "printf" in C
  	private static String generateCodeReturnStmt(IntermediateCode iCode,String nameInstruction) {
@@ -473,7 +500,12 @@ public class AssemblerGenerator {
  		}else{
 	 		if(nameInstruction.equals("returnint")){
 		        System.out.println("ESTOY EN GENERATE CODE RETURN INTEGER!!!!!!!!!!");
-	 			String	result = "\t movl	%eax, %esi \n";	
+
+
+	 			VarLocation varLocation = (VarLocation)iCode.getResult();
+	 			int offset = varLocation.getOffset();
+
+	 			String	result = "\t movl	"+offset+"(%rbp), %esi \n";	
 	 				result += "\t movl	$.LC0, %edi \n";	
 	 				result += "\t movl	$0, %eax \n";	
 	 				result += "\t call	printf \n";	
@@ -510,7 +542,7 @@ public class AssemblerGenerator {
 
 	        //make the assembler
 	 		String result = "\t movl	$"+intLiteral+", "+offset+"(%rbp) \n";
-				result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
  			return result;
  		}else{
@@ -530,7 +562,49 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorConditional(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("andand")){
- 			return "";
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+ 			System.out.println(iCode);
+ 			System.out.println(iCode.getOp1());
+ 			System.out.println(iCode.getOp2());
+ 			System.out.println(iCode.getResult());
+
+ 			VarLocation var1 = (VarLocation)iCode.getOp1();
+ 			System.out.println("");
+ 			System.out.println(var1.getId());
+ 			System.out.println(var1.getDeclaration());
+ 			System.out.println(var1.getDeclaration().getValue());
+ 			System.out.println(var1.getOffset());
+ 			System.out.println("");
+
+ 			VarLocation var2 = (VarLocation)iCode.getOp2();
+ 			System.out.println("");
+ 			System.out.println(var2.getId());
+ 			System.out.println(var2.getDeclaration());
+ 			System.out.println(var2.getDeclaration().getValue());
+ 			System.out.println(var2.getOffset());
+ 			System.out.println("");
+ 			VarLocation var3 = (VarLocation)iCode.getResult();
+ 			System.out.println("");
+ 			System.out.println(var3.getId());
+ 			System.out.println(var3.getDeclaration());
+ 			System.out.println(var3.getDeclaration().getValue());
+ 			System.out.println(var3.getOffset());
+ 			System.out.println("");
+
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+ 			System.out.println("");
+
+ 			String result = "\t cmpl	$3, -8(%rbp) \n";
+ 				result += "\t jne	.L2 \n";
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("oror")){
 	 			return "";
@@ -598,7 +672,9 @@ public class AssemblerGenerator {
  			return "";
  		}else{
 	 		if(nameInstruction.equals("jmp")){
-	 			return "";
+	 			Label label = (Label)iCode.getResult();
+				String result = " \t jmp ."+label.toString()+" \n";
+				return result;
  			}
 		}
 		return "";
@@ -646,7 +722,24 @@ public class AssemblerGenerator {
  	 	private static String generateCodeOperatorMod(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR MOD!!!!!!!!!!");
  		if(nameInstruction.equals("mod")){
- 			return "";
+			//ERROR DE COMA FLOTANTE
+	        VarLocation op1 = (VarLocation)iCode.getOp1();
+	        int offsetOp1 = op1.getOffset();
+
+	        VarLocation op2 = (VarLocation)iCode.getOp2();
+	        int offsetOp2 = op2.getOffset();
+
+	        VarLocation res = (VarLocation)iCode.getResult();
+	        int offsetRes = res.getOffset();
+
+	        //make the assembler
+ 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t cltd \n";
+ 				result += "\t idivl	"+offsetOp2+"(%rbp) \n";	
+ 				result += "\t movl	%edx, "+offsetRes+"(%rbp) \n";	
+ 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
+
+				return result;
 		}
 		return "";
  	}
@@ -660,3 +753,18 @@ public class AssemblerGenerator {
  	}
 
 }
+
+
+//DIVISION -> LA TENGO QUE HACER A MANO O LA HAGO COMO C?   (((((((ESTA HECHO COMO C)))))))
+
+//MOD -> LO HAGO COMO C O LO TENGO QUE HACER A MANO         (((((((ESTA HECHO COMO C)))))))
+
+//MINUSINT -> NO FUNCIONA SE CLAVA EN TYPECHECK
+
+//JMP -> CONSEGUIR EL LABEL A DONDE SALTAR DESPUES DEL JMP 	(((((((((LISTO)))))))))
+//JMP -> creo que me lo tira desacomodado
+
+//ERROR EN LOS RETURN -> EN EL CODIGO INTERMEDIO ENTRA A TODOS LOS TIPOS DE RETURN 
+
+// RECUPERAR EL TEMPORAL DEL RETURN QUE AHI TENGO LO QUE TENGO QUE RETORNAR 
+// Y BORRAR TODOS LOS ULTIMOS MOV A EAX DE LAS ACCIONES		

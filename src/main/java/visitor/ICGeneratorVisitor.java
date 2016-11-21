@@ -340,12 +340,16 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
             switch(stmt.getExpression().getType()){
                 case TINTEGER :
                     list.add(new IntermediateCode(Instruction.RETURNINT,null,null,temporal));
+                    break;
                 case TFLOAT :
                     list.add(new IntermediateCode(Instruction.RETURNFLOAT,null,null,temporal));
+                    break;
                 case TBOOL : 
                     list.add(new IntermediateCode(Instruction.RETURNBOOL,null,null,temporal));
+                    break;
                 case TVOID :
                     list.add(new IntermediateCode(Instruction.RETURN,null,null,null));
+                    break;
                 
             }
         }      
