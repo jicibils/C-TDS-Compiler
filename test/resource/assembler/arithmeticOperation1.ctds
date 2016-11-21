@@ -1,0 +1,11 @@
+class main{
+	integer main(){
+	    integer x ;
+	    integer y;
+	    integer res;
+	    x = 6;
+	    y = 2;
+		res = x + 5 * y - 1;
+	    return res;
+	}
+}
