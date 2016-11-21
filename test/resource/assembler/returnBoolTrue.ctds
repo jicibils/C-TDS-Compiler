@@ -1,0 +1,7 @@
+class main{
+	bool main(){
+		bool res;
+		res = true;
+		return res;
+	}
+}
