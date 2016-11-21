@@ -163,6 +163,7 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
             errors.addAll(stmt.getExpression().accept(this));
             
             if(!getReturnTypeVar().equals(Type.TVOID)){
+
                 if(!stmt.getExpression().getType().equals(getReturnTypeVar())){
                     String error = "Error: Types doesn't match. Return type should be of type "+getReturnTypeVar()+" but it is of type "+stmt.getExpression().getType()+".";
                     errors.add(new ErrorClass(stmt.getLineNumber(),stmt.getColumnNumber(),error));
@@ -363,7 +364,7 @@ public class TypeCheckVisitor implements ASTVisitor<List<ErrorClass>>{
         Type operand = expr.getOperand().getType();
         UnaryOpType operator = expr.getOperator();
         
-        if(isValidOperator(operand, operator)){
+        if(!isValidOperator(operand, operator)){
             errors.add(new ErrorClass (expr.getLineNumber(),expr.getColumnNumber(),"Error: Incompatible operator with operand"));
         }
         else{
