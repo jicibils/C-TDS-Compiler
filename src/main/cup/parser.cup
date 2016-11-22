@@ -56,6 +56,7 @@ terminal ANDAND;
 terminal OROR;
 terminal PLUS;
 terminal MINUS;
+terminal UMINUS;
 terminal MOD;
 terminal ASSIGN;
 terminal INC;
@@ -64,11 +65,9 @@ terminal DOT;
 
 terminal DIV;
 terminal MULT;
-//######## ACA LE PUSE ADELANTE Integer a INT_LITERAL #########
 terminal    Integer INT_LITERAL;
 terminal    Float FLOAT_LITERAL;
 
-//#### modificacion BOOL_LITERAL
 terminal    Boolean TRUE;
 terminal    Boolean FALSE;
 
@@ -98,7 +97,6 @@ non terminal List<String> list_invoc;
 non terminal String invoc;
 non terminal Literal literal;
 
-//########### ver bool_literal #########
 non terminal Boolean bool_literal;
 
 non terminal FieldDecl field_decl;
@@ -114,7 +112,7 @@ precedence left  OROR;
 precedence nonassoc  LT, LTEQ, GTEQ, GT, EQEQ, NOTEQ;
 precedence left  PLUS, MINUS;
 precedence left  MULT, DIV, MOD;
-precedence right NOT;
+precedence right NOT, UMINUS;
 
 
 start with program;
@@ -269,7 +267,7 @@ expr ::= location:loc {: RESULT = loc; :}
 
 	   |expr:e1 OROR:oror expr:e2 {: RESULT = new BinOpExpr(e1,BinOpType.OROR,e2,ororleft+1,ororright+1); :}
 
-	   |MINUS:minU expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.MINUS,e1,minUleft+1,minUright+1); :}
+	   |MINUS:minU expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.MINUS,e1,minUleft+1,minUright+1); :}%prec UMINUS
 
 	   |NOT:not expr:e1 {: RESULT = new UnaryOpExpr(UnaryOpType.NOT,e1,notleft+1,notright+1); :}
 

@@ -17,6 +17,7 @@ public class AssemblerGenerator {
     private static int cantMethods = 0;
 	private static int index = 1; //index for finish methods
     private static LinkedList<String> listIdMethod; //list ids methods
+    private static int labelCounter = 0;  //variable to store amount of labels
 
 
     public AssemblerGenerator(){
@@ -500,8 +501,13 @@ public class AssemblerGenerator {
 					        VarLocation res = (VarLocation)iCode.getResult();
 					        int offsetRes = res.getOffset();
 							// String result = " \t negl	%eax \n";
-							String result = " \t negl	"+offsetRes+"(%rbp) \n";
+							// String result = " \t negl	"+offsetRes+"(%rbp) \n";
+				 			String result = "\t movl	"+offsetRes+"(%rbp), %eax \n";
+								result += " \t imull	$-1, %eax \n";
+				 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
 							return result;
+
+
 			 			}
 		 			}			 				
 	 			}
@@ -706,19 +712,40 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorRelational(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL!!!!!!!!!!");
  		if(nameInstruction.equals("lt")){
-        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LT  !!!!!!!!!!");
- 			return "";
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LT  (<)!!!!!!!!!!");
+
+ 			VarLocation op1 = (VarLocation)iCode.getOp1();
+ 			int offsetOp1 = op1.getOffset();
+
+ 			VarLocation op2 = (VarLocation)iCode.getOp2();
+ 			int offsetOp2 = op2.getOffset();
+
+ 			VarLocation res = (VarLocation)iCode.getResult();
+ 			int offsetRes = res.getOffset();
+
+ 			Label labelJl = genLabel();
+ 			Label labelJmp = genLabel();
+	 		String result = "\t movl	"+offsetOp2+"(%rbp), %eax \n";
+				result += " \t cmpl 	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t jg	."+labelJl.getLabelId()+" \n";
+				result += "\t movl	$0, "+offsetRes+"(%rbp) \n";
+				result += "\t jmp ."+labelJmp.getLabelId()+" \n";
+				result += "."+labelJl.getLabelId()+": \n";
+				result += "\t movl	$1, "+offsetRes+"(%rbp) \n";
+				result += "."+labelJmp.getLabelId()+": \n";
+
+ 			return result;
  		}else{
 	 		if(nameInstruction.equals("lteq")){
-        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LTEQ   !!!!!!!!!!");
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			LTEQ  (<=) !!!!!!!!!!");
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("gt")){
-        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GT 		!!!!!!!!!!");
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GT 	(>)	!!!!!!!!!!");
 	 				return "";
  				}else{
 			 		if(nameInstruction.equals("gteq")){
-        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GTEQ 	!!!!!!!!!!");
+        System.out.println("ESTOY EN GENERATE CODE OPERATOR RELATIONAL 			GTEQ (>=)	!!!!!!!!!!");
 		 				return "";
 		 			}			 				
 	 			}
@@ -849,6 +876,14 @@ public class AssemblerGenerator {
 		return "";
  	}
 
+    private static Label genLabel(){
+        labelCounter++;
+        Label label = new Label("Label"+labelCounter,labelCounter);
+        return label;
+
+    }
+
+
 }
 
 
@@ -874,4 +909,4 @@ public class AssemblerGenerator {
 
 // OPERADORES RELACIONALES 
 
-// IMPLEMENTAR BOOLEANOS
+// IMPLEMENTAR BOOLEANOS		(((((((LISTO)))))))

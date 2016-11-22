@@ -402,25 +402,6 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         //since we do not have the binary expression separated by type.
         Instruction instruction = getProperInstruction(expr.getOperator(),expr.getType());  //method to obtain correspondent instruction
         IntermediateCode icode = new IntermediateCode(instruction,locLeftExpr,locRightExpr,tempLoc); //create 3-ways code
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println(instruction);
-        System.out.println(locLeftExpr);
-        System.out.println(locRightExpr);
-        System.out.println(tempLoc);
-
-            System.out.println(tempLoc.getId());
-            System.out.println(tempLoc.getDeclaration().getType());
-            System.out.println(tempLoc.getDeclaration().getValue());
-            System.out.println(tempLoc.getOffset());
-
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
 
         list.add(icode); //add to list
         

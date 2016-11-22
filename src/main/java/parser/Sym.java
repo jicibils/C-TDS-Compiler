@@ -9,8 +9,9 @@ package main.java.parser;
 public class Sym {
   /* terminals */
   public static final int GTEQ = 28;
-  public static final int MULT = 40;
+  public static final int MULT = 41;
   public static final int LTEQ = 27;
+  public static final int UMINUS = 34;
   public static final int TFLOAT = 4;
   public static final int LPAREN = 15;
   public static final int CONTINUE = 8;
@@ -24,21 +25,21 @@ public class Sym {
   public static final int COMMA = 22;
   public static final int TBOOL = 2;
   public static final int CLASS = 7;
-  public static final int INC = 36;
-  public static final int DIV = 39;
+  public static final int INC = 37;
+  public static final int DIV = 40;
   public static final int ANDAND = 30;
   public static final int EXTERN = 14;
   public static final int PLUS = 32;
-  public static final int ASSIGN = 35;
+  public static final int ASSIGN = 36;
   public static final int IF = 11;
-  public static final int ID = 45;
-  public static final int DOT = 38;
+  public static final int ID = 46;
+  public static final int DOT = 39;
   public static final int EOF = 0;
   public static final int RETURN = 12;
-  public static final int TRUE = 43;
+  public static final int TRUE = 44;
   public static final int error = 1;
   public static final int EQEQ = 26;
-  public static final int MOD = 34;
+  public static final int MOD = 35;
   public static final int BREAK = 6;
   public static final int TVOID = 5;
   public static final int LBRACK = 19;
@@ -48,11 +49,11 @@ public class Sym {
   public static final int RBRACK = 20;
   public static final int WHILE = 13;
   public static final int RBRACE = 18;
-  public static final int DEC = 37;
-  public static final int FALSE = 44;
-  public static final int FLOAT_LITERAL = 42;
+  public static final int DEC = 38;
+  public static final int FALSE = 45;
+  public static final int FLOAT_LITERAL = 43;
   public static final int GT = 23;
-  public static final int INT_LITERAL = 41;
+  public static final int INT_LITERAL = 42;
   public static final int NOTEQ = 29;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -89,6 +90,7 @@ public class Sym {
   "OROR",
   "PLUS",
   "MINUS",
+  "UMINUS",
   "MOD",
   "ASSIGN",
   "INC",
