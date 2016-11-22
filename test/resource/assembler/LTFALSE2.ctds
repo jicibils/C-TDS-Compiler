@@ -1,0 +1,7 @@
+class main{
+	bool main(){
+		integer res;
+		res = 7;
+		return (res < 7);
+	}
+}
