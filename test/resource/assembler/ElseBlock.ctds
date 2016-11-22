@@ -1,0 +1,12 @@
+class main{
+	integer main(){
+		integer res;
+		res = 8;
+		if(res != 8){
+			res += 1; 
+		}else{
+			res -= 1;
+		}
+		return res;
+	}
+}

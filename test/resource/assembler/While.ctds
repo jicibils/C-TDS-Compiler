@@ -1,0 +1,13 @@
+class main{
+	integer main(){
+		integer res;
+		integer i;
+		res = 8;
+		i = 0;
+		while(i < 8){
+			res += 1; 
+			i += 1;
+		}
+		return res;
+	}
+}
