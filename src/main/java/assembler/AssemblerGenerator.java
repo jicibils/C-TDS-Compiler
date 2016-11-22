@@ -515,7 +515,14 @@ public class AssemblerGenerator {
         System.out.println("ESTOY EN GENERATE CODE RETURN STMT!!!!!!!!!!");
  		if(nameInstruction.equals("return")){
         	System.out.println("ESTOY EN GENERATE CODE RETURN !!!!!!!!!!");
- 			return "";
+
+ 			String	result = "\t movl	$77777777, %esi \n";	
+ 				result += "\t movl	$.LC0, %edi \n";	
+ 				result += "\t movl	$0, %eax \n";	
+ 				result += "\t call	printf \n";	
+ 				result += "\t movl	$0, %eax \n";
+
+ 			return result;	
  		}else{
 	 		if(nameInstruction.equals("returnint")){
 		        System.out.println("ESTOY EN GENERATE CODE RETURN INTEGER!!!!!!!!!!");
@@ -998,4 +1005,4 @@ public class AssemblerGenerator {
 
 // IMPLEMENTAR PUSHID y PUSHPARAM
 
-// IMPLEMENTAR RETURN VOID
+// IMPLEMENTAR RETURN VOID       (((((DEVUELVO 777777777 QUE PUEDO DEVOLVER????)))))
