@@ -200,7 +200,6 @@ public class AssemblerGenerator {
  			initialize += "     .text \n";
  			initialize += "     .globl 	"+id+" \n";
  			initialize += "     .type 	"+id+", @function \n";
-			//FILENAME ES EL NOMBRE DEL PRIMER METODO QUE HAYAs 			
  			initialize += "\n";
  			return initialize;
  	}
@@ -250,7 +249,6 @@ public class AssemblerGenerator {
  	private static String finish(String id) {
         System.out.println("ESTOY EN FINISH!!!!!!!!!!");
  		String finish = " \n";
- 			//FILENAME is the name of the last method 
  			finish += "		.size 	"+id+", 	.-"+id+" \n";
  			// finish += "		.ident 	\"GCC:  (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\" \n";
  			// finish += "		.section	.note.GNU-stack,'',@progbits \n";
@@ -299,12 +297,11 @@ public class AssemblerGenerator {
 			if (expression instanceof IntLiteral) {
 		        //make the assembler
 	 			result = "\t movl	$"+expression+", "+offset+"(%rbp) \n";
- 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
+
 	 		}else{
 		        //make the assembler
 	 			result = "\t movl	"+offset+"(%rbp), %edx \n";
 	 			result += "\t movl	%edx, "+offset+"(%rbp) \n";
-	 			// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 	 		}		
 
  			return result;
@@ -348,7 +345,6 @@ public class AssemblerGenerator {
         				int offset = varLocation.getOffset();
 				        //make the assembler
 			 			String result = "\t addl	$1, "+offset+"(%rbp) \n";
-			 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
 			 			return result;
  					}else{
@@ -363,7 +359,6 @@ public class AssemblerGenerator {
 		        				int offset = varLocation.getOffset();
 						        //make the assembler
 					 			String result = "\t subl	$1, "+offset+"(%rbp) \n";
-					 				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
 					 			return result;
 
@@ -425,7 +420,6 @@ public class AssemblerGenerator {
  				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
  				result += "\t addl	%edx, %eax \n";	
  				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
- 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
  			return result;
  		}else{
@@ -446,7 +440,6 @@ public class AssemblerGenerator {
 	 				result += "\t movl	"+offsetOp2+"(%rbp), %edx \n";
 	 				result += "\t subl	%edx, %eax \n";	
 	 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
-	 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
  				return result;
 	
@@ -468,7 +461,6 @@ public class AssemblerGenerator {
 		 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
 		 				result += "\t imull	"+offsetOp2+"(%rbp), %eax \n";	
 		 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
-		 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
 	 				return result;
 
@@ -491,7 +483,6 @@ public class AssemblerGenerator {
 			 				result += "\t cltd \n";
 			 				result += "\t idivl	"+offsetOp2+"(%rbp) \n";	
 			 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
-			 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
 		 				return result;
 	
@@ -579,7 +570,6 @@ public class AssemblerGenerator {
 
 	        //make the assembler
 	 		String result = "\t movl	$"+intLiteral+", "+offset+"(%rbp) \n";
-				// result += "\t movl	"+offset+"(%rbp)"+", %eax \n";	
 
  			return result;
  		}else{
@@ -866,12 +856,21 @@ public class AssemblerGenerator {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR JUMP!!!!!!!!!!");
  		if(nameInstruction.equals("jf")){
         System.out.println("                JF                       !!!!!!!!!!");
- 			return "";
+
+ 			Location loc = (Location)iCode.getOp1();
+ 			int offset = loc.getOffset();
+ 			Label label = (Label)iCode.getResult();
+
+ 			String result = "\t cmpl	$0, "+offset+"(%rbp) \n";
+ 				result += "\t je	."+label.getLabelId()+" \n";
+
+ 			return result;
+
  		}else{
 	 		if(nameInstruction.equals("jmp")){
         System.out.println("               JUMP                        !!!!!!!!!!");
 	 			Label label = (Label)iCode.getResult();
-				String result = " \t jmp ."+label.toString()+" \n";
+				String result = " \t jmp ."+label.getLabelId()+" \n";
 				return result;
  			}
 		}
@@ -882,17 +881,24 @@ public class AssemblerGenerator {
  	private static String generateCodeLabels(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE LABELS!!!!!!!!!!");
  		if(nameInstruction.equals("label")){
- 			return "";
+
+	        Label label = (Label)iCode.getResult();
+			String result = "."+label.getLabelId()+": \n";
+			return result;
+
  		}else{
 	 		if(nameInstruction.equals("labelbeginclass")){
 	 			return "";
 	 		}else{
 		 		if(nameInstruction.equals("labelbeginmethod")){
+
 			        Label label = (Label)iCode.getResult();
 		 			String res = initializeMethod(label.getLabelId(),label.getMaxOffset());
 	 				return res;
+
  				}else{
 			 		if(nameInstruction.equals("labelendmethod")){
+
 				        Label label = (Label)iCode.getResult();
 			 			String result = finishMethodCommon(label.getLabelId());
 			 			if(index < cantMethods){
@@ -935,7 +941,6 @@ public class AssemblerGenerator {
  				result += "\t cltd \n";
  				result += "\t idivl	"+offsetOp2+"(%rbp) \n";	
  				result += "\t movl	%edx, "+offsetRes+"(%rbp) \n";	
- 				// result += "\t movl	"+offsetRes+"(%rbp), %eax \n";	
 
 				return result;
 		}
@@ -979,8 +984,18 @@ public class AssemblerGenerator {
 
 // ERROR EN EL MINUS INT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???)
 
-// OPERADORES CONDICIONALES
+// OPERADORES CONDICIONALES 	(((((((LISTO)))))))
 
-// OPERADORES RELACIONALES 
+// OPERADORES RELACIONALES 		(((((((LISTO)))))))
 
 // IMPLEMENTAR BOOLEANOS		(((((((LISTO)))))))
+
+// IMPLEMENTAR LESS
+
+// IMPLEMENTAR NOT
+
+// IMPLEMENTAR CALL
+
+// IMPLEMENTAR PUSHID y PUSHPARAM
+
+// IMPLEMENTAR RETURN VOID
