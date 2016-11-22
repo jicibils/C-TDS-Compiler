@@ -130,10 +130,10 @@ public class DeclarationCheckVisitor implements ASTVisitor<List<ErrorClass>> {
             method.setMaxOffset(offset);
             System.out.println("MAX OFFSET declaration !!!!!!!!!!");
             System.out.println(method.getMaxOffset());
+            //close level to parameters
+            table.popLevel();
         }
-
-        //close level to parameters
-        table.popLevel();
+        
         return errorList;
     }        
     
