@@ -615,46 +615,29 @@ public class AssemblerGenerator {
  		if(nameInstruction.equals("andand")){
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CONDITIONAL 		AND AND !!!!!!!!!!");
 
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
 
- 			System.out.println(iCode);
- 			System.out.println(iCode.getOp1());
- 			System.out.println(iCode.getOp2());
- 			System.out.println(iCode.getResult());
+ 			VarLocation op1 = (VarLocation)iCode.getOp1();
+ 			int offsetOp1 = op1.getOffset();
 
- 			VarLocation var1 = (VarLocation)iCode.getOp1();
- 			System.out.println("");
- 			System.out.println(var1.getId());
- 			System.out.println(var1.getDeclaration());
- 			System.out.println(var1.getDeclaration().getValue());
- 			System.out.println(var1.getOffset());
- 			System.out.println("");
+ 			VarLocation op2 = (VarLocation)iCode.getOp2();
+ 			int offsetOp2 = op2.getOffset();
 
- 			VarLocation var2 = (VarLocation)iCode.getOp2();
- 			System.out.println("");
- 			System.out.println(var2.getId());
- 			System.out.println(var2.getDeclaration());
- 			System.out.println(var2.getDeclaration().getValue());
- 			System.out.println(var2.getOffset());
- 			System.out.println("");
- 			VarLocation var3 = (VarLocation)iCode.getResult();
- 			System.out.println("");
- 			System.out.println(var3.getId());
- 			System.out.println(var3.getDeclaration());
- 			System.out.println(var3.getDeclaration().getValue());
- 			System.out.println(var3.getOffset());
- 			System.out.println("");
+ 			VarLocation res = (VarLocation)iCode.getResult();
+ 			int offsetRes = res.getOffset();
 
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
- 			System.out.println("");
 
- 			String result = "\t cmpl	$3, -8(%rbp) \n";
- 				result += "\t jne	.L2 \n";
+ 			Label label = genLabel();
+ 			Label labelJmp = genLabel();
+
+ 			String result = "\t cmpl	$1, "+offsetOp1+"(%rbp) \n";
+ 				result += "\t jne	."+label.getLabelId()+" \n";
+ 				result += "\t cmpl	$1, "+offsetOp2+"(%rbp) \n";
+ 				result += "\t jne	."+label.getLabelId()+" \n";
+				result += "\t movl	$1, "+offsetRes+"(%rbp) \n";
+				result += "\t jmp ."+labelJmp.getLabelId()+" \n";
+				result += "."+label.getLabelId()+": \n";
+				result += "\t movl	$0, "+offsetRes+"(%rbp) \n";
+				result += "."+labelJmp.getLabelId()+": \n";
 
  			return result;
  		}else{
