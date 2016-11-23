@@ -1,0 +1,15 @@
+class main{
+	integer main(){
+		integer x;
+		integer y;
+		integer fact;
+		fact = 1;
+		x = 5;
+		y = 1;
+		while(y<=x){
+			fact = fact * y;
+			y += 1;
+		}
+		return fact;
+	}
+}

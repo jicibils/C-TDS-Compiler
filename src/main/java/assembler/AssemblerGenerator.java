@@ -1048,3 +1048,11 @@ public class AssemblerGenerator {
 // IMPLEMENTAR PUSHID y PUSHPARAM
 
 // IMPLEMENTAR RETURN VOID       (((((DEVUELVO 777777777 QUE PUEDO DEVOLVER????)))))
+
+// TEST DEL NOT 	((((((LISTO))))))
+
+// FACTORIAL 			(((((((LISTO)))))))
+
+// scripts
+
+// informe 
