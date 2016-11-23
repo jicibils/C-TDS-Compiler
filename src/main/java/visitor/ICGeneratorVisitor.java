@@ -289,6 +289,13 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         
         VarLocation T1 = new VarLocation("T"+tempCounter,stmt.getLineNumber(),stmt.getColumnNumber());
         incTempCounter(); //tempCounter++;
+
+
+        //SET OFFSET
+        Attribute declaration = new Attribute(T1.getId(),T1.getType(),T1);
+        T1.setDeclaration(declaration);
+        T1.setOffset(genOffset());
+
         
         list.add(new IntermediateCode(Instruction.LABEL,null,null, beginFor));       //LABEL BEGIN FOR
         list.add(new IntermediateCode(Instruction.LESS,i, T0, T1));          //compare if i < cota. Save result in T1
@@ -298,7 +305,7 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
         stmt.getBlock().accept(this);
         
         list.add(new IntermediateCode(Instruction.INCI,i,new IntLiteral(1),i)); //INC i - i++
-        list.add(new IntermediateCode(Instruction.JMP,null,null,endFor));       //JMP BEGIN FOR
+        list.add(new IntermediateCode(Instruction.JMP,null,null,beginFor));       //JMP BEGIN FOR
         list.add(new IntermediateCode(Instruction.LABEL,null,null,endFor));     //LABEL ENDFOR
         
         stackIn.pop();

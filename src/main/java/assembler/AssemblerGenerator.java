@@ -954,10 +954,35 @@ public class AssemblerGenerator {
 		return "";
  	}
 
- 	 	private static String generateCodeOperatorLess(IntermediateCode iCode,String nameInstruction) {
+ 	private static String generateCodeOperatorLess(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR LESS!!!!!!!!!!");
  		if(nameInstruction.equals("less")){
- 			return "";
+			//compare if i < cota. Save result in T1
+
+ 			Location op1 = (Location)iCode.getOp1();
+ 			int offsetOp1 = op1.getOffset();
+
+ 			Location op2 = (Location)iCode.getOp2();
+ 			int offsetOp2 = op2.getOffset();
+
+
+ 			VarLocation res = (VarLocation)iCode.getResult();
+ 			int offsetRes = res.getOffset();
+
+ 			Label labelLess = genLabel();
+ 			Label labelJmp = genLabel();
+
+	 		String result = "\t movl	"+offsetOp2+"(%rbp), %eax \n";
+				result += " \t cmpl 	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t jg	."+labelLess.getLabelId()+" \n";
+				result += "\t movl	$0, "+offsetRes+"(%rbp) \n";
+				result += "\t jmp ."+labelJmp.getLabelId()+" \n";
+				result += "."+labelLess.getLabelId()+": \n";
+				result += "\t movl	$1, "+offsetRes+"(%rbp) \n";
+				result += "."+labelJmp.getLabelId()+": \n";
+
+
+ 			return result;
 		}
 		return "";
  	}
