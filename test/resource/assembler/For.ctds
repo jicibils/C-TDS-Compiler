@@ -1,0 +1,11 @@
+class main{
+	integer main(){
+		integer res;
+		integer i;
+		res = 0;
+        for i = 0 , 10 { 
+			res = res+1;		
+		}
+		return res;
+	}
+}
