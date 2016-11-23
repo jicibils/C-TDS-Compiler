@@ -925,7 +925,23 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorNot(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR NOT!!!!!!!!!!");
  		if(nameInstruction.equals("not")){
- 			return "";
+
+ 			VarLocation res = (VarLocation)iCode.getOp1();
+ 			int offsetRes = res.getOffset();
+ 			Label labelNot = genLabel();
+ 			Label labelJmp = genLabel();
+
+			String result = " \t cmpl 	$1, "+offsetRes+"(%rbp) \n";
+ 				result += "\t je	."+labelNot.getLabelId()+" \n";
+				result += "\t movl	$1, "+offsetRes+"(%rbp) \n";
+				result += "\t jmp ."+labelJmp.getLabelId()+" \n";
+				result += "."+labelNot.getLabelId()+": \n";
+				result += "\t movl	$0, "+offsetRes+"(%rbp) \n";
+				result += "."+labelJmp.getLabelId()+": \n";
+
+
+
+ 			return result;
 		}
 		return "";
  	}
@@ -1022,9 +1038,10 @@ public class AssemblerGenerator {
 
 // IMPLEMENTAR BOOLEANOS		(((((((LISTO)))))))
 
-// IMPLEMENTAR LESS
+// IMPLEMENTAR LESS 			(((((((LISTO)))))))
 
 // IMPLEMENTAR NOT
+// ERROR EN EL NOT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???)
 
 // IMPLEMENTAR CALL
 
