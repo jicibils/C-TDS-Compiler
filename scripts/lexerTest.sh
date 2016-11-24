@@ -5,26 +5,29 @@ echo ""
 echo "-----------------------------------------------"
 echo "----------------- JFLEX TESTS -----------------"
 echo "-----------------------------------------------"
+cd ..
+cd build/classes
 echo ""
 echo "----------------- Keywords Tests -----------------"
 echo ""
-java -cp target/classes/ LexerStandalone src/test/jflex/keywords.ctds
+
+java  main.java.lexer.LexerStandalone ../../test/resource/lexer/keywords.ctds
 echo ""
 echo "----------------- Delimiters Tests -----------------"
 echo ""
-java -cp target/classes/ LexerStandalone src/test/jflex/delimiters.ctds
+java  main.java.lexer.LexerStandalone ../../test/resource/lexer/delimiters.ctds
 echo ""
 echo "----------------- Identifiers Tests -----------------"
 echo ""
-java -cp target/classes/ LexerStandalone src/test/jflex/identifiers.ctds
+java  main.java.lexer.LexerStandalone ../../test/resource/lexer/identifiers.ctds
 echo ""
 echo "----------------- Literals Tests -----------------"
 echo ""
-java -cp target/classes/ LexerStandalone src/test/jflex/literals.ctds
+java  main.java.lexer.LexerStandalone ../../test/resource/lexer/literals.ctds
 echo ""
 echo "----------------- Operators Tests -----------------"
 echo ""
-java -cp target/classes/ LexerStandalone src/test/jflex/operators.ctds
+java  main.java.lexer.LexerStandalone ../../test/resource/lexer/operators.ctds
 echo ""
 echo "--------------------------------------------------"
 echo "--------------------------------------------------"
