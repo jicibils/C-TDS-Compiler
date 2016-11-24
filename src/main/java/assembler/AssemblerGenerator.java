@@ -489,11 +489,13 @@ public class AssemblerGenerator {
 		 			}else{
 				 		if(nameInstruction.equals("minusint")){
         					System.out.println("ESTOY EN MINUS INTEGER!!!!!!!!!!");
+					        VarLocation op1 = (VarLocation)iCode.getOp1();
 					        VarLocation res = (VarLocation)iCode.getResult();
+					        int offsetOp1 = op1.getOffset();
 					        int offsetRes = res.getOffset();
 							// String result = " \t negl	%eax \n";
 							// String result = " \t negl	"+offsetRes+"(%rbp) \n";
-				 			String result = "\t movl	"+offsetRes+"(%rbp), %eax \n";
+				 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
 								result += " \t imull	$-1, %eax \n";
 				 				result += "\t movl	%eax, "+offsetRes+"(%rbp) \n";	
 							return result;
@@ -926,12 +928,16 @@ public class AssemblerGenerator {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR NOT!!!!!!!!!!");
  		if(nameInstruction.equals("not")){
 
- 			VarLocation res = (VarLocation)iCode.getOp1();
+	        VarLocation op1 = (VarLocation)iCode.getOp1();
+ 			VarLocation res = (VarLocation)iCode.getResult();
+	        int offsetOp1 = op1.getOffset();
  			int offsetRes = res.getOffset();
  			Label labelNot = genLabel();
  			Label labelJmp = genLabel();
 
-			String result = " \t cmpl 	$1, "+offsetRes+"(%rbp) \n";
+ 			String result = "\t movl	"+offsetOp1+"(%rbp), %eax \n";
+ 				result += "\t movl	%eax , "+offsetRes+"(%rbp) \n";
+				result += " \t cmpl 	$1, "+offsetRes+"(%rbp) \n";
  				result += "\t je	."+labelNot.getLabelId()+" \n";
 				result += "\t movl	$1, "+offsetRes+"(%rbp) \n";
 				result += "\t jmp ."+labelJmp.getLabelId()+" \n";
@@ -1030,7 +1036,7 @@ public class AssemblerGenerator {
 
 
 
-// ERROR EN EL MINUS INT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???)
+// ERROR EN EL MINUS INT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???) 	((((((LISTO))))))
 
 // OPERADORES CONDICIONALES 	(((((((LISTO)))))))
 
@@ -1040,18 +1046,20 @@ public class AssemblerGenerator {
 
 // IMPLEMENTAR LESS 			(((((((LISTO)))))))
 
-// IMPLEMENTAR NOT
-// ERROR EN EL NOT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???)
+// IMPLEMENTAR NOT 				((((((((LISTO))))))))
+// ERROR EN EL NOT CON LOS DOS EJEMPLOS (PORBLEMA DE PRECEDENCIA EN LA GRAMATICA???) 	(((((LISTO)))))
+
+// IMPLEMENTAR RETURN VOID    ((((LISTO))))   (((((DEVUELVO 777777777 QUE PUEDO DEVOLVER????))))) 
+
+// TEST DEL NOT 	((((((LISTO))))))
+
+// FACTORIAL 			(((((((LISTO)))))))
 
 // IMPLEMENTAR CALL
 
 // IMPLEMENTAR PUSHID y PUSHPARAM
 
-// IMPLEMENTAR RETURN VOID       (((((DEVUELVO 777777777 QUE PUEDO DEVOLVER????)))))
-
-// TEST DEL NOT 	((((((LISTO))))))
-
-// FACTORIAL 			(((((((LISTO)))))))
+// IMPLEMENTAR FLOTANTES 
 
 // scripts
 
