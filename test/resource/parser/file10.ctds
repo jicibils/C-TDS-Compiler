@@ -1,7 +1,0 @@
-//Declaration method Error
-class A {
-
-	Void methodVoid(integer x,integer y);
-
-}
-
