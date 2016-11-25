@@ -1,0 +1,11 @@
+// assignment Error!
+class A {
+	
+		integer methodTest(integer x) {
+
+		ponzio  = 23;
+		23 = ponzio;
+		
+	}
+
+}

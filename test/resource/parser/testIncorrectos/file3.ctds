@@ -1,0 +1,11 @@
+// declaration in body method Error!
+class A {
+
+	integer methodTest(integer x) {
+
+		integer y, integer x, integer a;
+		
+	}
+
+}
+

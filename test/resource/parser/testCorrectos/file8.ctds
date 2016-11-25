@@ -1,0 +1,10 @@
+// declaration in body method OK!
+class A {
+	
+	integer methodTest(integer x) {
+		integer y;
+		integer Ponzio[23];
+		
+	}
+
+}

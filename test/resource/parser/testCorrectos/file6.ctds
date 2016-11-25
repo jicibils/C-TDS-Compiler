@@ -1,0 +1,11 @@
+// Field declaration OK!
+class A {
+	
+	integer barovero;
+	integer piscu,ponzio,alario;
+
+	integer Chori[10];
+
+	
+}
+
