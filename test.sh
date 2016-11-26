@@ -10,3 +10,8 @@ echo "### Parser tests ###"
 echo " "
 
 ./parserTest.sh
+
+echo "#### DeclarationCheck tests ####"
+echo " "
+
+./declarationCheckTest.sh
