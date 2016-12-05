@@ -478,7 +478,7 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 public void syntax_error(Symbol s){ 
-            System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+(String)s.value); 
+            System.out.println("Syntax error at line " + (s.left+1) + " column " + s.right+ " token "+s.value); 
     }
 
 public void unrecovered_syntax_error(Symbol s){
