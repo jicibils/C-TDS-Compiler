@@ -856,6 +856,17 @@ public class AssemblerGenerator {
  	private static String generateCodeOperatorCall(IntermediateCode iCode,String nameInstruction) {
         System.out.println("ESTOY EN GENERATE CODE OPERATOR CALL!!!!!!!!!!");
  		if(nameInstruction.equals("call")){
+
+ 			// System.out.println(iCode.getResult());
+ 			// VarLocation res = (VarLocation)iCode.getResult();
+ 			// System.out.println(res.getId());
+ 			// System.out.println(res.getOffset());
+ 			// System.out.println(res.getDeclaration().getValue());
+ 			// MethodCall method = (MethodCall)res.getDeclaration().getValue();
+ 			// System.out.println("");
+ 			// System.out.println("");
+ 			// System.out.println("");
+
  			return "";
 		}
 		return "";
@@ -1061,6 +1072,10 @@ public class AssemblerGenerator {
 
 // IMPLEMENTAR FLOTANTES 
 
-// scripts
+// scripts de iCTest.sh -- declVisitor.sh -- typeVisitor.sh  .. parserTest.sh
+
+// ARREGLOS
+
+// LLAMADAS A FUNCIONES
 
 // informe 

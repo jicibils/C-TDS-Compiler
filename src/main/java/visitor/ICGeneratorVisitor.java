@@ -523,9 +523,18 @@ public class ICGeneratorVisitor implements ASTVisitor<Location>{
             list.add(new IntermediateCode(Instruction.PUSHPARAM,null,null,expression.accept(this)));
         }
 
-        list.add(new IntermediateCode(Instruction.CALL,null,null,methodCall));
+        //create temporal location to store result
+        VarLocation tempLoc = new VarLocation("T"+tempCounter,methodCall.getLineNumber(),methodCall.getColumnNumber());
+        incTempCounter(); //tempCounter++ increment temporal counter
 
-        return null;
+        //SET OFFSET
+        Attribute declaration = new Attribute(tempLoc.getId(),tempLoc.getType(),methodCall);
+        tempLoc.setDeclaration(declaration);
+        tempLoc.setOffset(genOffset());
+
+        list.add(new IntermediateCode(Instruction.CALL,methodCall,null,tempLoc));
+
+        return tempLoc;
     }
 
     @Override
